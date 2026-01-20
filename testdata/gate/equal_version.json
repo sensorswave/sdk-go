@@ -1,0 +1,45 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1763467441668,
+        "ab_specs": [
+            {
+                "id": 1,
+                "key": "New_Feature_Flag",
+                "name": "New Feature Flag",
+                "typ": 1,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "fCwc_nlLX90_TuWSyFz_U",
+                "version": 20,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "18dFropJdqiF93UVkNJ82",
+                            "name": "Rule 1",
+                            "salt": "18dFropJdqiF93UVkNJ82",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "PROPS",
+                                    "field_typ": "VERSION_STRING",
+                                    "field": "$app_version",
+                                    "opt": "VERSION_EQ",
+                                    "value": "10.0"
+                                }
+                            ]
+                        }
+                    ],
+                    "OVERRIDE": null,
+                    "TRAFFIC": []
+                },
+                "variant_payloads": {}
+            }
+        ]
+    },
+    "trace": "0:1028:3244882133"
+}

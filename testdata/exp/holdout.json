@@ -1,0 +1,81 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1764657076084,
+        "ab_specs": [
+            {
+                "id": 18,
+                "key": "BKduZnxYPD",
+                "name": "苏打绿 / 蘇打綠",
+                "typ": 3,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "BLE2YlFld2JX3a8gUmhlx",
+                "version": 3,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "holdout_public",
+                            "name": "gate:public",
+                            "salt": "BKduZnxYPD",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "COMMON",
+                                    "field_typ": "BOOLEAN",
+                                    "field": "public",
+                                    "opt": "IS_TRUE",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    ],
+                    "GROUP": [
+                        {
+                            "id": "1",
+                            "name": "variant:1",
+                            "salt": "BKduZnxYPD",
+                            "rollout": 50,
+                            "override": "v1"
+                        },
+                        {
+                            "id": "2",
+                            "name": "variant:2",
+                            "salt": "BKduZnxYPD",
+                            "rollout": 100,
+                            "override": "v2"
+                        }
+                    ],
+                    "TRAFFIC": [
+                        {
+                            "id": "holdout_test_holdout",
+                            "name": "holdout:test_holdout",
+                            "salt": "holdout_442",
+                            "rollout": 90,
+                            "override": "holdout"
+                        },
+                        {
+                            "id": "BKduZnxYPD",
+                            "name": "bucket:BKduZnxYPD",
+                            "salt": "BLE2YlFld2JX3a8gUmhlx",
+                            "rollout": 100
+                        }
+                    ]
+                },
+                "variant_payloads": {
+                    "v1": {
+                        "test": 1
+                    },
+                    "v2": {
+                        "test": 2
+                    }
+                }
+            }
+        ]
+    },
+    "trace": "0:1025:2686247984"
+}

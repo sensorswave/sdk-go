@@ -1,0 +1,50 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1764658761824,
+        "ab_specs": [
+            {
+                "id": 27,
+                "key": "Sticky_Config",
+                "name": "Sticky Config",
+                "typ": 2,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": true,
+                "salt": "sticky_config_salt",
+                "version": 1,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "sticky_config_gate_1",
+                            "name": "gate:sticky-config-1",
+                            "salt": "sticky_config_gate_1",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "PROPS",
+                                    "field_typ": "BOOLEAN",
+                                    "field": "is_member",
+                                    "opt": "IS_TRUE",
+                                    "value": null
+                                }
+                            ],
+                            "override": "v1"
+                        }
+                    ],
+                    "OVERRIDE": [],
+                    "TRAFFIC": []
+                },
+                "variant_payloads": {
+                    "v1": {
+                        "color": "blue"
+                    }
+                }
+            }
+        ]
+    },
+    "trace": "0:1025:3763272381"
+}

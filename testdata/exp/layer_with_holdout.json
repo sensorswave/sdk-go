@@ -1,0 +1,90 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1764658029067,
+        "ab_specs": [
+            {
+                "id": 20,
+                "key": "ARQjYcfVPI",
+                "name": "萧亚轩",
+                "typ": 3,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "ZXxga86NAWcRZCai5rrTh",
+                "version": 2,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "nxAOL7MQHMgdQue8Oxry2",
+                            "name": "gate:.1.Targeting Rule 1",
+                            "salt": "nxAOL7MQHMgdQue8Oxry2",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "COMMON",
+                                    "field_typ": "BOOLEAN",
+                                    "field": "public",
+                                    "opt": "IS_TRUE",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    ],
+                    "GROUP": [
+                        {
+                            "id": "1",
+                            "name": "variant:1",
+                            "salt": "ARQjYcfVPI",
+                            "rollout": 50,
+                            "override": "v1"
+                        },
+                        {
+                            "id": "2",
+                            "name": "variant:2",
+                            "salt": "ARQjYcfVPI",
+                            "rollout": 100,
+                            "override": "v2"
+                        }
+                    ],
+                    "TRAFFIC": [
+                        {
+                            "id": "holdout_test_holdout",
+                            "name": "holdout:test_holdout",
+                            "salt": "holdout_442",
+                            "rollout": 90,
+                            "override": "holdout"
+                        },
+                        {
+                            "id": "ARQjYcfVPI",
+                            "name": "bucket:ARQjYcfVPI",
+                            "salt": "ZXxga86NAWcRZCai5rrTh",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "BUCKET",
+                                    "field_typ": "NUMBER",
+                                    "field": "ZXxga86NAWcRZCai5rrTh",
+                                    "opt": "BUCKET_SET",
+                                    "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "variant_payloads": {
+                    "v1": {
+                        "test": 1
+                    },
+                    "v2": {
+                        "test": 2
+                    }
+                }
+            }
+        ]
+    },
+    "trace": "0:1025:2780346077"
+}

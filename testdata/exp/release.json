@@ -1,0 +1,75 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1763714718263,
+        "ab_specs": [
+            {
+                "id": 9,
+                "key": "TargetExperiment",
+                "name": "TargetExperiment",
+                "typ": 3,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "epMMRm-0bF4EQDa0EdwVx",
+                "version": 3,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "oTIMsdDjGy7x-Deak9CPS",
+                            "name": "release:.1.",
+                            "salt": "oTIMsdDjGy7x-Deak9CPS",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "COMMON",
+                                    "field_typ": "BOOLEAN",
+                                    "field": "public",
+                                    "opt": "IS_TRUE",
+                                    "value": null
+                                }
+                            ],
+                            "override": "v2"
+                        }
+                    ],
+                    "GROUP": [
+                        {
+                            "id": "1",
+                            "name": "variant:1",
+                            "salt": "TargetExperiment",
+                            "rollout": 50,
+                            "override": "v1"
+                        },
+                        {
+                            "id": "2",
+                            "name": "variant:2",
+                            "salt": "TargetExperiment",
+                            "rollout": 100,
+                            "override": "v2"
+                        }
+                    ],
+                    "TRAFFIC": [
+                        {
+                            "id": "TargetExperiment",
+                            "name": "bucket:TargetExperiment",
+                            "salt": "epMMRm-0bF4EQDa0EdwVx",
+                            "rollout": 100
+                        }
+                    ]
+                },
+                "variant_payloads": {
+                    "v1": {
+                        "test": 0
+                    },
+                    "v2": {
+                        "test": 1
+                    }
+                }
+            }
+        ]
+    },
+    "trace": "0:1028:2935162828"
+}

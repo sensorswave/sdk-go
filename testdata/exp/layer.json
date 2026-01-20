@@ -1,0 +1,83 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1764328120055,
+        "ab_specs": [
+            {
+                "id": 7,
+                "key": "exp3",
+                "name": "exp3",
+                "typ": 3,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "AyyX-YAvN5rQCGZRjkL6w",
+                "version": 12,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "ibX49K8bgYhiBzPDrRzLs",
+                            "name": "gate:.1.Targeting Rule 1",
+                            "salt": "ibX49K8bgYhiBzPDrRzLs",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "COMMON",
+                                    "field_typ": "BOOLEAN",
+                                    "field": "public",
+                                    "opt": "IS_TRUE",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    ],
+                    "GROUP": [
+                        {
+                            "id": "1",
+                            "name": "variant:1",
+                            "salt": "exp3",
+                            "rollout": 50,
+                            "override": "v1"
+                        },
+                        {
+                            "id": "2",
+                            "name": "variant:2",
+                            "salt": "exp3",
+                            "rollout": 100,
+                            "override": "v2"
+                        }
+                    ],
+                    "TRAFFIC": [
+                        {
+                            "id": "exp3",
+                            "name": "bucket:exp3",
+                            "salt": "AyyX-YAvN5rQCGZRjkL6w",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "BUCKET",
+                                    "field_typ": "NUMBER",
+                                    "field": "AyyX-YAvN5rQCGZRjkL6w",
+                                    "opt": "BUCKET_SET",
+                                    "value": "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000000000000000"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "variant_payloads": {
+                    "v1": {
+                        "test": 1
+                    },
+                    "v2": {
+                        "test": 2
+                    }
+                }
+            }
+        ]
+    },
+    "trace": "0:1025:4160721212"
+}

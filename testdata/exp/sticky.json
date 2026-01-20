@@ -1,0 +1,74 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1764657076084,
+        "ab_specs": [
+            {
+                "id": 26,
+                "key": "Sticky_Experiment",
+                "name": "Sticky Experiment",
+                "typ": 3,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": true,
+                "salt": "Sticky_Experiment_Salt",
+                "version": 1,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "sticky_exp_gate",
+                            "name": "gate:sticky-exp",
+                            "salt": "sticky_exp_gate_salt",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "PROPS",
+                                    "field_typ": "BOOLEAN",
+                                    "field": "is_member",
+                                    "opt": "IS_TRUE",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    ],
+                    "GROUP": [
+                        {
+                            "id": "1",
+                            "name": "variant:1",
+                            "salt": "Sticky_Experiment",
+                            "rollout": 50,
+                            "override": "v1"
+                        },
+                        {
+                            "id": "2",
+                            "name": "variant:2",
+                            "salt": "Sticky_Experiment",
+                            "rollout": 100,
+                            "override": "v2"
+                        }
+                    ],
+                    "TRAFFIC": [
+                        {
+                            "id": "Sticky_Experiment",
+                            "name": "bucket:Sticky_Experiment",
+                            "salt": "Sticky_Experiment_Salt",
+                            "rollout": 100
+                        }
+                    ]
+                },
+                "variant_payloads": {
+                    "v1": {
+                        "color": "blue"
+                    },
+                    "v2": {
+                        "color": "red"
+                    }
+                }
+            }
+        ]
+    },
+    "trace": "0:1025:2686247984"
+}

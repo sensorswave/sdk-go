@@ -1,0 +1,44 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1763711081716,
+        "ab_specs": [
+            {
+                "id": 8,
+                "key": "ReleaseGate",
+                "name": "ReleaseGate",
+                "typ": 1,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "13rRSly5O2NgWqaYQQnXM",
+                "version": 3,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "rr3EQ_ZDSAnvblV_LVwxn",
+                            "name": "release:.1.",
+                            "salt": "rr3EQ_ZDSAnvblV_LVwxn",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "COMMON",
+                                    "field_typ": "BOOLEAN",
+                                    "field": "public",
+                                    "opt": "IS_TRUE",
+                                    "value": null
+                                }
+                            ],
+                            "override": "pass"
+                        }
+                    ]
+                },
+                "variant_payloads": {}
+            }
+        ]
+    },
+    "trace": "0:1028:2575579258"
+}

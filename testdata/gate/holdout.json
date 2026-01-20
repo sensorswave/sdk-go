@@ -1,0 +1,54 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1763607257341,
+        "ab_specs": [
+            {
+                "id": 7,
+                "key": "holdout_gate",
+                "name": "holdout gate",
+                "typ": 1,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "scCRkJaemu7s2vn8HnCau",
+                "version": 4,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "os7rWz5hM68fJTwez7r2n",
+                            "name": "Rule 1",
+                            "salt": "os7rWz5hM68fJTwez7r2n",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "PROPS",
+                                    "field_typ": "VERSION_STRING",
+                                    "field": "$app_version",
+                                    "opt": "NONE_OF_CASE_SENSITIVE",
+                                    "value": [
+                                        "10.0"
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "TRAFFIC": [
+                        {
+                            "id": "holdout_test_holdout",
+                            "name": "holdout:test_holdout",
+                            "salt": "holdout_1990",
+                            "rollout": 90,
+                            "override": "holdout"
+                        }
+                    ]
+                },
+                "variant_payloads": {}
+            }
+        ]
+    },
+    "trace": "0:1028:2321935014"
+}

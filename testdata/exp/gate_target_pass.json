@@ -1,0 +1,115 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1764671563968,
+        "ab_specs": [
+            {
+                "id": 2,
+                "key": "New_Feature_Flag",
+                "name": "New Feature Flag",
+                "typ": 1,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "-vy-jbaDJd84B07pn-KFO",
+                "version": 2,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "VX6xrrMhu7GKNsTOoJgyl",
+                            "name": "App Version Rule",
+                            "salt": "VX6xrrMhu7GKNsTOoJgyl",
+                            "rollout": 30,
+                            "conditions": [
+                                {
+                                    "field_class": "PROPS",
+                                    "field_typ": "VERSION_STRING",
+                                    "field": "$app_version",
+                                    "opt": "VERSION_GT",
+                                    "value": "10.0"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "variant_payloads": {}
+            },
+            {
+                "id": 17,
+                "key": "ArlrvEnebz",
+                "name": "魏如萱 Waa",
+                "typ": 3,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "xnwBhGUyxOafki3HZtrYv",
+                "version": 2,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "osNMezmQZibJkS2s4CYsU",
+                            "name": "gate:.1.Gate Rule",
+                            "salt": "osNMezmQZibJkS2s4CYsU",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "GATE",
+                                    "field_typ": "STRING",
+                                    "field": "New_Feature_Flag",
+                                    "opt": "GATE_PASS",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    ],
+                    "GROUP": [
+                        {
+                            "id": "1",
+                            "name": "variant:1",
+                            "salt": "ArlrvEnebz",
+                            "rollout": 50,
+                            "override": "v1"
+                        },
+                        {
+                            "id": "2",
+                            "name": "variant:2",
+                            "salt": "ArlrvEnebz",
+                            "rollout": 100,
+                            "override": "v2"
+                        }
+                    ],
+                    "TRAFFIC": [
+                        {
+                            "id": "ArlrvEnebz",
+                            "name": "bucket:ArlrvEnebz",
+                            "salt": "xnwBhGUyxOafki3HZtrYv",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "BUCKET",
+                                    "field_typ": "NUMBER",
+                                    "field": "xnwBhGUyxOafki3HZtrYv",
+                                    "opt": "BUCKET_SET",
+                                    "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "variant_payloads": {
+                    "v1": {
+                        "test": 1
+                    },
+                    "v2": {
+                        "test": 2
+                    }
+                }
+            }
+        ]
+    },
+    "trace": "0:1025:2233245906"
+}

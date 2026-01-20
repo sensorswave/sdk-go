@@ -1,0 +1,106 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1764676274706,
+        "ab_specs": [
+            {
+                "id": 2,
+                "key": "New_Feature_Flag",
+                "name": "New Feature Flag",
+                "typ": 1,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "-vy-jbaDJd84B07pn-KFO",
+                "version": 2,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "VX6xrrMhu7GKNsTOoJgyl",
+                            "name": "App Version Rule",
+                            "salt": "VX6xrrMhu7GKNsTOoJgyl",
+                            "rollout": 30,
+                            "conditions": [
+                                {
+                                    "field_class": "PROPS",
+                                    "field_typ": "VERSION_STRING",
+                                    "field": "$app_version",
+                                    "opt": "VERSION_GT",
+                                    "value": "10.0"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "variant_payloads": {}
+            },
+            {
+                "id": 28,
+                "key": "Failed_Gate",
+                "name": "Failed_Gate",
+                "typ": 3,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "rn2wGPxe65X-4AXbuga1K",
+                "version": 2,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "lkkYSzAxqS96HBlKK4nNy",
+                            "name": "gate:.1.Failed Gate Rule",
+                            "salt": "lkkYSzAxqS96HBlKK4nNy",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "GATE",
+                                    "field_typ": "STRING",
+                                    "field": "New_Feature_Flag",
+                                    "opt": "GATE_FAIL",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    ],
+                    "GROUP": [
+                        {
+                            "id": "1",
+                            "name": "variant:1",
+                            "salt": "Failed_Gate",
+                            "rollout": 50,
+                            "override": "v1"
+                        },
+                        {
+                            "id": "2",
+                            "name": "variant:2",
+                            "salt": "Failed_Gate",
+                            "rollout": 100,
+                            "override": "v2"
+                        }
+                    ],
+                    "TRAFFIC": [
+                        {
+                            "id": "Failed_Gate",
+                            "name": "bucket:Failed_Gate",
+                            "salt": "rn2wGPxe65X-4AXbuga1K",
+                            "rollout": 100
+                        }
+                    ]
+                },
+                "variant_payloads": {
+                    "v1": {
+                        "test": 1
+                    },
+                    "v2": {
+                        "test": 2
+                    }
+                }
+            }
+        ]
+    },
+    "trace": "0:1025:2454010665"
+}

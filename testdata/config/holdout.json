@@ -1,0 +1,96 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1764658761824,
+        "ab_specs": [
+            {
+                "id": 21,
+                "key": "bMHsfOAUKx",
+                "name": "新疆维吾尔自治区思远建设有限公司",
+                "typ": 2,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "fxf2TzEgZvidLNjG9tZEA",
+                "version": 2,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "vxhpP8GPVO385TPe0Zgfd:1",
+                            "name": "gate:vxhpP8GPVO385TPe0Zgfd:variant:1",
+                            "salt": "vxhpP8GPVO385TPe0Zgfd",
+                            "rollout": 10,
+                            "conditions": [
+                                {
+                                    "field_class": "COMMON",
+                                    "field_typ": "BOOLEAN",
+                                    "field": "public",
+                                    "opt": "IS_TRUE",
+                                    "value": null
+                                }
+                            ],
+                            "override": "v1"
+                        },
+                        {
+                            "id": "vxhpP8GPVO385TPe0Zgfd:2",
+                            "name": "gate:vxhpP8GPVO385TPe0Zgfd:variant:2",
+                            "salt": "vxhpP8GPVO385TPe0Zgfd",
+                            "rollout": 40,
+                            "conditions": [
+                                {
+                                    "field_class": "COMMON",
+                                    "field_typ": "BOOLEAN",
+                                    "field": "public",
+                                    "opt": "IS_TRUE",
+                                    "value": null
+                                }
+                            ],
+                            "override": "v2"
+                        },
+                        {
+                            "id": "vxhpP8GPVO385TPe0Zgfd:3",
+                            "name": "gate:vxhpP8GPVO385TPe0Zgfd:variant:3",
+                            "salt": "vxhpP8GPVO385TPe0Zgfd",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "COMMON",
+                                    "field_typ": "BOOLEAN",
+                                    "field": "public",
+                                    "opt": "IS_TRUE",
+                                    "value": null
+                                }
+                            ],
+                            "override": "v3"
+                        }
+                    ],
+                    "OVERRIDE": [],
+                    "TRAFFIC": [
+                        {
+                            "id": "holdout_test_holdout",
+                            "name": "holdout:test_holdout",
+                            "salt": "holdout_442",
+                            "rollout": 90,
+                            "override": "holdout"
+                        }
+                    ]
+                },
+                "variant_payloads": {
+                    "v1": {
+                        "color": "blue"
+                    },
+                    "v2": {
+                        "color": "red"
+                    },
+                    "v3": {
+                        "color": "orange"
+                    }
+                }
+            }
+        ]
+    },
+    "trace": "0:1025:3763272381"
+}

@@ -1,0 +1,79 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1763571461841,
+        "ab_specs": [
+            {
+                "id": 4,
+                "key": "FilterGate",
+                "name": "FilterGate",
+                "typ": 1,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "KXWGQNS2V9oBJAQeuBDlG",
+                "version": 3,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "gblmhPi2NBvsX6nVJxFX5",
+                            "name": "Rule 1",
+                            "salt": "gblmhPi2NBvsX6nVJxFX5",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "GATE",
+                                    "field_typ": "STRING",
+                                    "field": "EasyFilterGate",
+                                    "opt": "GATE_PASS",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    ],
+                    "OVERRIDE": null,
+                    "TRAFFIC": []
+                },
+                "variant_payloads": {}
+            },
+            {
+                "id": 5,
+                "key": "EasyFilterGate",
+                "name": "EasyFilterGate",
+                "typ": 1,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "1VNejNpKssdHIcMnAyiEv",
+                "version": 2,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "k0HYDlfmwilEC6e7f45z3",
+                            "name": "Rule 1",
+                            "salt": "k0HYDlfmwilEC6e7f45z3",
+                            "rollout": 0,
+                            "conditions": [
+                                {
+                                    "field_class": "PROPS",
+                                    "field_typ": "VERSION_STRING",
+                                    "field": "$app_version",
+                                    "opt": "VERSION_GT",
+                                    "value": "10.0"
+                                }
+                            ]
+                        }
+                    ],
+                    "OVERRIDE": null,
+                    "TRAFFIC": []
+                },
+                "variant_payloads": {}
+            }
+        ]
+    },
+    "trace": "0:1028:2909261764"
+}
