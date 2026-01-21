@@ -10,7 +10,7 @@ const (
 	PseAppInstall = "$app_install"
 	PseLaunch     = "$launch"
 	PseDaily      = "$daily"
-	PseSignUp     = "$SignUp" // User correlation event
+	PseIdentify   = "$Identify" // User correlation event
 	PseTick       = "$tick"
 	PseShow       = "$show"
 	PseClick      = "$click"

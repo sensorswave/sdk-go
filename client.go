@@ -116,7 +116,7 @@ func (c *client) Close() (err error) {
 }
 
 func (c *client) Identify(anonID string, loginID string) error {
-	e := NewEvent(anonID, loginID, PseSignUp)
+	e := NewEvent(anonID, loginID, PseIdentify)
 	return c.Track(e)
 }
 
