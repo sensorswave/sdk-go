@@ -199,7 +199,7 @@ type Logger interface {
 const (
 	// TODO Change Default Production Endpoint Before Release
 	defaultTrackPath  = "/in/track"
-	defaultABMetaPath = "/api/abol/all4eval"
+	defaultABMetaPath = "/ab/all4eval"
 )
 
 // OnTrackFailHandler is called when event tracking fails.

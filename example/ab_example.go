@@ -17,10 +17,10 @@ import (
 //		--project-secret=xxx \
 //		--project-id=123 \
 //		--track-endpoint=http://localhost:8106/in/track \
-//		--meta-endpoint=http://localhost:8107/api/ab/ff/all4eval \
-//		--dynamic-key=example_dynamic_config_key \
-//		--gate-key=example_gate_toggle_key \
-//		--experiment-key=example_experiment_key
+//	    --meta-endpoint=http://localhost:8107/ab/ff/all4eval \
+//	    --dynamic-key=example_dynamic_config_key \
+//	    --gate-key=example_gate_toggle_key \
+//	    --experiment-key=example_experiment_key
 const (
 	totalUsers              = 1000
 	appVersion              = "11.0"

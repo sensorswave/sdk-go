@@ -287,7 +287,7 @@ abCfg.WithLocalStorageForFastBoot(cachedStorage)
 | Method | Description | Default |
 |--------|-------------|---------|
 | `WithMetaEndpoint(url)` | A/B metadata server base URL | Empty (defaults to Config.Endpoint) |
-| `WithMetaURIPath(path)` | A/B metadata path | `/api/abol/all4eval` |
+| `WithMetaURIPath(path)` | A/B metadata path | `/ab/all4eval` |
 | `WithLoadMetaInterval(duration)` | Metadata polling interval | 10 seconds |
 | `WithLocalStorageForFastBoot(data)` | Cached metadata for fast startup | nil |
 | `WithStickyHandler(handler)` | Custom sticky session handler | nil |

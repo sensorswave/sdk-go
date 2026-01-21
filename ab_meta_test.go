@@ -197,7 +197,7 @@ func TestHTTPSignatureMetaLoaderUsesURIPathWhenEndpointHasNoPath(t *testing.T) {
 
 	loader := &HTTPSignatureMetaLoader{
 		Endpoint:      "http://example.com",
-		URIPath:       "/api/abol/all4eval",
+		URIPath:       "/ab/all4eval",
 		SourceToken:   "token",
 		ProjectSecret: "secret",
 		HTTPClient:    client,
@@ -211,7 +211,7 @@ func TestHTTPSignatureMetaLoaderUsesURIPathWhenEndpointHasNoPath(t *testing.T) {
 	transport.mu.Unlock()
 
 	require.NotNil(t, req)
-	require.Equal(t, "/api/abol/all4eval", req.URL.Path)
+	require.Equal(t, "/ab/all4eval", req.URL.Path)
 }
 
 func TestAbCoreLoadRemoteMetaHTTPError(t *testing.T) {

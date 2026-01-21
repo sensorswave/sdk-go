@@ -13,7 +13,7 @@ func TestSignatureGenerationAndVerification(t *testing.T) {
 	sourceToken := "test-project-token"
 	projectSecret := "test-secret-key"
 	method := "GET"
-	uri := "/api/abol/all4eval"
+	uri := "/ab/all4eval"
 	queryString := ""
 	body := []byte{}
 
@@ -55,7 +55,7 @@ func TestSignatureWithBody(t *testing.T) {
 	sourceToken := "project-abc"
 	projectSecret := "secret-xyz"
 	method := "POST"
-	uri := "/api/abol/data"
+	uri := "/ab/data"
 	queryString := "param1=value1&param2=value2"
 	body := []byte(`{"key": "value", "number": 123}`)
 
