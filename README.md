@@ -30,7 +30,7 @@ import (
 
 func main() {
     // 1. Create configuration
-    cfg := sensorswave.DefaultConfig("http://your-server:8106", "your-source-token")
+    cfg := sensorswave.DefaultConfig("your-endpoint", "your-source-token")
 
     // 2. (Optional) Enable A/B testing
     abCfg := sensorswave.DefaultABConfig("your-source-token", "your-project-secret")
