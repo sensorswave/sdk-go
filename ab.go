@@ -61,11 +61,9 @@ func (ffc *abCore) loadRemoteMeta() {
 		return
 	}
 
-	if len(abData.ABSpecs) == 0 {
-		return
-	}
 	s := storage{
 		UpdateTime: abData.UpdateTime,
+		ABEnv:      abData.ABEnv,
 		ABSpecs:    make(map[string]ABSpec),
 	}
 	for _, spec := range abData.ABSpecs {

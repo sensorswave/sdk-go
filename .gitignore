@@ -1,0 +1,47 @@
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.a
+*.o
+
+# Go coverage/benchmark outputs
+*.prof
+*.profraw
+*.cov
+coverage*.out
+
+# Go work dirs and temp files
+/bin/
+/dist/
+/tmp/
+/.cache/
+
+# Tooling and logs
+*.log
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# AI tools and agent outputs
+.codex/
+/codex/
+.aider*
+.cursor/
+.windsurf/
+.continue/
+.cline/
+.ai/
+.llm/
+.prompt/
+.chatgpt/
+.gpt/
+.openai/

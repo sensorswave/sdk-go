@@ -314,5 +314,9 @@ func TestAbCoreLoadRemoteMetaNoFeatures(t *testing.T) {
 	core := NewABCore(cfg, client)
 	core.loadRemoteMeta()
 
-	require.Nil(t, core.storage(), "storage should stay nil when server returns no feature flags")
+	storage := core.storage()
+	require.NotNil(t, storage, "storage should be initialized even when server returns no specs")
+	require.Equal(t, int64(11), storage.UpdateTime)
+	require.Equal(t, ABEnv{}, storage.ABEnv)
+	require.Empty(t, storage.ABSpecs)
 }
