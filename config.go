@@ -20,7 +20,6 @@ type Config struct {
 	httpTimeout        time.Duration // default 3s, for each request
 	httpRetry          int           // default 2, do 3 requests at most in total
 	onTrackFailHandler OnTrackFailHandler
-	// debug              bool
 
 	// AB configuration
 	ab *ABConfig // default nil, without Feature Flag

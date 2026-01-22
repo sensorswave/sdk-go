@@ -15,17 +15,6 @@ const (
 	PseShow       = "$show"
 	PseClick      = "$click"
 
-	// PseAbAssign = "$abAssign"
-	// PseAbExpose = "$abExpose"
-
-	// PseAdtLaunchAPP = "$adt_launch_app"
-	// PseAdtLaunchXCX = "$adt_launch_xcx"
-	// PseAdtLaunchWEB = "$adt_launch_web"
-
-	// PseAdtAttr = "$adt_attr" // server side
-	// PseAdtConc = "$adt_conv" // server side
-	// PseMc      = "$mc"      // server side
-
 	PseABImpress = "$ABImpress" // AB impression event
 
 	// Internal events from def package
@@ -50,13 +39,6 @@ const (
 
 // Predefined properties
 const (
-	// PspAdtEevent  = "$adt_event"   // v:string      -- for ad tracking result
-	// PspAdtApp     = "$adt_app"     // v:string      -- for ad tracking result
-	// PspAdtChannel = "$adt_channel" // v:string      -- for ad tracking result
-	// PspAdtAType   = "$adt_atype"   // v:string      -- for ad tracking result, attributed device ID type
-	// PspAdtCType   = "$adt_ctype"   // v:string      -- for ad tracking result, deep callback event type
-	// PspAdtInfo    = "$adt_info"    // v:string json -- for ad tracking proc & result
-	// PspAdtAdInfo  = "$adt_adinfo"  // v:string json -- for ad tracking proc & result
 	PspDeviceInfo = "$device_info" // v:string json -- for ad tracking proc & result
 	PspIP         = "$ip"          // v:string      -- set by sdk
 	PspUA         = "$ua"          // v:string      -- set by sdk

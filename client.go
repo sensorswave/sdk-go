@@ -96,9 +96,6 @@ type client struct {
 	wg      sync.WaitGroup
 	abCore  *abCore
 	sem     chan struct{}
-	// sourceToken string
-	// closed  bool
-	// mu      sync.RWMutex
 }
 
 func (c *client) Close() (err error) {
