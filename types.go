@@ -37,29 +37,17 @@ import (
 //				"register_time": "2025-06-09 10:11:20"
 //			}
 //		},
-//		"subject_properties": {
-//			"type": "role",
-//			"id": "admin123",
-//			"$set": {
-//				"$model": "iPhone5,2",
-//				"$os": "iOS"
-//			},
-//			"$set_once": {
-//				"register_time": "2025-06-09 10:11:20"
-//			}
-//		}
 //	}
 //
 // Event represents a single tracking event or user profile update.
 type Event struct {
-	AnonID            string              `json:"anon_id,omitempty"`            // Anonymous User ID
-	LoginID           string              `json:"login_id,omitempty"`           // Login User ID
-	Time              int64               `json:"time"`                         // Event timestamp in milliseconds
-	TraceID           string              `json:"trace_id"`                     // Event trace ID
-	Event             string              `json:"event"`                        // Event name
-	Properties        Properties          `json:"properties,omitempty"`         // Event properties
-	UserProperties    UserPropertyOpts    `json:"user_properties,omitempty"`    // User properties
-	SubjectProperties SubjectPropertyOpts `json:"subject_properties,omitempty"` // Subject properties
+	AnonID         string           `json:"anon_id,omitempty"`         // Anonymous User ID
+	LoginID        string           `json:"login_id,omitempty"`        // Login User ID
+	Time           int64            `json:"time"`                      // Event timestamp in milliseconds
+	TraceID        string           `json:"trace_id"`                  // Event trace ID
+	Event          string           `json:"event"`                     // Event name
+	Properties     Properties       `json:"properties,omitempty"`      // Event properties
+	UserProperties UserPropertyOpts `json:"user_properties,omitempty"` // User properties
 }
 
 func NewEvent(anonID string, loginID string, event string) Event {
@@ -89,11 +77,6 @@ func (e Event) WithProperties(p Properties) Event {
 
 func (e Event) WithUserPropertyOpts(upo UserPropertyOpts) Event {
 	e.UserProperties = upo
-	return e
-}
-
-func (e Event) WithSubjectPropertyOpts(spo SubjectPropertyOpts) Event {
-	e.SubjectProperties = spo
 	return e
 }
 
@@ -272,60 +255,6 @@ func (up UserPropertyOpts) Unset(key string) UserPropertyOpts {
 func (up UserPropertyOpts) Delete() UserPropertyOpts {
 	up["$delete"] = true
 	return up
-}
-
-// SubjectPropertyOpts defines options for subject/role profile properties.
-//
-// Example JSON snippet:
-//
-//	"subject_properties": {
-//		"type": "role",
-//		"id": "admin123",
-//		"$set": {
-//			"$model": "iPhone5,2",
-//			"$os": "iOS"
-//		},
-//		"$set_once": {
-//			"register_time": "2025-06-09 10:11:20"
-//		},
-//		"$delete": true
-//	}
-type SubjectPropertyOpts map[string]any
-
-func NewSubjectPropertyOpts(typ string, id string) SubjectPropertyOpts {
-	sp := make(SubjectPropertyOpts, 10)
-	sp["type"] = typ
-	sp["id"] = id
-	return sp
-}
-
-func (sp SubjectPropertyOpts) Set(key string, val any) SubjectPropertyOpts {
-	if sp["$set"] == nil {
-		sp["$set"] = make(map[string]any)
-	}
-	sp["$set"].(map[string]any)[key] = val
-	return sp
-}
-
-func (sp SubjectPropertyOpts) SetOnce(key string, val any) SubjectPropertyOpts {
-	if sp["$set_once"] == nil {
-		sp["$set_once"] = make(map[string]any)
-	}
-	sp["$set_once"].(map[string]any)[key] = val
-	return sp
-}
-
-func (sp SubjectPropertyOpts) Unset(key string) SubjectPropertyOpts {
-	if sp["$unset"] == nil {
-		sp["$unset"] = make(map[string]any)
-	}
-	sp["$unset"].(map[string]any)[key] = nil
-	return sp
-}
-
-func (sp SubjectPropertyOpts) Delete(key string) SubjectPropertyOpts {
-	sp["$delete"] = true
-	return sp
 }
 
 type EventMsg []Event
