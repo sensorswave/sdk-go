@@ -72,8 +72,8 @@
                                     "field": "login_id",
                                     "opt": "ANY_OF_CASE_SENSITIVE",
                                     "value": [
-                                        "123456",
-                                        "654321"
+                                        "login-id-example-2",
+                                        "login-id-example-3"
                                     ]
                                 }
                             ]
