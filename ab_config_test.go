@@ -17,7 +17,7 @@ func TestABCoreEvalConfigOverride(t *testing.T) {
 	require.NotNil(t, spec)
 
 	t.Run("override-user", func(t *testing.T) {
-		result, err := core.evalAB(ABUser{LoginID: "1000"}, spec, 0)
+		result, err := core.evalAB(ABUser{LoginID: "login-id-example-1"}, spec, 0)
 		require.NoError(t, err)
 		require.NotNil(t, result.VariantID)
 		require.Equal(t, "v1", *result.VariantID)

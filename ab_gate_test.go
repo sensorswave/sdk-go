@@ -487,8 +487,8 @@ func TestABCoreEvalGateOverrideID(t *testing.T) {
 		user ABUser
 		want bool
 	}{
-		{name: "first-override", user: ABUser{LoginID: "123456"}, want: true},
-		{name: "second-override", user: ABUser{LoginID: "654321"}, want: false},
+		{name: "first-override", user: ABUser{LoginID: "login-id-example-2"}, want: true},
+		{name: "second-override", user: ABUser{LoginID: "login-id-example-3"}, want: false},
 		{name: "no-override", user: ABUser{LoginID: "unknown"}, want: false},
 	}
 
@@ -513,8 +513,8 @@ func TestABCoreEvalGateOverrideCondition(t *testing.T) {
 		user ABUser
 		want bool
 	}{
-		{name: "first-override", user: ABUser{LoginID: "123456"}, want: true},
-		{name: "second-override", user: ABUser{LoginID: "654321"}, want: false},
+		{name: "first-override", user: ABUser{LoginID: "login-id-example-2"}, want: true},
+		{name: "second-override", user: ABUser{LoginID: "login-id-example-3"}, want: false},
 		{name: "prop-override", user: ABUser{LoginID: "other", Props: Properties{"$country": "China"}}, want: true},
 		{name: "no-override", user: ABUser{LoginID: "other", Props: Properties{"$country": "Japan"}}, want: false},
 	}
@@ -695,7 +695,7 @@ func TestABCoreEvalGateComplicate(t *testing.T) {
 		{
 			name: "rule3-pass",
 			// Fail R1, R2. Pass Rule 3 (LoginID)
-			user: ABUser{AnonID: "any", LoginID: "123456", Props: Properties{"$app_version": "9.0", "$browser_name": "Firefox"}},
+			user: ABUser{AnonID: "any", LoginID: "login-id-example-2", Props: Properties{"$app_version": "9.0", "$browser_name": "Firefox"}},
 			want: true,
 		},
 		{
