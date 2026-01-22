@@ -98,7 +98,7 @@ func TestAbCoreLoadRemoteMeta(t *testing.T) {
 
 func TestNewABCoreUsesCustomMetaURIPath(t *testing.T) {
 	cfg := DefaultConfig("http://example.com", "project-token")
-	abCfg := DefaultABConfig("project-token", "secret").
+	abCfg := DefaultABConfig("secret").
 		WithMetaEndpoint("http://example.com").
 		WithMetaURIPath("/custom/path")
 	cfg.WithABConfig(abCfg)
@@ -115,7 +115,7 @@ func TestNewABCoreUsesCustomMetaURIPath(t *testing.T) {
 
 func TestNewABCoreUsesConfigEndpointWhenMetaEndpointEmpty(t *testing.T) {
 	cfg := DefaultConfig("http://example.com", "project-token")
-	abCfg := DefaultABConfig("project-token", "secret").
+	abCfg := DefaultABConfig("secret").
 		WithMetaURIPath("/custom/path")
 	cfg.WithABConfig(abCfg)
 	cfg.logger = &noopLogger{}

@@ -116,6 +116,9 @@ type abCore struct {
 // NewABCore creates a new abCore instance with the provided configuration and HTTP client.
 func NewABCore(config *Config, h *httpClient) *abCore {
 	ffc := &abCore{cfg: config, h: h}
+	if ffc.cfg.ab.sourceToken == "" {
+		ffc.cfg.ab.sourceToken = ffc.cfg.sourceToken
+	}
 
 	// Initialize default meta loader if not provided
 	if ffc.cfg.ab.metaLoader == nil {

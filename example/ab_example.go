@@ -17,7 +17,7 @@ import (
 //		--project-secret=xxx \
 //		--project-id=123 \
 //		--track-endpoint=http://localhost:8106/in/track \
-//	    --meta-endpoint=http://localhost:8107/ab/ff/all4eval \
+//	    --meta-endpoint=http://localhost:8107 \
 //	    --dynamic-key=example_dynamic_config_key \
 //	    --gate-key=example_gate_toggle_key \
 //	    --experiment-key=example_experiment_key
@@ -57,10 +57,10 @@ func parseArgs() (exampleArgs, error) {
 	flag.StringVar(&args.sourceToken, "source-token", "", "project token used by the SDK client")
 	flag.StringVar(&args.projectSecret, "project-secret", "", "project secret used by the SDK client")
 	flag.StringVar(&args.endpoint, "endpoint", "http://localhost:8106", "track endpoint base url")
-	flag.StringVar(&args.metaEndpoint, "meta-endpoint", "http://localhost:8110", "FF meta endpoint base url")
-	flag.StringVar(&args.dynamicConfigKey, "dynamic-key", defaultDynamicConfigKey, "feature flag key for dynamic config example")
-	flag.StringVar(&args.gateKey, "gate-key", defaultGateKey, "feature flag key for gate example")
-	flag.StringVar(&args.experimentKey, "experiment-key", defaultExperimentKey, "feature flag key for experiment example")
+	flag.StringVar(&args.metaEndpoint, "meta-endpoint", "http://localhost:8110", "meta endpoint base url")
+	flag.StringVar(&args.dynamicConfigKey, "dynamic-key", defaultDynamicConfigKey, "key for dynamic config example")
+	flag.StringVar(&args.gateKey, "gate-key", defaultGateKey, "key for gate example")
+	flag.StringVar(&args.experimentKey, "experiment-key", defaultExperimentKey, "key for experiment example")
 	flag.Parse()
 
 	if args.sourceToken == "" {
@@ -79,7 +79,7 @@ func parseArgs() (exampleArgs, error) {
 func runExample(args exampleArgs) error {
 	cfg := sensorswave.DefaultConfig(args.endpoint, args.sourceToken)
 
-	abCfg := sensorswave.DefaultABConfig(args.sourceToken, args.projectSecret)
+	abCfg := sensorswave.DefaultABConfig(args.projectSecret)
 	abCfg.WithMetaEndpoint(args.metaEndpoint)
 	abCfg.WithLoadMetaInterval(10 * time.Second)
 	cfg.WithABConfig(abCfg)

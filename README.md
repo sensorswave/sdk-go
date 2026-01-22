@@ -1,12 +1,12 @@
 # SensorsWave SDK
 
-A lightweight Go SDK for event tracking and A/B testing with feature flag evaluation.
+A lightweight Go SDK for event tracking and A/B testing.
 
 ## Features
 
 - **Event Tracking**: Track user events with custom properties
 - **User Profiles**: Set, increment, append, and manage user profile properties
-- **A/B Testing**: Evaluate feature flags, gates, experiments, and dynamic configs
+- **A/B Testing**: Evaluate gates, experiments, and dynamic configs
 - **Automatic Exposure Logging**: Automatically track A/B test impressions
 - **Fast Boot**: Cache and restore A/B metadata for faster startup
 - **Sticky Sessions**: Persist traffic assignment for consistent user experiences
@@ -33,7 +33,7 @@ func main() {
     cfg := sensorswave.DefaultConfig("your-endpoint", "your-source-token")
 
     // 2. (Optional) Enable A/B testing
-    abCfg := sensorswave.DefaultABConfig("your-source-token", "your-project-secret")
+    abCfg := sensorswave.DefaultABConfig("your-project-secret")
     cfg.WithABConfig(abCfg)
 
     // 3. Create client
@@ -169,7 +169,7 @@ err := client.ProfileDelete("anon-123", "user-456")
 
 ### A/B Testing
 
-#### Evaluate a Single Feature Flag
+#### Evaluate a Single Experiment or Gate
 
 ```go
 user := sensorswave.ABUser{
@@ -181,7 +181,7 @@ user := sensorswave.ABUser{
     },
 }
 
-result, err := client.ABEval(user, "my_feature_flag")
+result, err := client.ABEval(user, "my_experiment")
 if err != nil {
     log.Printf("AB eval error: %v", err)
     return
@@ -239,7 +239,7 @@ if result.VariantID != nil {
 }
 ```
 
-#### Evaluate All Feature Flags
+#### Evaluate All Experiments and Gates
 
 ```go
 results, err := client.ABEvalAll(user)
@@ -248,7 +248,7 @@ if err != nil {
 }
 
 for _, r := range results {
-    fmt.Printf("Flag: %s, Variant: %v\n", r.Key, r.VariantID)
+    fmt.Printf("Key: %s, Variant: %v\n", r.Key, r.VariantID)
 }
 ```
 

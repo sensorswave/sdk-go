@@ -107,7 +107,7 @@ func (cfg *Config) WithABConfig(abconfig *ABConfig) *Config {
 	return cfg
 }
 
-// ABConfig defines the configuration for A/B testing and feature flags.
+// ABConfig defines the configuration for A/B testing.
 type ABConfig struct {
 	sourceToken             string
 	projectSecret           string
@@ -120,9 +120,8 @@ type ABConfig struct {
 }
 
 // DefaultABConfig creates a new ABConfig with default values.
-func DefaultABConfig(sourceToken, projectSecret string) *ABConfig {
+func DefaultABConfig(projectSecret string) *ABConfig {
 	abconfig := &ABConfig{
-		sourceToken:      sourceToken,
 		projectSecret:    projectSecret,
 		metaEndpoint:     "",
 		metaURIPath:      defaultABMetaPath,
