@@ -7,7 +7,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/sensorswave/sdk-go"
+	sensorswave "github.com/sensorswave/sdk-go"
 )
 
 // Usage:
@@ -16,8 +16,8 @@ import (
 //		--source-token=xxx \
 //		--project-secret=xxx \
 //		--project-id=123 \
-//		--track-endpoint=http://localhost:8106/in/track \
-//	    --meta-endpoint=http://localhost:8107 \
+//		--track-endpoint=https://example.sensorswave.com/in/track \
+//	    --meta-endpoint=https://example.sensorswave.com/ab/all4eval \
 //	    --dynamic-key=example_dynamic_config_key \
 //	    --gate-key=example_gate_toggle_key \
 //	    --experiment-key=example_experiment_key
@@ -32,7 +32,6 @@ const (
 type exampleArgs struct {
 	sourceToken      string
 	projectSecret    string
-	projectID        int64
 	endpoint         string
 	metaEndpoint     string
 	dynamicConfigKey string
@@ -54,10 +53,14 @@ func main() {
 func parseArgs() (exampleArgs, error) {
 	var args exampleArgs
 
-	flag.StringVar(&args.sourceToken, "source-token", "", "project token used by the SDK client")
-	flag.StringVar(&args.projectSecret, "project-secret", "", "project secret used by the SDK client")
-	flag.StringVar(&args.endpoint, "endpoint", "http://localhost:8106", "track endpoint base url")
-	flag.StringVar(&args.metaEndpoint, "meta-endpoint", "http://localhost:8110", "meta endpoint base url")
+	//please replace with your own source token
+	flag.StringVar(&args.sourceToken, "source-token", "", "project token used by SDK client")
+	//please replace with your own endpoint
+	flag.StringVar(&args.endpoint, "endpoint", "http://example.sensorswave.com", "track endpoint base url")
+
+	//(Optional) A/B testing config
+	flag.StringVar(&args.projectSecret, "project-secret", "", "project secret used by SDK client")
+	flag.StringVar(&args.metaEndpoint, "meta-endpoint", "http://example.sensorswave.com", "meta endpoint base url")
 	flag.StringVar(&args.dynamicConfigKey, "dynamic-key", defaultDynamicConfigKey, "key for dynamic config example")
 	flag.StringVar(&args.gateKey, "gate-key", defaultGateKey, "key for gate example")
 	flag.StringVar(&args.experimentKey, "experiment-key", defaultExperimentKey, "key for experiment example")
@@ -77,14 +80,15 @@ func parseArgs() (exampleArgs, error) {
 // $app_version property, and runs three FF examples: dynamic config, gate,
 // and experiment.
 func runExample(args exampleArgs) error {
-	cfg := sensorswave.DefaultConfig(args.endpoint, args.sourceToken)
-
-	abCfg := sensorswave.DefaultABConfig(args.projectSecret)
-	abCfg.WithMetaEndpoint(args.metaEndpoint)
-	abCfg.WithLoadMetaInterval(10 * time.Second)
-	cfg.WithABConfig(abCfg)
-
-	client, err := sensorswave.New(cfg)
+	client, err := sensorswave.NewWithConfig(
+		sensorswave.Endpoint(args.endpoint),
+		sensorswave.SourceToken(args.sourceToken),
+		sensorswave.Config{
+			AB: &sensorswave.ABConfig{
+				ProjectSecret: args.projectSecret,
+			},
+		},
+	)
 	if err != nil {
 		return fmt.Errorf("create sensorswave client: %w", err)
 	}
@@ -110,10 +114,10 @@ func runExample(args exampleArgs) error {
 	return nil
 }
 
-func runDynamicConfigExample(client sensorswave.Client, users []sensorswave.ABUser, featureKey string) error {
+func runDynamicConfigExample(client sensorswave.Client, users []sensorswave.User, featureKey string) error {
 	distribution := make(map[string]int, len(users))
 	for _, user := range users {
-		result, err := client.ABEval(user, featureKey)
+		result, err := client.ABEvaluate(user, featureKey)
 		if err != nil {
 			return fmt.Errorf("dynamic config eval failed for user %s: %w", user.LoginID, err)
 		}
@@ -128,10 +132,10 @@ func runDynamicConfigExample(client sensorswave.Client, users []sensorswave.ABUs
 	return nil
 }
 
-func runGateExample(client sensorswave.Client, users []sensorswave.ABUser, featureKey string) error {
+func runGateExample(client sensorswave.Client, users []sensorswave.User, featureKey string) error {
 	var pass, fail int
 	for _, user := range users {
-		result, err := client.ABEval(user, featureKey)
+		result, err := client.ABEvaluate(user, featureKey)
 		if err != nil {
 			return fmt.Errorf("gate eval failed for user %s: %w", user.LoginID, err)
 		}
@@ -139,6 +143,7 @@ func runGateExample(client sensorswave.Client, users []sensorswave.ABUser, featu
 		if result.VariantID == nil {
 			continue
 		}
+
 		if result.CheckGate() {
 			pass++
 		} else {
@@ -150,13 +155,13 @@ func runGateExample(client sensorswave.Client, users []sensorswave.ABUser, featu
 	return nil
 }
 
-func runExperimentExample(client sensorswave.Client, users []sensorswave.ABUser, featureKey string) error {
+func runExperimentExample(client sensorswave.Client, users []sensorswave.User, featureKey string) error {
 	variantCounts := make(map[string]int)
 	labelCounts := make(map[string]int)
 	var enabledTrue int
 
 	for _, user := range users {
-		result, err := client.ABEval(user, featureKey)
+		result, err := client.ABEvaluate(user, featureKey)
 		if err != nil {
 			return fmt.Errorf("experiment eval failed for user %s: %w", user.LoginID, err)
 		}
@@ -183,23 +188,20 @@ func runExperimentExample(client sensorswave.Client, users []sensorswave.ABUser,
 		fmt.Printf("    -> payload label=%s, hits=%d\n", label, count)
 	}
 	fmt.Printf("  exp payload enabled=true for %d users (false for %d)\n", enabledTrue, len(users)-enabledTrue)
-
 	return nil
 }
 
-func buildUsers(total int, appVersion string) []sensorswave.ABUser {
+func buildUsers(total int, appVersion string) []sensorswave.User {
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	const loginIDLength = 12
 
-	users := make([]sensorswave.ABUser, 0, total)
+	users := make([]sensorswave.User, 0, total)
 	for i := 0; i < total; i++ {
-		users = append(users, sensorswave.ABUser{
+		user := sensorswave.User{
 			AnonID:  fmt.Sprintf("anon-%03d-%s", i, randomID(rnd, loginIDLength)),
 			LoginID: fmt.Sprintf("user-%s", randomID(rnd, loginIDLength)),
-			Props: sensorswave.Properties{
-				sensorswave.PspAppVer: appVersion,
-			},
-		})
+		}.WithABProperty(sensorswave.PspAppVer, appVersion)
+		users = append(users, user)
 	}
 	return users
 }

@@ -34,13 +34,13 @@ var (
 
 // loadRemoteMeta fetches the feature flag metadata from the remote server.
 func (ffc *abCore) loadRemoteMeta() {
-	if ffc.cfg.ab.metaLoader == nil {
+	if ffc.cfg.AB.MetaLoader == nil {
 		return
 	}
 
-	abData, err := ffc.cfg.ab.metaLoader.LoadMeta()
+	abData, err := ffc.cfg.AB.MetaLoader.LoadMeta()
 	if err != nil {
-		ffc.cfg.logger.Errorf("[%s] ff core loadRemoteMeta failed: %v", ffc.cfg.ab.sourceToken, err)
+		ffc.cfg.Logger.Errorf("[%s] ab core loadRemoteMeta failed: %v", ffc.sourceToken, err)
 		return
 	}
 
@@ -57,7 +57,7 @@ func (ffc *abCore) loadRemoteMeta() {
 	}
 
 	if !needupdate {
-		ffc.cfg.logger.Debugf("[%s] ff core loadRemoteMeta from server without new info", ffc.cfg.ab.sourceToken)
+		ffc.cfg.Logger.Debugf("[%s] ab core loadRemoteMeta from server without new info", ffc.sourceToken)
 		return
 	}
 
@@ -72,7 +72,7 @@ func (ffc *abCore) loadRemoteMeta() {
 			if len(payload) > 0 {
 				value := make(map[string]any)
 				if err = json.Unmarshal(payload, &value); err != nil {
-					ffc.cfg.logger.Errorf("[%s] ff core json.Unmarshal VariantPayload error: %v, payload:%s", ffc.cfg.ab.sourceToken, err, payload)
+					ffc.cfg.Logger.Errorf("[%s] ab core json.Unmarshal VariantPayload error: %v, payload:%s", ffc.sourceToken, err, payload)
 					return
 				}
 				if spec.VariantValues == nil {
@@ -86,7 +86,7 @@ func (ffc *abCore) loadRemoteMeta() {
 	}
 
 	ffc.setStorage(&s)
-	ffc.cfg.logger.Debugf("[%s] ab core ffLoadRemoteMeta from server: [%v]", ffc.cfg.ab.sourceToken, s)
+	ffc.cfg.Logger.Debugf("[%s] ab core ffLoadRemoteMeta from server: [%v]", ffc.sourceToken, s)
 }
 
 // ABEnv contains environment-level configurations for feature flags.
@@ -105,49 +105,63 @@ const maxRecursionDepth = 10
 
 // abCore is the heart of the feature flag evaluation engine.
 type abCore struct {
-	cfg        *Config
-	storagePtr unsafe.Pointer // unsafe.Pointer(*storage)
-	wg         sync.WaitGroup
-	ctx        context.Context
-	cancel     context.CancelFunc
-	h          *httpClient
+	sourceToken   string
+	projectSecret string
+	cfg           *Config
+	storagePtr    unsafe.Pointer // unsafe.Pointer(*storage)
+	wg            sync.WaitGroup
+	ctx           context.Context
+	cancel        context.CancelFunc
+	h             *httpClient
 }
 
 // NewABCore creates a new abCore instance with the provided configuration and HTTP client.
-func NewABCore(config *Config, h *httpClient) *abCore {
-	ffc := &abCore{cfg: config, h: h}
-	if ffc.cfg.ab.sourceToken == "" {
-		ffc.cfg.ab.sourceToken = ffc.cfg.sourceToken
+func NewABCore(endpoint, sourceToken string, config *Config, h *httpClient) (*abCore, error) {
+	ffc := &abCore{
+		sourceToken: sourceToken,
+		cfg:         config,
+		h:           h,
 	}
 
+	ffc.projectSecret = ffc.cfg.AB.ProjectSecret
 	// Initialize default meta loader if not provided
-	if ffc.cfg.ab.metaLoader == nil {
-		endpoint := ffc.cfg.ab.metaEndpoint
-		metaPath := ffc.cfg.ab.metaURIPath
+	if ffc.cfg.AB.MetaLoader == nil {
+		metaEndpoint := ffc.cfg.AB.MetaEndpoint
+		if metaEndpoint == "" {
+			metaEndpoint = endpoint
+		}
+		// Ensure meta endpoint is normalized if it came from ffc.endpoint
+		if normalized, err := normalizeEndpoint(metaEndpoint); err == nil {
+			metaEndpoint = normalized
+		}
+
+		metaPath := ffc.cfg.AB.MetaURIPath
 		if metaPath == "" {
 			metaPath = defaultABMetaPath
 		}
-		if endpoint == "" {
-			endpoint = ffc.cfg.endpoint
+
+		if ffc.cfg.AB.ProjectSecret == "" {
+			return nil, fmt.Errorf("project secret is required when MetaLoader is nil")
 		}
-		ffc.cfg.ab.metaLoader = &HTTPSignatureMetaLoader{
-			Endpoint:      endpoint,
+		ffc.cfg.AB.MetaLoader = &HTTPSignatureMetaLoader{
+			Endpoint:      metaEndpoint,
 			URIPath:       metaPath,
-			SourceToken:   ffc.cfg.ab.sourceToken,
-			ProjectSecret: ffc.cfg.ab.projectSecret,
+			SourceToken:   ffc.sourceToken,
+			ProjectSecret: ffc.cfg.AB.ProjectSecret,
 			HTTPClient:    h,
 		}
+		ffc.cfg.Logger.Infof("ab core initialized with meta loader: [%v]", ffc.cfg.AB.MetaLoader)
 	}
 
 	ffc.ctx, ffc.cancel = context.WithCancel(context.Background())
-	if len(ffc.cfg.ab.localStorageForFastBoot) > 0 {
+	if len(ffc.cfg.AB.LocalStorageForFastBoot) > 0 {
 		s := storage{}
-		if json.Unmarshal(ffc.cfg.ab.localStorageForFastBoot, &s) == nil {
+		if json.Unmarshal(ffc.cfg.AB.LocalStorageForFastBoot, &s) == nil {
 			ffc.setStorage(&s)
 		}
 	}
 
-	return ffc
+	return ffc, nil
 }
 
 // start initiates the meta data loading loop.
@@ -163,14 +177,14 @@ func (ffc *abCore) start() {
 func (ffc *abCore) loadRemoteMetaLoop() {
 	defer ffc.wg.Done()
 
-	tick := time.NewTicker(ffc.cfg.ab.loadMetaInterval)
+	tick := time.NewTicker(ffc.cfg.AB.MetaLoadInterval)
 	defer tick.Stop()
 	for {
 		select {
 		case <-tick.C:
 			ffc.loadRemoteMeta()
 		case <-ffc.ctx.Done():
-			ffc.cfg.logger.Debugf("ff load meta loop closed")
+			ffc.cfg.Logger.Debugf("ff load meta loop closed")
 			return
 		}
 	}
@@ -204,7 +218,7 @@ func (ffc *abCore) getABSpec(featureKey string) *ABSpec {
 }
 
 // eval evaluates a specific feature flag for a user.
-func (ffc *abCore) eval(user ABUser, featureKey string) (result ABResult, err error) {
+func (ffc *abCore) eval(user User, featureKey string) (result ABResult, err error) {
 	spec := ffc.getABSpec(featureKey)
 	if spec == nil {
 		return ABResult{}, nil
@@ -213,7 +227,7 @@ func (ffc *abCore) eval(user ABUser, featureKey string) (result ABResult, err er
 }
 
 // evalAll evaluates all active feature flags for a user.
-func (ffc *abCore) evalAll(user ABUser) (results []ABResult, err error) {
+func (ffc *abCore) evalAll(user User) (results []ABResult, err error) {
 	results = make([]ABResult, 0, 10)
 	storage := ffc.storage()
 
@@ -234,7 +248,7 @@ func (ffc *abCore) evalAll(user ABUser) (results []ABResult, err error) {
 }
 
 // evalFF is the core evaluation logic for a single feature flag.
-func (ffc *abCore) evalAB(user ABUser, spec *ABSpec, index int) (result ABResult, err error) {
+func (ffc *abCore) evalAB(user User, spec *ABSpec, index int) (result ABResult, err error) {
 	if index >= maxRecursionDepth { // Prevent infinite recursion
 		return
 	}
@@ -250,17 +264,17 @@ func (ffc *abCore) evalAB(user ABUser, spec *ABSpec, index int) (result ABResult
 	case strings.EqualFold(spec.SubjectID, "login_id"):
 		evalID = user.LoginID
 	default:
-		evalID = fmt.Sprintf("%s", user.Props[spec.SubjectID])
+		evalID = fmt.Sprintf("%s", user.ABUserProperties[spec.SubjectID])
 	}
 	if len(evalID) == 0 {
 		return // empty evalID
 	}
 
 	if spec.Sticky {
-		if ffc.cfg.ab.stickyHandler != nil {
+		if ffc.cfg.AB.StickyHandler != nil {
 			stickyDataKey := fmt.Sprintf("%d-%s", spec.ID, evalID)
 			var cacheResult string
-			cacheResult, err = ffc.cfg.ab.stickyHandler.GetStickyResult(stickyDataKey)
+			cacheResult, err = ffc.cfg.AB.StickyHandler.GetStickyResult(stickyDataKey)
 			if err == nil {
 				if len(cacheResult) > 0 { // cache hit
 					cache := abResultCache{}
@@ -286,7 +300,7 @@ func (ffc *abCore) evalAB(user ABUser, spec *ABSpec, index int) (result ABResult
 					cache := abResultCache{}
 					cache.VariantID = result.VariantID
 					b, _ := json.Marshal(cache)
-					err = ffc.cfg.ab.stickyHandler.SetStickyResult(stickyDataKey, string(b))
+					err = ffc.cfg.AB.StickyHandler.SetStickyResult(stickyDataKey, string(b))
 				}
 			}()
 		} else {
@@ -405,7 +419,7 @@ func (ffc *abCore) evalAB(user ABUser, spec *ABSpec, index int) (result ABResult
 }
 
 // evalRule evaluates all conditions within a rule and applies rollout logic.
-func (ffc *abCore) evalRule(user *ABUser, rule *Rule, evalID string, index int) (pass bool, err error) {
+func (ffc *abCore) evalRule(user *User, rule *Rule, evalID string, index int) (pass bool, err error) {
 	pass = true
 	if rule.Rollout == 0.0 {
 		return false, nil
@@ -431,7 +445,7 @@ func (ffc *abCore) evalRule(user *ABUser, rule *Rule, evalID string, index int) 
 }
 
 // evalCond evaluates a single condition.
-func (ffc *abCore) evalCond(user *ABUser, cond *Condition, evalID string, index int) (pass bool, err error) {
+func (ffc *abCore) evalCond(user *User, cond *Condition, evalID string, index int) (pass bool, err error) {
 	// Preprocess left value
 	var left, right any
 	ok := false
@@ -451,7 +465,7 @@ func (ffc *abCore) evalCond(user *ABUser, cond *Condition, evalID string, index 
 			left = nil // user attribute missing, set left to nil for matching
 		}
 	case strings.EqualFold(cond.FieldClass, "props"):
-		if left, ok = user.Props[cond.Field]; ok {
+		if left, ok = user.ABUserProperties[cond.Field]; ok {
 		} else {
 			left = nil // props missing, set left to nil
 		}

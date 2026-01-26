@@ -4,9 +4,9 @@ import "encoding/json"
 
 // ABUser identifies a user for A/B testing evaluation.
 type ABUser struct {
-	AnonID  string     `json:"anon_id,omitempty"`  // AnonID is the anonymous or device ID
-	LoginID string     `json:"login_id,omitempty"` // LoginID is the unique login identifier
-	Props   Properties `json:"props,omitempty"`    // Props are additional user properties used for targeting and splitting
+	AnonID     string     `json:"anon_id,omitempty"`  // AnonID is the anonymous or device ID
+	LoginID    string     `json:"login_id,omitempty"` // LoginID is the unique login identifier
+	Properties Properties `json:"props,omitempty"`    // Props are additional user properties used for targeting and splitting
 }
 
 // ABResult represents an AB test evaluation result.

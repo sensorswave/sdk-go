@@ -5,9 +5,22 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 )
+
+// testConfig creates a Config for testing purposes.
+func testConfig() *Config {
+	return &Config{
+		TrackURIPath:    defaultTrackPath,
+		Logger:          &defaultLogger{},
+		FlushInterval:   10 * time.Second,
+		HTTPConcurrency: 10,
+		HTTPTimeout:     3 * time.Second,
+		HTTPRetry:       2,
+	}
+}
 
 type ABSpecPayload struct {
 	Data struct {
@@ -67,11 +80,14 @@ func (n *noopLogger) Errorf(string, ...any) {}
 func newTestAbCoreWithStorage(t *testing.T, store *storage) *abCore {
 	t.Helper()
 
-	cfg := DefaultConfig("http://example.com", "test-token")
-	cfg.WithABConfig(&ABConfig{})
-	cfg.logger = &noopLogger{}
+	endpoint := "http://example.com"
+	token := "test-token"
+	cfg := testConfig()
+	cfg.AB = &ABConfig{ProjectSecret: "test-secret"}
+	cfg.Logger = &noopLogger{}
 
-	core := NewABCore(cfg, nil)
+	core, err := NewABCore(endpoint, token, cfg, nil)
+	require.NoError(t, err)
 	core.setStorage(store)
 
 	return core
@@ -80,11 +96,14 @@ func newTestAbCoreWithStorage(t *testing.T, store *storage) *abCore {
 func newTestAbCoreWithStorageAndSticky(t *testing.T, store *storage, stickyHandler IABStickyHandler) *abCore {
 	t.Helper()
 
-	cfg := DefaultConfig("http://example.com", "test-token")
-	cfg.WithABConfig(&ABConfig{stickyHandler: stickyHandler})
-	cfg.logger = &noopLogger{}
+	endpoint := "http://example.com"
+	token := "test-token"
+	cfg := testConfig()
+	cfg.AB = &ABConfig{ProjectSecret: "test-secret", StickyHandler: stickyHandler}
+	cfg.Logger = &noopLogger{}
 
-	core := NewABCore(cfg, nil)
+	core, err := NewABCore(endpoint, token, cfg, nil)
+	require.NoError(t, err)
 	core.setStorage(store)
 
 	return core

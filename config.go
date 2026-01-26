@@ -10,173 +10,58 @@ import (
 
 // Config defines the configuration for the SDK client.
 type Config struct {
-	sourceToken        string
-	endpoint           string // base url, without path
-	trackURIPath       string
-	transport          *http.Transport
-	logger             Logger        // default: defaultLogger
-	flushInterval      time.Duration // default 10s
-	httpConcurrency    int           // default 10, max concurrent requests
-	httpTimeout        time.Duration // default 3s, for each request
-	httpRetry          int           // default 2, do 3 requests at most in total
-	onTrackFailHandler OnTrackFailHandler
+	// TrackURIPath is the URI path for event tracking. Default: "/in/track"
+	TrackURIPath string
 
-	// AB configuration
-	ab *ABConfig // default nil, without Feature Flag
+	// Transport is a custom HTTP transport. If nil, the default transport is used.
+	Transport *http.Transport
+
+	// Logger is a custom logger. If nil, the default logger is used.
+	Logger Logger
+
+	// FlushInterval is the interval for flushing buffered events. Default: 10s
+	FlushInterval time.Duration
+
+	// HTTPConcurrency is the maximum number of concurrent HTTP requests. Default: 10
+	HTTPConcurrency int
+
+	// HTTPTimeout is the timeout for each HTTP request. Default: 3s
+	HTTPTimeout time.Duration
+
+	// HTTPRetry is the number of retry attempts for failed HTTP requests. Default: 2
+	HTTPRetry int
+
+	// OnTrackFailHandler is called when event tracking fails.
+	OnTrackFailHandler OnTrackFailHandler
+
+	// AB is the A/B testing configuration. If nil, A/B testing is disabled.
+	AB *ABConfig
 }
 
-// DefaultConfig creates a new Config with default values and the provided source token.
-func DefaultConfig(endpoint string, sourceToken string) *Config {
-	cfg := &Config{
-		sourceToken:     sourceToken,
-		endpoint:        "",
-		trackURIPath:    defaultTrackPath,
-		logger:          &defaultLogger{},
-		flushInterval:   10 * time.Second,
-		httpConcurrency: 10,
-		httpTimeout:     3 * time.Second,
-		httpRetry:       2,
-	}
-
-	cfg.WithEndpoint(endpoint)
-	return cfg
-}
-
-// WithEndpoint sets the base endpoint (host).
-// It validates that the scheme is http or https, and removes any path.
-func (cfg *Config) WithEndpoint(endpoint string) *Config {
-	normalized, err := normalizeEndpoint(endpoint)
-	if err != nil {
-		fmt.Printf("sensorswave: invalid endpoint '%s': %v. Using as is.\n", endpoint, err)
-		cfg.endpoint = endpoint
-	} else {
-		cfg.endpoint = normalized
-	}
-	return cfg
-}
-
-func (cfg *Config) WithTrackURIPath(trackURIPath string) *Config {
-	normalized, err := normalizeURIPath(trackURIPath, defaultTrackPath)
-	if err != nil {
-		fmt.Printf("sensorswave: invalid track path '%s': %v. Using default.\n", trackURIPath, err)
-	}
-	cfg.trackURIPath = normalized
-	return cfg
-}
-
-// WithTransport sets a custom HTTP transport.
-func (cfg *Config) WithTransport(transport *http.Transport) *Config {
-	cfg.transport = transport
-	return cfg
-}
-
-// WithLogger sets a custom logger.
-func (cfg *Config) WithLogger(logger Logger) *Config {
-	cfg.logger = logger
-	return cfg
-}
-
-// WithFlushInterval sets the interval for flushing events.
-func (cfg *Config) WithFlushInterval(flushInterval time.Duration) *Config {
-	cfg.flushInterval = flushInterval
-	return cfg
-}
-
-// WithHTTPConcurrency sets the maximum number of concurrent HTTP requests.
-func (cfg *Config) WithHTTPConcurrency(httpConcurrency int) *Config {
-	cfg.httpConcurrency = httpConcurrency
-	return cfg
-}
-
-// WithHTTPTimeout sets the timeout for each HTTP request.
-func (cfg *Config) WithHTTPTimeout(httpTimeout time.Duration) *Config {
-	cfg.httpTimeout = httpTimeout
-	return cfg
-}
-
-// WithHTTPRetry sets the number of retries for HTTP requests.
-func (cfg *Config) WithHTTPRetry(httpRetry int) *Config {
-	cfg.httpRetry = httpRetry
-	return cfg
-}
-
-// WithABConfig sets the A/B testing configuration.
-func (cfg *Config) WithABConfig(abconfig *ABConfig) *Config {
-	cfg.ab = abconfig
-	return cfg
-}
-
-// ABConfig defines the configuration for A/B testing.
+// ABConfig defines the configuration for A/B testing functionality.
 type ABConfig struct {
-	sourceToken             string
-	projectSecret           string
-	metaLoader              IABMetaLoader // Metadata loader
-	metaEndpoint            string        // default empty, use Config.endpoint + metaURIPath
-	metaURIPath             string        // URI path for signature
-	loadMetaInterval        time.Duration
-	localStorageForFastBoot []byte // json storage
-	stickyHandler           IABStickyHandler
-}
+	// ProjectSecret is the secret key for A/B testing authentication.
+	// Required when using the default HTTPSignatureMetaLoader.
+	ProjectSecret string
 
-// DefaultABConfig creates a new ABConfig with default values.
-func DefaultABConfig(projectSecret string) *ABConfig {
-	abconfig := &ABConfig{
-		projectSecret:    projectSecret,
-		metaEndpoint:     "",
-		metaURIPath:      defaultABMetaPath,
-		loadMetaInterval: time.Second * 10,
-	}
-	return abconfig
-}
+	// MetaEndpoint is the endpoint for fetching A/B test metadata.
+	// If empty, uses the main endpoint.
+	MetaEndpoint string
 
-// WithMetaEndpoint sets the A/B metadata server endpoint.
-// It validates that the scheme is http or https, and removes any path.
-func (abcfg *ABConfig) WithMetaEndpoint(metaEndpoint string) *ABConfig {
-	normalized, err := normalizeEndpoint(metaEndpoint)
-	if err != nil {
-		fmt.Printf("sensorswave: invalid meta endpoint '%s': %v. Using as is.\n", metaEndpoint, err)
-		abcfg.metaEndpoint = metaEndpoint
-	} else {
-		abcfg.metaEndpoint = normalized
-	}
-	// Also attempt to extract path if the user mistakenly provided one, before normalization?
-	// The user said "if filled path need to remove".
-	// normalizeEndpoint does exactly that.
-	return abcfg
-}
+	// MetaURIPath is the URI path for A/B test metadata. Default: "/ab/all4eval"
+	MetaURIPath string
 
-// WithMetaURIPath sets the URI path specifically for signature verification.
-func (abcfg *ABConfig) WithMetaURIPath(metaURIPath string) *ABConfig {
-	normalized, err := normalizeURIPath(metaURIPath, defaultABMetaPath)
-	if err != nil {
-		fmt.Printf("sensorswave: invalid meta path '%s': %v. Using default.\n", metaURIPath, err)
-	}
-	abcfg.metaURIPath = normalized
-	return abcfg
-}
+	// MetaLoadInterval is the interval for refreshing A/B test metadata. Default: 10s
+	MetaLoadInterval time.Duration
 
-// WithMetaLoader sets a custom metadata loader.
-func (abcfg *ABConfig) WithMetaLoader(loader IABMetaLoader) *ABConfig {
-	abcfg.metaLoader = loader
-	return abcfg
-}
+	// StickyHandler is a custom handler for sticky session persistence.
+	StickyHandler IABStickyHandler
 
-// WithLoadMetaInterval sets the interval for polling remote metadata.
-func (abcfg *ABConfig) WithLoadMetaInterval(loadMetaInterval time.Duration) *ABConfig {
-	abcfg.loadMetaInterval = loadMetaInterval
-	return abcfg
-}
+	// MetaLoader is a custom metadata loader. If set, MetaEndpoint is ignored.
+	MetaLoader IABMetaLoader
 
-// WithLocalStorageForFastBoot provides initial JSON metadata for faster startup.
-func (abcfg *ABConfig) WithLocalStorageForFastBoot(localStorageForFastBoot []byte) *ABConfig {
-	abcfg.localStorageForFastBoot = localStorageForFastBoot
-	return abcfg
-}
-
-// WithStickyHandler sets a custom handler for sticky sessions.
-func (abcfg *ABConfig) WithStickyHandler(stickyHandler IABStickyHandler) *ABConfig {
-	abcfg.stickyHandler = stickyHandler
-	return abcfg
+	// LocalStorageForFastBoot is JSON metadata for faster initial startup.
+	LocalStorageForFastBoot []byte
 }
 
 // IABStickyHandler is the interface for persisting traffic assignment results.
@@ -195,13 +80,20 @@ type Logger interface {
 
 // config default
 const (
-	// TODO Change Default Production Endpoint Before Release
 	defaultTrackPath  = "/in/track"
 	defaultABMetaPath = "/ab/all4eval"
 )
 
 // OnTrackFailHandler is called when event tracking fails.
 type OnTrackFailHandler func([]Event, error)
+
+// Endpoint is a type alias for the API endpoint URL.
+// Using a distinct type prevents accidentally swapping endpoint and token parameters.
+type Endpoint string
+
+// SourceToken is a type alias for the source authentication token.
+// Using a distinct type prevents accidentally swapping endpoint and token parameters.
+type SourceToken string
 
 type defaultLogger struct{}
 
@@ -261,4 +153,58 @@ func normalizeURIPath(path string, defaultPath string) (string, error) {
 		return defaultPath, fmt.Errorf("path must not contain spaces")
 	}
 	return path, nil
+}
+
+// normalizeConfig normalizes the Config fields and applies defaults.
+func normalizeConfig(config *Config) {
+	// Normalize track URI path
+	if normalized, err := normalizeURIPath(config.TrackURIPath, defaultTrackPath); err == nil {
+		config.TrackURIPath = normalized
+	} else {
+		config.TrackURIPath = defaultTrackPath
+	}
+
+	// Apply defaults
+	if config.Logger == nil {
+		config.Logger = &defaultLogger{}
+	}
+	if config.FlushInterval == 0 {
+		config.FlushInterval = 10 * time.Second
+	}
+	if config.HTTPConcurrency == 0 {
+		config.HTTPConcurrency = 10
+	}
+	if config.HTTPTimeout == 0 {
+		config.HTTPTimeout = 3 * time.Second
+	}
+	if config.HTTPRetry == 0 {
+		config.HTTPRetry = 2
+	}
+
+	// Normalize AB config
+	if config.AB != nil {
+		normalizeABConfig(config.AB)
+	}
+}
+
+// normalizeABConfig normalizes the ABConfig fields and applies defaults.
+func normalizeABConfig(cfg *ABConfig) {
+	// Normalize meta endpoint
+	if cfg.MetaEndpoint != "" {
+		if normalized, err := normalizeEndpoint(cfg.MetaEndpoint); err == nil {
+			cfg.MetaEndpoint = normalized
+		}
+	}
+
+	// Normalize meta URI path
+	if normalized, err := normalizeURIPath(cfg.MetaURIPath, defaultABMetaPath); err == nil {
+		cfg.MetaURIPath = normalized
+	} else {
+		cfg.MetaURIPath = defaultABMetaPath
+	}
+
+	// Apply defaults
+	if cfg.MetaLoadInterval == 0 {
+		cfg.MetaLoadInterval = 1 * time.Minute
+	}
 }

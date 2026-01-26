@@ -28,7 +28,7 @@ func TestABCoreEvalGatePublicRollout(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result, err := core.evalAB(ABUser{LoginID: tc.loginID}, spec, 0)
+			result, err := core.evalAB(User{LoginID: tc.loginID}, spec, 0)
 			require.NoError(t, err)
 			require.Equal(t, tc.want, result.CheckGate())
 		})
@@ -51,7 +51,7 @@ func TestABCoreEvalAllGatePublicRollout(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			core := newTestAbCoreWithStorage(t, store)
 
-			results, err := core.evalAll(ABUser{LoginID: tc.loginID})
+			results, err := core.evalAll(User{LoginID: tc.loginID})
 			require.NoError(t, err)
 			require.Len(t, results, 1)
 			require.NotNil(t, results[0].VariantID)
@@ -70,27 +70,27 @@ func TestABCoreEvalGateAnyOfSensitiveProps(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
 		{
 			name: "missing-prop",
-			user: ABUser{LoginID: "user-pass"},
+			user: User{LoginID: "user-pass"},
 			want: false,
 		},
 		{
 			name: "wrong-prop",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "Safari"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "Safari"}},
 			want: false,
 		},
 		{
 			name: "case-mismatch",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "chrome"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "chrome"}},
 			want: false,
 		},
 		{
 			name: "correct-prop",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "Chrome"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "Chrome"}},
 			want: true,
 		},
 	}
@@ -113,32 +113,32 @@ func TestABCoreEvalGateNoneOfSensitiveProps(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
 		{
 			name: "missing-prop",
-			user: ABUser{LoginID: "user-pass"},
+			user: User{LoginID: "user-pass"},
 			want: true,
 		},
 		{
 			name: "blocked-chrome",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "Chrome"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "Chrome"}},
 			want: false,
 		},
 		{
 			name: "blocked-safari",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "Safari"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "Safari"}},
 			want: false,
 		},
 		{
 			name: "allowed-case-mismatch",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "chrome"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "chrome"}},
 			want: true,
 		},
 		{
 			name: "allowed-prop",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "Edge"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "Edge"}},
 			want: true,
 		},
 	}
@@ -161,32 +161,32 @@ func TestABCoreEvalGateNoneOfInsensitiveProps(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
 		{
 			name: "missing-prop",
-			user: ABUser{LoginID: "user-pass"},
+			user: User{LoginID: "user-pass"},
 			want: true,
 		},
 		{
 			name: "blocked-chrome",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "Chrome"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "Chrome"}},
 			want: false,
 		},
 		{
 			name: "blocked-safari",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "Safari"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "Safari"}},
 			want: false,
 		},
 		{
 			name: "blocked-case-mismatch",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "chrome"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "chrome"}},
 			want: false,
 		},
 		{
 			name: "allowed-prop",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "Edge"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "Edge"}},
 			want: true,
 		},
 	}
@@ -209,22 +209,22 @@ func TestABCoreEvalGateIsNull(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
 		{
 			name: "missing-prop",
-			user: ABUser{LoginID: "user-pass"},
+			user: User{LoginID: "user-pass"},
 			want: true,
 		},
 		{
 			name: "explicit-empty-string",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": ""}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": ""}},
 			want: false,
 		},
 		{
 			name: "prop-present",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "Chrome"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "Chrome"}},
 			want: false,
 		},
 	}
@@ -251,23 +251,23 @@ func TestABCoreEvalGateIsNotNull(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
 		{
 			name: "missing-prop",
-			user: ABUser{LoginID: "user-pass"},
+			user: User{LoginID: "user-pass"},
 			want: false,
 		},
 		{
 			name: "non-empty",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": "Chrome"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "Chrome"}},
 			want: true,
 		},
 		{
 			// TODO Relation between empty string and NULL
 			name: "empty-string",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"$browser_name": ""}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": ""}},
 			want: true,
 		},
 	}
@@ -290,14 +290,14 @@ func TestABCoreEvalGateVersionGT(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "less-than", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "9.9"}}, want: false},
-		{name: "equal-version", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.0"}}, want: false},
-		{name: "greater-version", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.1"}}, want: true},
-		{name: "greater-patch", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.0.1"}}, want: true},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "less-than", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "9.9"}}, want: false},
+		{name: "equal-version", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.0"}}, want: false},
+		{name: "greater-version", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.1"}}, want: true},
+		{name: "greater-patch", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.0.1"}}, want: true},
 	}
 
 	for _, tc := range testCases {
@@ -318,13 +318,13 @@ func TestABCoreEvalGateVersionGTE(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "less-than", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "9.9"}}, want: false},
-		{name: "equal-version", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.0"}}, want: true},
-		{name: "greater-version", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.1"}}, want: true},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "less-than", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "9.9"}}, want: false},
+		{name: "equal-version", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.0"}}, want: true},
+		{name: "greater-version", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.1"}}, want: true},
 	}
 
 	for _, tc := range testCases {
@@ -345,13 +345,13 @@ func TestABCoreEvalGateVersionLT(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "less-version", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "9.9"}}, want: true},
-		{name: "equal-version", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.0"}}, want: false},
-		{name: "greater-version", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.1"}}, want: false},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "less-version", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "9.9"}}, want: true},
+		{name: "equal-version", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.0"}}, want: false},
+		{name: "greater-version", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.1"}}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -372,13 +372,13 @@ func TestABCoreEvalGateVersionLTE(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "less-version", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "9.5"}}, want: true},
-		{name: "equal-version", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.0"}}, want: true},
-		{name: "greater-version", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.1"}}, want: false},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "less-version", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "9.5"}}, want: true},
+		{name: "equal-version", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.0"}}, want: true},
+		{name: "greater-version", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.1"}}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -399,13 +399,13 @@ func TestABCoreEvalGateVersionEQ(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "equal-version", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.0"}}, want: true},
-		{name: "equal-with-patch", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.0.0"}}, want: true},
-		{name: "not-equal", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "9.9"}}, want: false},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "equal-version", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.0"}}, want: true},
+		{name: "equal-with-patch", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.0.0"}}, want: true},
+		{name: "not-equal", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "9.9"}}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -427,13 +427,13 @@ func TestABCoreEvalGateVersionNEQ(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "equal-version", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.0"}}, want: false},
-		{name: "different-major", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "11.0"}}, want: true},
-		{name: "different-minor", user: ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.1"}}, want: true},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "equal-version", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.0"}}, want: false},
+		{name: "different-major", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "11.0"}}, want: true},
+		{name: "different-minor", user: User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.1"}}, want: true},
 	}
 
 	for _, tc := range testCases {
@@ -455,14 +455,14 @@ func TestABCoreEvalGateCustomField(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-props", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "pass-age-only", user: ABUser{LoginID: "user-pass", Props: Properties{"age": 11}}, want: true},
-		{name: "pass-time-only", user: ABUser{LoginID: "user-pass", Props: Properties{"time": "2025-11-18T06:00:40Z"}}, want: true},
-		{name: "fail-age-rule", user: ABUser{LoginID: "user-pass", Props: Properties{"age": 10}}, want: false},
-		{name: "fail-time-rule", user: ABUser{LoginID: "user-pass", Props: Properties{"time": time.UnixMilli(1763445638999)}}, want: false},
+		{name: "missing-props", user: User{LoginID: "user-pass"}, want: false},
+		{name: "pass-age-only", user: User{LoginID: "user-pass", ABUserProperties: Properties{"age": 11}}, want: true},
+		{name: "pass-time-only", user: User{LoginID: "user-pass", ABUserProperties: Properties{"time": "2025-11-18T06:00:40Z"}}, want: true},
+		{name: "fail-age-rule", user: User{LoginID: "user-pass", ABUserProperties: Properties{"age": 10}}, want: false},
+		{name: "fail-time-rule", user: User{LoginID: "user-pass", ABUserProperties: Properties{"time": time.UnixMilli(1763445638999)}}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -484,12 +484,12 @@ func TestABCoreEvalGateOverrideID(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "first-override", user: ABUser{LoginID: "login-id-example-2"}, want: true},
-		{name: "second-override", user: ABUser{LoginID: "login-id-example-3"}, want: false},
-		{name: "no-override", user: ABUser{LoginID: "unknown"}, want: false},
+		{name: "first-override", user: User{LoginID: "login-id-example-2"}, want: true},
+		{name: "second-override", user: User{LoginID: "login-id-example-3"}, want: false},
+		{name: "no-override", user: User{LoginID: "unknown"}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -510,13 +510,13 @@ func TestABCoreEvalGateOverrideCondition(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "first-override", user: ABUser{LoginID: "login-id-example-2"}, want: true},
-		{name: "second-override", user: ABUser{LoginID: "login-id-example-3"}, want: false},
-		{name: "prop-override", user: ABUser{LoginID: "other", Props: Properties{"$country": "China"}}, want: true},
-		{name: "no-override", user: ABUser{LoginID: "other", Props: Properties{"$country": "Japan"}}, want: false},
+		{name: "first-override", user: User{LoginID: "login-id-example-2"}, want: true},
+		{name: "second-override", user: User{LoginID: "login-id-example-3"}, want: false},
+		{name: "prop-override", user: User{LoginID: "other", ABUserProperties: Properties{"$country": "China"}}, want: true},
+		{name: "no-override", user: User{LoginID: "other", ABUserProperties: Properties{"$country": "Japan"}}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -537,11 +537,11 @@ func TestABCoreEvalGateAnonIDSubject(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-anon", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "anon-present", user: ABUser{AnonID: "anon-pass"}, want: true},
+		{name: "missing-anon", user: User{LoginID: "user-pass"}, want: false},
+		{name: "anon-present", user: User{AnonID: "anon-pass"}, want: true},
 	}
 
 	for _, tc := range testCases {
@@ -571,7 +571,7 @@ func TestABCoreEvalGateDisabled(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result, err := core.evalAB(ABUser{LoginID: tc.loginID}, spec, 0)
+			result, err := core.evalAB(User{LoginID: tc.loginID}, spec, 0)
 			require.NoError(t, err)
 			require.Equal(t, tc.want, result.CheckGate())
 		})
@@ -594,7 +594,7 @@ func TestABCoreEvalGateEmptyRules(t *testing.T) {
 	require.NotNil(t, spec)
 
 	// Assuming if enabled is true but no rules, it defaults to false (safe default)
-	result, err := core.evalAB(ABUser{LoginID: "user-any"}, spec, 0)
+	result, err := core.evalAB(User{LoginID: "user-any"}, spec, 0)
 	require.NoError(t, err)
 	require.False(t, result.CheckGate())
 }
@@ -607,7 +607,7 @@ func TestABCoreEvalGateFilter(t *testing.T) {
 		spec := core.getABSpec("FilterGate")
 		require.NotNil(t, spec)
 
-		user := ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.1"}}
+		user := User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.1"}}
 		result, err := core.evalAB(user, spec, 0)
 		require.NoError(t, err)
 		require.False(t, result.CheckGate())
@@ -627,7 +627,7 @@ func TestABCoreEvalGateFilter(t *testing.T) {
 		require.NotNil(t, spec)
 
 		// Correct version -> EasyFilterGate passes -> FilterGate passes
-		user := ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "10.1"}}
+		user := User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.1"}}
 		result, err := core.evalAB(user, spec, 0)
 		require.NoError(t, err)
 		require.True(t, result.CheckGate())
@@ -639,7 +639,7 @@ func TestABCoreEvalGateFilter(t *testing.T) {
 		require.NotNil(t, spec)
 
 		// Incorrect version -> EasyFilterGate fails -> FilterGate fails
-		user := ABUser{LoginID: "user-pass", Props: Properties{PspAppVer: "9.9"}}
+		user := User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "9.9"}}
 		result, err := core.evalAB(user, spec, 0)
 		require.NoError(t, err)
 		require.False(t, result.CheckGate())
@@ -670,12 +670,12 @@ func TestABCoreEvalGateComplicate(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
 		{
 			name: "rule1-pass",
-			user: ABUser{AnonID: "any", Props: Properties{"$app_version": "10.1", "$ip_address": "127.0.0.1"}},
+			user: User{AnonID: "any", ABUserProperties: Properties{"$app_version": "10.1", "$ip_address": "127.0.0.1"}},
 			want: true,
 		},
 		{
@@ -683,46 +683,46 @@ func TestABCoreEvalGateComplicate(t *testing.T) {
 			// Fail Rule 1 (version).
 			// Must also fail Rule 5 (Device Model IS NULL) by providing a device model.
 			// Must also fail Rule 6 (Country IS NOT NULL) by NOT providing a country.
-			user: ABUser{AnonID: "any", Props: Properties{"$app_version": "9.0", "$ip_address": "127.0.0.1", "$device_model": "Pixel"}},
+			user: User{AnonID: "any", ABUserProperties: Properties{"$app_version": "9.0", "$ip_address": "127.0.0.1", "$device_model": "Pixel"}},
 			want: false,
 		},
 		{
 			name: "rule2-pass",
 			// Fail Rule 1 (version), Pass Rule 2 (browser)
-			user: ABUser{AnonID: "any", Props: Properties{"$app_version": "9.0", "$browser_name": "Chrome"}},
+			user: User{AnonID: "any", ABUserProperties: Properties{"$app_version": "9.0", "$browser_name": "Chrome"}},
 			want: true,
 		},
 		{
 			name: "rule3-pass",
 			// Fail R1, R2. Pass Rule 3 (LoginID)
-			user: ABUser{AnonID: "any", LoginID: "login-id-example-2", Props: Properties{"$app_version": "9.0", "$browser_name": "Firefox"}},
+			user: User{AnonID: "any", LoginID: "login-id-example-2", ABUserProperties: Properties{"$app_version": "9.0", "$browser_name": "Firefox"}},
 			want: true,
 		},
 		{
 			name: "rule4-pass",
 			// Fail R1, R2, R3. Pass Rule 4 (Age > 10)
-			user: ABUser{AnonID: "any", LoginID: "other", Props: Properties{"$app_version": "9.0", "$browser_name": "Firefox", "age": 11}},
+			user: User{AnonID: "any", LoginID: "other", ABUserProperties: Properties{"$app_version": "9.0", "$browser_name": "Firefox", "age": 11}},
 			want: true,
 		},
 		{
 			name: "rule5-pass",
 			// Fail R1-R4. Pass Rule 5 (Device Model is Null)
 			// age=5 fails R4. device_model missing means it is null.
-			user: ABUser{AnonID: "any", LoginID: "other", Props: Properties{"$app_version": "9.0", "$browser_name": "Firefox", "age": 5}},
+			user: User{AnonID: "any", LoginID: "other", ABUserProperties: Properties{"$app_version": "9.0", "$browser_name": "Firefox", "age": 5}},
 			want: true,
 		},
 		{
 			name: "rule6-pass",
 			// Fail R1-R5. Pass Rule 6 (Country Not Null)
 			// device_model present fails R5. country present passes R6.
-			user: ABUser{AnonID: "any", LoginID: "other", Props: Properties{"$app_version": "9.0", "$browser_name": "Firefox", "age": 5, "$device_model": "Pixel", "$country": "US"}},
+			user: User{AnonID: "any", LoginID: "other", ABUserProperties: Properties{"$app_version": "9.0", "$browser_name": "Firefox", "age": 5, "$device_model": "Pixel", "$country": "US"}},
 			want: true,
 		},
 		{
 			name: "all-fail",
 			// Fail all rules.
 			// device_model present fails R5. country missing fails R6.
-			user: ABUser{AnonID: "any", LoginID: "other", Props: Properties{"$app_version": "9.0", "$browser_name": "Firefox", "age": 5, "$device_model": "Pixel"}},
+			user: User{AnonID: "any", LoginID: "other", ABUserProperties: Properties{"$app_version": "9.0", "$browser_name": "Firefox", "age": 5, "$device_model": "Pixel"}},
 			want: false,
 		},
 	}
@@ -745,27 +745,27 @@ func TestABCoreEvalGateHoldout(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
 		{
 			name: "version-match-holdout", // Matches "10.0", so NONE_OF fails -> Gate False
-			user: ABUser{LoginID: "user1", Props: Properties{"$app_version": "10.0"}},
+			user: User{LoginID: "user1", ABUserProperties: Properties{"$app_version": "10.0"}},
 			want: false,
 		},
 		{
 			name: "version-mismatch", // Does not match "10.0", so NONE_OF passes -> Gate True
-			user: ABUser{LoginID: "user2", Props: Properties{"$app_version": "10.1"}},
+			user: User{LoginID: "user2", ABUserProperties: Properties{"$app_version": "10.1"}},
 			want: true,
 		},
 		{
 			name: "missing-prop", // Missing prop, NONE_OF passes -> Gate True
-			user: ABUser{LoginID: "user3"},
+			user: User{LoginID: "user3"},
 			want: true,
 		},
 		{
 			name: "holdout-fail",
-			user: ABUser{LoginID: "user0", Props: Properties{"$app_version": "10.1"}},
+			user: User{LoginID: "user0", ABUserProperties: Properties{"$app_version": "10.1"}},
 			want: false,
 		},
 	}
@@ -799,7 +799,7 @@ func TestABCoreEvalGateRelease(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result, err := core.evalAB(ABUser{LoginID: tc.loginID}, spec, 0)
+			result, err := core.evalAB(User{LoginID: tc.loginID}, spec, 0)
 			require.NoError(t, err)
 			require.Equal(t, tc.want, result.CheckGate())
 		})
@@ -835,14 +835,14 @@ func TestABCoreEvalGateSticky(t *testing.T) {
 		key := fmt.Sprintf("%d-%s", spec.ID, "user-cache")
 		handler.data[key] = string(cacheBytes)
 
-		result, err := core.evalAB(ABUser{LoginID: "user-cache", Props: Properties{"is_premium": false}}, spec, 0)
+		result, err := core.evalAB(User{LoginID: "user-cache", ABUserProperties: Properties{"is_premium": false}}, spec, 0)
 		require.NoError(t, err)
 		require.True(t, result.CheckGate())
 	})
 
 	t.Run("write-sticky-cache", func(t *testing.T) {
 		loginID := "user-new"
-		result, err := core.evalAB(ABUser{LoginID: loginID, Props: Properties{"is_premium": true}}, spec, 0)
+		result, err := core.evalAB(User{LoginID: loginID, ABUserProperties: Properties{"is_premium": true}}, spec, 0)
 		require.NoError(t, err)
 		require.True(t, result.CheckGate())
 
@@ -863,33 +863,33 @@ func TestABCoreEvalCondEdgeCases(t *testing.T) {
 
 	t.Run("unknown-common-field", func(t *testing.T) {
 		cond := Condition{FieldClass: "COMMON", Field: "unknown", Opt: "IS_TRUE"}
-		_, err := core.evalCond(&ABUser{LoginID: "u"}, &cond, "u", 0)
+		_, err := core.evalCond(&User{LoginID: "u"}, &cond, "u", 0)
 		require.Error(t, err)
 	})
 
 	t.Run("ffuser-anon-id", func(t *testing.T) {
 		cond := Condition{FieldClass: "FFUSER", Field: "anon_id", Opt: "IS_NOT_NULL"}
-		pass, err := core.evalCond(&ABUser{AnonID: "anon"}, &cond, "anon", 0)
+		pass, err := core.evalCond(&User{AnonID: "anon"}, &cond, "anon", 0)
 		require.NoError(t, err)
 		require.True(t, pass)
 	})
 
 	t.Run("ffuser-missing", func(t *testing.T) {
 		cond := Condition{FieldClass: "FFUSER", Field: "login_id", Opt: "IS_NULL"}
-		pass, err := core.evalCond(&ABUser{}, &cond, "", 0)
+		pass, err := core.evalCond(&User{}, &cond, "", 0)
 		require.NoError(t, err)
 		require.True(t, pass)
 	})
 
 	t.Run("bucket-set-type-error", func(t *testing.T) {
 		cond := Condition{FieldClass: "DEFAULT", Field: "salt", Opt: "BUCKET_SET", Value: 123}
-		_, err := core.evalCond(&ABUser{LoginID: "u"}, &cond, "u", 0)
+		_, err := core.evalCond(&User{LoginID: "u"}, &cond, "u", 0)
 		require.Error(t, err)
 	})
 
 	t.Run("unknown-operator", func(t *testing.T) {
 		cond := Condition{FieldClass: "PROPS", Field: "x", Opt: "NOT_A_REAL_OP", Value: 1}
-		_, err := core.evalCond(&ABUser{LoginID: "u"}, &cond, "u", 0)
+		_, err := core.evalCond(&User{LoginID: "u"}, &cond, "u", 0)
 		require.Error(t, err)
 	})
 }
@@ -903,13 +903,13 @@ func TestABCoreEvalGateGTE(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "less-than", user: ABUser{LoginID: "user-pass", Props: Properties{"user_age": 17}}, want: false},
-		{name: "equal", user: ABUser{LoginID: "user-pass", Props: Properties{"user_age": 18}}, want: true},
-		{name: "greater-than", user: ABUser{LoginID: "user-pass", Props: Properties{"user_age": 25}}, want: true},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "less-than", user: User{LoginID: "user-pass", ABUserProperties: Properties{"user_age": 17}}, want: false},
+		{name: "equal", user: User{LoginID: "user-pass", ABUserProperties: Properties{"user_age": 18}}, want: true},
+		{name: "greater-than", user: User{LoginID: "user-pass", ABUserProperties: Properties{"user_age": 25}}, want: true},
 	}
 
 	for _, tc := range testCases {
@@ -930,13 +930,13 @@ func TestABCoreEvalGateLT(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "less-than", user: ABUser{LoginID: "user-pass", Props: Properties{"user_age": 30}}, want: true},
-		{name: "equal", user: ABUser{LoginID: "user-pass", Props: Properties{"user_age": 65}}, want: false},
-		{name: "greater-than", user: ABUser{LoginID: "user-pass", Props: Properties{"user_age": 70}}, want: false},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "less-than", user: User{LoginID: "user-pass", ABUserProperties: Properties{"user_age": 30}}, want: true},
+		{name: "equal", user: User{LoginID: "user-pass", ABUserProperties: Properties{"user_age": 65}}, want: false},
+		{name: "greater-than", user: User{LoginID: "user-pass", ABUserProperties: Properties{"user_age": 70}}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -957,13 +957,13 @@ func TestABCoreEvalGateLTE(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "less-than", user: ABUser{LoginID: "user-pass", Props: Properties{"user_score": 85}}, want: true},
-		{name: "equal", user: ABUser{LoginID: "user-pass", Props: Properties{"user_score": 100}}, want: true},
-		{name: "greater-than", user: ABUser{LoginID: "user-pass", Props: Properties{"user_score": 105}}, want: false},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "less-than", user: User{LoginID: "user-pass", ABUserProperties: Properties{"user_score": 85}}, want: true},
+		{name: "equal", user: User{LoginID: "user-pass", ABUserProperties: Properties{"user_score": 100}}, want: true},
+		{name: "greater-than", user: User{LoginID: "user-pass", ABUserProperties: Properties{"user_score": 105}}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -984,12 +984,12 @@ func TestABCoreEvalGateIsTrue(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "true-value", user: ABUser{LoginID: "user-pass", Props: Properties{"is_premium": true}}, want: true},
-		{name: "false-value", user: ABUser{LoginID: "user-pass", Props: Properties{"is_premium": false}}, want: false},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "true-value", user: User{LoginID: "user-pass", ABUserProperties: Properties{"is_premium": true}}, want: true},
+		{name: "false-value", user: User{LoginID: "user-pass", ABUserProperties: Properties{"is_premium": false}}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -1010,12 +1010,12 @@ func TestABCoreEvalGateIsFalse(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "false-value", user: ABUser{LoginID: "user-pass", Props: Properties{"is_banned": false}}, want: true},
-		{name: "true-value", user: ABUser{LoginID: "user-pass", Props: Properties{"is_banned": true}}, want: false},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "false-value", user: User{LoginID: "user-pass", ABUserProperties: Properties{"is_banned": false}}, want: true},
+		{name: "true-value", user: User{LoginID: "user-pass", ABUserProperties: Properties{"is_banned": true}}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -1036,13 +1036,13 @@ func TestABCoreEvalGateEQ(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "equal-value", user: ABUser{LoginID: "user-pass", Props: Properties{"country": "US"}}, want: true},
-		{name: "not-equal", user: ABUser{LoginID: "user-pass", Props: Properties{"country": "CN"}}, want: false},
-		{name: "case-mismatch", user: ABUser{LoginID: "user-pass", Props: Properties{"country": "us"}}, want: false},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "equal-value", user: User{LoginID: "user-pass", ABUserProperties: Properties{"country": "US"}}, want: true},
+		{name: "not-equal", user: User{LoginID: "user-pass", ABUserProperties: Properties{"country": "CN"}}, want: false},
+		{name: "case-mismatch", user: User{LoginID: "user-pass", ABUserProperties: Properties{"country": "us"}}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -1063,13 +1063,13 @@ func TestABCoreEvalGateNEQ(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: true},                                         // nil != 0 is true
-		{name: "equal-value", user: ABUser{LoginID: "user-pass", Props: Properties{"level": float64(0)}}, want: false}, // Use float64 to match JSON deserialization
-		{name: "not-equal-positive", user: ABUser{LoginID: "user-pass", Props: Properties{"level": 5}}, want: true},
-		{name: "not-equal-negative", user: ABUser{LoginID: "user-pass", Props: Properties{"level": -1}}, want: true},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: true},                                              // nil != 0 is true
+		{name: "equal-value", user: User{LoginID: "user-pass", ABUserProperties: Properties{"level": float64(0)}}, want: false}, // Use float64 to match JSON deserialization
+		{name: "not-equal-positive", user: User{LoginID: "user-pass", ABUserProperties: Properties{"level": 5}}, want: true},
+		{name: "not-equal-negative", user: User{LoginID: "user-pass", ABUserProperties: Properties{"level": -1}}, want: true},
 	}
 
 	for _, tc := range testCases {
@@ -1090,13 +1090,13 @@ func TestABCoreEvalGateBefore(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: true}, // zero time is before any actual time
-		{name: "before-time", user: ABUser{LoginID: "user-pass", Props: Properties{"user_created_at": "2023-06-01T00:00:00Z"}}, want: true},
-		{name: "equal-time", user: ABUser{LoginID: "user-pass", Props: Properties{"user_created_at": "2024-01-01T00:00:00Z"}}, want: false},
-		{name: "after-time", user: ABUser{LoginID: "user-pass", Props: Properties{"user_created_at": "2024-06-01T00:00:00Z"}}, want: false},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: true}, // zero time is before any actual time
+		{name: "before-time", user: User{LoginID: "user-pass", ABUserProperties: Properties{"user_created_at": "2023-06-01T00:00:00Z"}}, want: true},
+		{name: "equal-time", user: User{LoginID: "user-pass", ABUserProperties: Properties{"user_created_at": "2024-01-01T00:00:00Z"}}, want: false},
+		{name: "after-time", user: User{LoginID: "user-pass", ABUserProperties: Properties{"user_created_at": "2024-06-01T00:00:00Z"}}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -1117,13 +1117,13 @@ func TestABCoreEvalGateAfter(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
-		{name: "missing-prop", user: ABUser{LoginID: "user-pass"}, want: false},
-		{name: "after-time", user: ABUser{LoginID: "user-pass", Props: Properties{"registration_date": "2023-06-01T00:00:00Z"}}, want: true},
-		{name: "equal-time", user: ABUser{LoginID: "user-pass", Props: Properties{"registration_date": "2023-01-01T00:00:00Z"}}, want: false},
-		{name: "before-time", user: ABUser{LoginID: "user-pass", Props: Properties{"registration_date": "2022-06-01T00:00:00Z"}}, want: false},
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: false},
+		{name: "after-time", user: User{LoginID: "user-pass", ABUserProperties: Properties{"registration_date": "2023-06-01T00:00:00Z"}}, want: true},
+		{name: "equal-time", user: User{LoginID: "user-pass", ABUserProperties: Properties{"registration_date": "2023-01-01T00:00:00Z"}}, want: false},
+		{name: "before-time", user: User{LoginID: "user-pass", ABUserProperties: Properties{"registration_date": "2022-06-01T00:00:00Z"}}, want: false},
 	}
 
 	for _, tc := range testCases {
@@ -1144,17 +1144,17 @@ func TestABCoreEvalGateFail(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		user ABUser
+		user User
 		want bool
 	}{
 		{
 			name: "base-gate-fails-rollout-0",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"country": "CN"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"country": "CN"}},
 			want: true, // Base gate fails (rollout=0), so GATE_FAIL passes
 		},
 		{
 			name: "base-gate-fails-condition",
-			user: ABUser{LoginID: "user-pass", Props: Properties{"country": "US"}},
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"country": "US"}},
 			want: true, // Base gate fails (condition not match), so GATE_FAIL passes
 		},
 	}
@@ -1174,7 +1174,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 
 	testCases := []struct {
 		name         string
-		user         ABUser
+		user         User
 		wantGateA    bool // App version >= 10.0
 		wantGateB    bool // Country in [CN, US, JP]
 		wantGateC    bool // is_premium = true
@@ -1182,7 +1182,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 	}{
 		{
 			name:         "hit-all-gates",
-			user:         ABUser{LoginID: "user1", Props: Properties{"$app_version": "10.0", "$country": "CN", "is_premium": true}},
+			user:         User{LoginID: "user1", ABUserProperties: Properties{"$app_version": "10.0", "$country": "CN", "is_premium": true}},
 			wantGateA:    true,
 			wantGateB:    true,
 			wantGateC:    true,
@@ -1190,7 +1190,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 		},
 		{
 			name:         "hit-gate-a-only",
-			user:         ABUser{LoginID: "user2", Props: Properties{"$app_version": "10.0", "$country": "KR", "is_premium": false}},
+			user:         User{LoginID: "user2", ABUserProperties: Properties{"$app_version": "10.0", "$country": "KR", "is_premium": false}},
 			wantGateA:    true,
 			wantGateB:    false,
 			wantGateC:    false,
@@ -1198,7 +1198,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 		},
 		{
 			name:         "hit-gate-b-only",
-			user:         ABUser{LoginID: "user3", Props: Properties{"$app_version": "9.0", "$country": "US", "is_premium": false}},
+			user:         User{LoginID: "user3", ABUserProperties: Properties{"$app_version": "9.0", "$country": "US", "is_premium": false}},
 			wantGateA:    false,
 			wantGateB:    true,
 			wantGateC:    false,
@@ -1206,7 +1206,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 		},
 		{
 			name:         "hit-gate-c-only",
-			user:         ABUser{LoginID: "user4", Props: Properties{"$app_version": "9.0", "$country": "KR", "is_premium": true}},
+			user:         User{LoginID: "user4", ABUserProperties: Properties{"$app_version": "9.0", "$country": "KR", "is_premium": true}},
 			wantGateA:    false,
 			wantGateB:    false,
 			wantGateC:    true,
@@ -1214,7 +1214,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 		},
 		{
 			name:         "hit-gate-a-and-b",
-			user:         ABUser{LoginID: "user5", Props: Properties{"$app_version": "10.5", "$country": "JP"}},
+			user:         User{LoginID: "user5", ABUserProperties: Properties{"$app_version": "10.5", "$country": "JP"}},
 			wantGateA:    true,
 			wantGateB:    true,
 			wantGateC:    false,
@@ -1222,7 +1222,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 		},
 		{
 			name:         "hit-no-gates",
-			user:         ABUser{LoginID: "user6", Props: Properties{"$app_version": "9.0", "$country": "KR", "is_premium": false}},
+			user:         User{LoginID: "user6", ABUserProperties: Properties{"$app_version": "9.0", "$country": "KR", "is_premium": false}},
 			wantGateA:    false,
 			wantGateB:    false,
 			wantGateC:    false,
@@ -1230,7 +1230,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 		},
 		{
 			name:         "missing-all-props",
-			user:         ABUser{LoginID: "user7"},
+			user:         User{LoginID: "user7"},
 			wantGateA:    false,
 			wantGateB:    false,
 			wantGateC:    false,

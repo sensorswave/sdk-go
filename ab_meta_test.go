@@ -61,17 +61,19 @@ func TestAbCoreLoadRemoteMeta(t *testing.T) {
 	transport := &stubTransport{body: body, status: http.StatusOK}
 	client := &httpClient{client: &http.Client{Transport: transport}}
 
-	cfg := DefaultConfig("http://example.com", "project-token")
+	endpoint := "http://example.com"
+	token := "project-token"
+	cfg := testConfig()
 	ffcfg := &ABConfig{
-		projectSecret:    "secret",
-		sourceToken:      "project-token",
-		metaEndpoint:     "http://example.com/api",
-		loadMetaInterval: 50 * time.Millisecond,
+		ProjectSecret:    "secret",
+		MetaEndpoint:     "http://example.com/api",
+		MetaLoadInterval: 50 * time.Millisecond,
 	}
-	cfg.WithABConfig(ffcfg)
-	cfg.logger = &noopLogger{}
+	cfg.AB = ffcfg
+	cfg.Logger = &noopLogger{}
 
-	core := NewABCore(cfg, client)
+	core, err := NewABCore(endpoint, token, cfg, client)
+	require.NoError(t, err)
 	core.loadRemoteMeta()
 
 	transport.mu.Lock()
@@ -84,7 +86,7 @@ func TestAbCoreLoadRemoteMeta(t *testing.T) {
 	require.Equal(t, "GET", req.Method)
 	// require.Equal(t, "Bearer "+ffcfg.accountAPIToken, req.Header.Get("Authorization"))
 	require.Contains(t, req.Header.Get("Authorization"), SignatureAlgorithm)
-	require.Equal(t, cfg.sourceToken, req.Header.Get(HeaderSourceToken))
+	require.Equal(t, token, req.Header.Get(HeaderSourceToken))
 
 	storage := core.storage()
 	require.NotNil(t, storage)
@@ -97,33 +99,39 @@ func TestAbCoreLoadRemoteMeta(t *testing.T) {
 }
 
 func TestNewABCoreUsesCustomMetaURIPath(t *testing.T) {
-	cfg := DefaultConfig("http://example.com", "project-token")
-	abCfg := DefaultABConfig("secret").
-		WithMetaEndpoint("http://example.com").
-		WithMetaURIPath("/custom/path")
-	cfg.WithABConfig(abCfg)
-	cfg.logger = &noopLogger{}
+	cfg := testConfig()
+	abCfg := &ABConfig{
+		ProjectSecret: "secret",
+		MetaEndpoint:  "http://example.com",
+		MetaURIPath:   "/custom/path",
+	}
+	cfg.AB = abCfg
+	cfg.Logger = &noopLogger{}
 
-	core := NewABCore(cfg, nil)
+	core, err := NewABCore("http://example.com", "project-token", cfg, nil)
+	require.NoError(t, err)
 	require.NotNil(t, core)
 
-	loader, ok := cfg.ab.metaLoader.(*HTTPSignatureMetaLoader)
+	loader, ok := cfg.AB.MetaLoader.(*HTTPSignatureMetaLoader)
 	require.True(t, ok)
 	require.Equal(t, "http://example.com", loader.Endpoint)
 	require.Equal(t, "/custom/path", loader.URIPath)
 }
 
 func TestNewABCoreUsesConfigEndpointWhenMetaEndpointEmpty(t *testing.T) {
-	cfg := DefaultConfig("http://example.com", "project-token")
-	abCfg := DefaultABConfig("secret").
-		WithMetaURIPath("/custom/path")
-	cfg.WithABConfig(abCfg)
-	cfg.logger = &noopLogger{}
+	cfg := testConfig()
+	abCfg := &ABConfig{
+		ProjectSecret: "secret",
+		MetaURIPath:   "/custom/path",
+	}
+	cfg.AB = abCfg
+	cfg.Logger = &noopLogger{}
 
-	core := NewABCore(cfg, nil)
+	core, err := NewABCore("http://example.com", "project-token", cfg, nil)
+	require.NoError(t, err)
 	require.NotNil(t, core)
 
-	loader, ok := cfg.ab.metaLoader.(*HTTPSignatureMetaLoader)
+	loader, ok := cfg.AB.MetaLoader.(*HTTPSignatureMetaLoader)
 	require.True(t, ok)
 	require.Equal(t, "http://example.com", loader.Endpoint)
 	require.Equal(t, "/custom/path", loader.URIPath)
@@ -155,17 +163,19 @@ func TestAbCoreLoadRemoteMetaLoop(t *testing.T) {
 	transport := &stubTransport{body: body, status: http.StatusOK}
 	client := &httpClient{client: &http.Client{Transport: transport}}
 
-	cfg := DefaultConfig("http://example.com", "project-token")
+	endpoint := "http://example.com"
+	token := "project-token"
+	cfg := testConfig()
 	ffcfg := &ABConfig{
-		projectSecret:    "secret",
-		sourceToken:      "project-token",
-		metaEndpoint:     "http://example.com/api",
-		loadMetaInterval: 10 * time.Millisecond,
+		ProjectSecret:    "secret",
+		MetaEndpoint:     "http://example.com/api",
+		MetaLoadInterval: 10 * time.Millisecond,
 	}
-	cfg.WithABConfig(ffcfg)
-	cfg.logger = &noopLogger{}
+	cfg.AB = ffcfg
+	cfg.Logger = &noopLogger{}
 
-	core := NewABCore(cfg, client)
+	core, err := NewABCore(endpoint, token, cfg, client)
+	require.NoError(t, err)
 	// pre-fill storage so start() doesn't trigger an immediate sync
 	core.setStorage(&storage{ABSpecs: map[string]ABSpec{}})
 
@@ -218,14 +228,15 @@ func TestAbCoreLoadRemoteMetaHTTPError(t *testing.T) {
 	transport := &stubTransport{body: []byte(`{"msg":"fail"}`), status: http.StatusInternalServerError}
 	client := &httpClient{client: &http.Client{Transport: transport}}
 
-	cfg := DefaultConfig("http://example.com", "project-token").WithABConfig(&ABConfig{
-		projectSecret: "secret",
-		sourceToken:   "project-token",
-		metaEndpoint:  "http://example.com",
-	})
-	cfg.logger = &noopLogger{}
+	cfg := testConfig()
+	cfg.AB = &ABConfig{
+		ProjectSecret: "secret",
+		MetaEndpoint:  "http://example.com",
+	}
+	cfg.Logger = &noopLogger{}
 
-	core := NewABCore(cfg, client)
+	core, err := NewABCore("http://example.com", "project-token", cfg, client)
+	require.NoError(t, err)
 	core.loadRemoteMeta()
 
 	require.Nil(t, core.storage(), "storage should remain nil on http error")
@@ -248,15 +259,16 @@ func TestAbCoreLoadRemoteMetaNoUpdate(t *testing.T) {
 	transport := &stubTransport{body: body, status: http.StatusOK}
 	client := &httpClient{client: &http.Client{Transport: transport}}
 
-	cfg := DefaultConfig("http://example.com", "project-token").WithABConfig(&ABConfig{
-		projectSecret:    "secret",
-		sourceToken:      "project-token",
-		metaEndpoint:     "http://example.com",
-		loadMetaInterval: time.Second,
-	})
-	cfg.logger = &noopLogger{}
+	cfg := testConfig()
+	cfg.AB = &ABConfig{
+		ProjectSecret:    "secret",
+		MetaEndpoint:     "http://example.com",
+		MetaLoadInterval: time.Second,
+	}
+	cfg.Logger = &noopLogger{}
 
-	core := NewABCore(cfg, client)
+	core, err := NewABCore("http://example.com", "project-token", cfg, client)
+	require.NoError(t, err)
 	orig := &storage{UpdateTime: 555, ABSpecs: map[string]ABSpec{}}
 	core.setStorage(orig)
 
@@ -272,14 +284,15 @@ func TestAbCoreLoadRemoteMetaInvalidPayload(t *testing.T) {
 	transport := &stubTransport{body: body, status: http.StatusOK}
 	client := &httpClient{client: &http.Client{Transport: transport}}
 
-	cfg := DefaultConfig("http://example.com", "project-token").WithABConfig(&ABConfig{
-		projectSecret: "secret",
-		sourceToken:   "project-token",
-		metaEndpoint:  "http://example.com",
-	})
-	cfg.logger = &noopLogger{}
+	cfg := testConfig()
+	cfg.AB = &ABConfig{
+		ProjectSecret: "secret",
+		MetaEndpoint:  "http://example.com",
+	}
+	cfg.Logger = &noopLogger{}
 
-	core := NewABCore(cfg, client)
+	core, err := NewABCore("http://example.com", "project-token", cfg, client)
+	require.NoError(t, err)
 	orig := &storage{UpdateTime: 1, ABSpecs: map[string]ABSpec{}}
 	core.setStorage(orig)
 
@@ -304,14 +317,15 @@ func TestAbCoreLoadRemoteMetaNoFeatures(t *testing.T) {
 	transport := &stubTransport{body: body, status: http.StatusOK}
 	client := &httpClient{client: &http.Client{Transport: transport}}
 
-	cfg := DefaultConfig("http://example.com", "project-token").WithABConfig(&ABConfig{
-		projectSecret: "secret",
-		sourceToken:   "project-token",
-		metaEndpoint:  "http://example.com",
-	})
-	cfg.logger = &noopLogger{}
+	cfg := testConfig()
+	cfg.AB = &ABConfig{
+		ProjectSecret: "secret",
+		MetaEndpoint:  "http://example.com",
+	}
+	cfg.Logger = &noopLogger{}
 
-	core := NewABCore(cfg, client)
+	core, err := NewABCore("http://example.com", "project-token", cfg, client)
+	require.NoError(t, err)
 	core.loadRemoteMeta()
 
 	storage := core.storage()

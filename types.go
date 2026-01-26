@@ -393,3 +393,59 @@ func (p Properties) City() string {
 	city, _ := p[PspCity].(string)
 	return city
 }
+
+// User represents a unified user identity for both A/B testing and event tracking.
+// Use struct literal to create: sensorswave.User{LoginID: "user-123"}
+type User struct {
+	AnonID           string     `json:"anon_id,omitempty"`  // Anonymous or device ID
+	LoginID          string     `json:"login_id,omitempty"` // Login user ID
+	ABUserProperties Properties // Private: only used for A/B test targeting
+}
+
+// WithABProperty adds a single A/B testing property for targeting.
+// Returns a new User with the property added (does not modify the original).
+func (u User) WithABProperty(key string, value any) User {
+	if u.ABUserProperties == nil {
+		u.ABUserProperties = make(Properties)
+	} else {
+		// Create a copy to avoid mutating the original map.
+		newProps := make(Properties, len(u.ABUserProperties)+1)
+		for k, v := range u.ABUserProperties {
+			newProps[k] = v
+		}
+		u.ABUserProperties = newProps
+	}
+	u.ABUserProperties[key] = value
+	return u
+}
+
+// WithABProperties adds multiple A/B testing properties for targeting.
+// Returns a new User with the properties added (does not modify the original).
+func (u User) WithABProperties(properties Properties) User {
+	if properties == nil {
+		return u
+	}
+	if u.ABUserProperties == nil {
+		u.ABUserProperties = make(Properties, len(properties))
+	} else {
+		// Create a copy to avoid mutating the original map.
+		newProps := make(Properties, len(u.ABUserProperties)+len(properties))
+		for k, v := range u.ABUserProperties {
+			newProps[k] = v
+		}
+		u.ABUserProperties = newProps
+	}
+	for k, v := range properties {
+		u.ABUserProperties[k] = v
+	}
+	return u
+}
+
+// toABUser converts User to ABUser for internal A/B testing evaluation.
+func (u User) toABUser() ABUser {
+	return ABUser{
+		AnonID:     u.AnonID,
+		LoginID:    u.LoginID,
+		Properties: u.ABUserProperties,
+	}
+}

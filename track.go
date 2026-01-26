@@ -53,11 +53,10 @@ func (q *messageQueue) flush() (jsonBody []byte) {
 	return
 }
 
-
 func (c *client) loop() {
 	defer c.wg.Done()
 
-	tick := time.NewTicker(c.cfg.flushInterval)
+	tick := time.NewTicker(c.cfg.FlushInterval)
 	defer tick.Stop()
 
 	msgQue := messageQueue{} // make([]message, 0, c.cfg.MaxBatchSize)
@@ -68,7 +67,7 @@ func (c *client) loop() {
 		case <-tick.C:
 			c.flush(&msgQue)
 		case <-c.quit:
-			c.cfg.logger.Debugf("loop closing: draining messages")
+			c.cfg.Logger.Debugf("loop closing: draining messages")
 			close(c.msgchan)
 			for msg := range c.msgchan {
 				c.push(&msgQue, msg)
@@ -109,36 +108,35 @@ func (c *client) send(jsonBody []byte) {
 
 		headers := map[string]string{
 			"Content-Type":    "application/json",
-			HeaderSourceToken: c.cfg.sourceToken,
+			HeaderSourceToken: c.sourceToken,
 		}
 
-		trackURL := strings.TrimRight(c.cfg.endpoint, "/") + c.cfg.trackURIPath
+		trackURL := strings.TrimRight(c.endpoint, "/") + c.cfg.TrackURIPath
 		opts := newRequestOpts().
 			WithMethod("POST").
 			WithURL(trackURL).
 			WithHeaders(headers).
 			WithBody(jsonBody).
-			WithTimeout(c.cfg.httpTimeout).
-			WithRetry(c.cfg.httpRetry)
+			WithTimeout(c.cfg.HTTPTimeout).
+			WithRetry(c.cfg.HTTPRetry)
 		_, httpcode, err := c.h.Do(context.Background(), opts)
 		if err != nil || httpcode != http.StatusOK {
-			c.cfg.logger.Errorf("http send event error: %v httpcode:%d", err, httpcode)
-			if c.cfg.onTrackFailHandler != nil {
+			c.cfg.Logger.Errorf("http send event error: %v httpcode:%d", err, httpcode)
+			if c.cfg.OnTrackFailHandler != nil {
 				events := []Event{}
 				json.Unmarshal(jsonBody, &events)
-				c.cfg.onTrackFailHandler(events, err)
+				c.cfg.OnTrackFailHandler(events, err)
 			}
 			if len(jsonBody) > 100 {
-				c.cfg.logger.Debugf("http send body body  : (%s)", string(jsonBody[:100]))
+				c.cfg.Logger.Debugf("http send body body  : (%s)", string(jsonBody[:100]))
 			} else {
-				c.cfg.logger.Debugf("http send body body  : (%s)", string(jsonBody))
+				c.cfg.Logger.Debugf("http send body body  : (%s)", string(jsonBody))
 			}
 		} else {
-			c.cfg.logger.Debugf("http send body length: %d ", len(jsonBody))
+			c.cfg.Logger.Debugf("http send body length: %d ", len(jsonBody))
 		}
 	}(jsonBody)
 }
-
 
 // check target is valid
 func (c *client) isUserInvalid(user *ABUser) bool {

@@ -17,7 +17,7 @@ func TestABCoreEvalConfigOverride(t *testing.T) {
 	require.NotNil(t, spec)
 
 	t.Run("override-user", func(t *testing.T) {
-		result, err := core.evalAB(ABUser{LoginID: "login-id-example-1"}, spec, 0)
+		result, err := core.evalAB(User{LoginID: "login-id-example-1"}, spec, 0)
 		require.NoError(t, err)
 		require.NotNil(t, result.VariantID)
 		require.Equal(t, "v1", *result.VariantID)
@@ -25,7 +25,7 @@ func TestABCoreEvalConfigOverride(t *testing.T) {
 	})
 
 	t.Run("version-not-matching", func(t *testing.T) {
-		result, err := core.evalAB(ABUser{LoginID: "user-low", Props: Properties{"$app_version": "10.0"}}, spec, 0)
+		result, err := core.evalAB(User{LoginID: "user-low", ABUserProperties: Properties{"$app_version": "10.0"}}, spec, 0)
 		require.NoError(t, err)
 		require.Nil(t, result.VariantID)
 	})
@@ -40,7 +40,7 @@ func TestABCoreEvalConfigOverride(t *testing.T) {
 
 		var v1User, v2User, v3User string
 		for _, uid := range testLoginIDs {
-			result, err := core.evalAB(ABUser{LoginID: uid, Props: Properties{"$app_version": "10.1"}}, spec, 0)
+			result, err := core.evalAB(User{LoginID: uid, ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
 			require.NoError(t, err)
 			if result.VariantID == nil {
 				continue
@@ -68,15 +68,15 @@ func TestABCoreEvalConfigOverride(t *testing.T) {
 		require.NotEmpty(t, v2User, "Could not find user for variant 2")
 		require.NotEmpty(t, v3User, "Could not find user for variant 3")
 
-		r1, err := core.evalAB(ABUser{LoginID: v1User, Props: Properties{"$app_version": "10.1"}}, spec, 0)
+		r1, err := core.evalAB(User{LoginID: v1User, ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
 		require.NoError(t, err)
 		require.Equal(t, "blue", r1.GetString("color", ""))
 
-		r2, err := core.evalAB(ABUser{LoginID: v2User, Props: Properties{"$app_version": "10.1"}}, spec, 0)
+		r2, err := core.evalAB(User{LoginID: v2User, ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
 		require.NoError(t, err)
 		require.Equal(t, "red", r2.GetString("color", ""))
 
-		r3, err := core.evalAB(ABUser{LoginID: v3User, Props: Properties{"$app_version": "10.1"}}, spec, 0)
+		r3, err := core.evalAB(User{LoginID: v3User, ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
 		require.NoError(t, err)
 		require.Equal(t, "orange", r3.GetString("color", ""))
 	})
@@ -95,7 +95,7 @@ func TestABCoreEvalConfigPublic(t *testing.T) {
 
 	for i := 0; i < totalUsers; i++ {
 		uid := fmt.Sprintf("config-public-user-%d", i)
-		result, err := core.evalAB(ABUser{LoginID: uid}, spec, 0)
+		result, err := core.evalAB(User{LoginID: uid}, spec, 0)
 		require.NoError(t, err)
 		require.NotNil(t, result.VariantID)
 
@@ -118,15 +118,15 @@ func TestABCoreEvalConfigPublic(t *testing.T) {
 	require.InDelta(t, 0.30, v2Rate, 0.05)
 	require.InDelta(t, 0.60, v3Rate, 0.05)
 
-	r1, err := core.evalAB(ABUser{LoginID: samples["v1"]}, spec, 0)
+	r1, err := core.evalAB(User{LoginID: samples["v1"]}, spec, 0)
 	require.NoError(t, err)
 	require.Equal(t, "blue", r1.GetString("color", ""))
 
-	r2, err := core.evalAB(ABUser{LoginID: samples["v2"]}, spec, 0)
+	r2, err := core.evalAB(User{LoginID: samples["v2"]}, spec, 0)
 	require.NoError(t, err)
 	require.Equal(t, "red", r2.GetString("color", ""))
 
-	r3, err := core.evalAB(ABUser{LoginID: samples["v3"]}, spec, 0)
+	r3, err := core.evalAB(User{LoginID: samples["v3"]}, spec, 0)
 	require.NoError(t, err)
 	require.Equal(t, "orange", r3.GetString("color", ""))
 }
@@ -139,7 +139,7 @@ func TestABCoreEvalConfigTarget(t *testing.T) {
 	require.NotNil(t, spec)
 
 	t.Run("blocked-version", func(t *testing.T) {
-		result, err := core.evalAB(ABUser{LoginID: "blocked", Props: Properties{"$app_version": "10.0"}}, spec, 0)
+		result, err := core.evalAB(User{LoginID: "blocked", ABUserProperties: Properties{"$app_version": "10.0"}}, spec, 0)
 		require.NoError(t, err)
 		require.Nil(t, result.VariantID)
 	})
@@ -150,7 +150,7 @@ func TestABCoreEvalConfigTarget(t *testing.T) {
 
 	for i := 0; i < totalUsers; i++ {
 		uid := fmt.Sprintf("config-target-user-%d", i)
-		result, err := core.evalAB(ABUser{LoginID: uid, Props: Properties{"$app_version": "10.1"}}, spec, 0)
+		result, err := core.evalAB(User{LoginID: uid, ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
 		require.NoError(t, err)
 		require.NotNil(t, result.VariantID)
 
@@ -173,15 +173,15 @@ func TestABCoreEvalConfigTarget(t *testing.T) {
 	require.InDelta(t, 0.30, v2Rate, 0.05)
 	require.InDelta(t, 0.60, v3Rate, 0.05)
 
-	r1, err := core.evalAB(ABUser{LoginID: samples["v1"], Props: Properties{"$app_version": "10.1"}}, spec, 0)
+	r1, err := core.evalAB(User{LoginID: samples["v1"], ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
 	require.NoError(t, err)
 	require.Equal(t, "blue", r1.GetString("color", ""))
 
-	r2, err := core.evalAB(ABUser{LoginID: samples["v2"], Props: Properties{"$app_version": "10.1"}}, spec, 0)
+	r2, err := core.evalAB(User{LoginID: samples["v2"], ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
 	require.NoError(t, err)
 	require.Equal(t, "red", r2.GetString("color", ""))
 
-	r3, err := core.evalAB(ABUser{LoginID: samples["v3"], Props: Properties{"$app_version": "10.1"}}, spec, 0)
+	r3, err := core.evalAB(User{LoginID: samples["v3"], ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
 	require.NoError(t, err)
 	require.Equal(t, "orange", r3.GetString("color", ""))
 }
@@ -200,7 +200,7 @@ func TestABCoreEvalConfigHoldout(t *testing.T) {
 
 	for i := 0; i < totalUsers; i++ {
 		uid := fmt.Sprintf("config-holdout-user-%d", i)
-		result, err := core.evalAB(ABUser{LoginID: uid}, spec, 0)
+		result, err := core.evalAB(User{LoginID: uid}, spec, 0)
 		require.NoError(t, err)
 		require.NotNil(t, result.VariantID)
 
@@ -225,15 +225,15 @@ func TestABCoreEvalConfigHoldout(t *testing.T) {
 	require.InDelta(t, 0.30, float64(variantCount["v2"])/nonHoldout, 0.05)
 	require.InDelta(t, 0.60, float64(variantCount["v3"])/nonHoldout, 0.05)
 
-	r1, err := core.evalAB(ABUser{LoginID: samples["v1"]}, spec, 0)
+	r1, err := core.evalAB(User{LoginID: samples["v1"]}, spec, 0)
 	require.NoError(t, err)
 	require.Equal(t, "blue", r1.GetString("color", ""))
 
-	r2, err := core.evalAB(ABUser{LoginID: samples["v2"]}, spec, 0)
+	r2, err := core.evalAB(User{LoginID: samples["v2"]}, spec, 0)
 	require.NoError(t, err)
 	require.Equal(t, "red", r2.GetString("color", ""))
 
-	r3, err := core.evalAB(ABUser{LoginID: samples["v3"]}, spec, 0)
+	r3, err := core.evalAB(User{LoginID: samples["v3"]}, spec, 0)
 	require.NoError(t, err)
 	require.Equal(t, "orange", r3.GetString("color", ""))
 }
@@ -254,7 +254,7 @@ func TestABCoreEvalConfigSticky(t *testing.T) {
 		key := fmt.Sprintf("%d-%s", spec.ID, "sticky-config-cache")
 		handler.data[key] = string(cacheBytes)
 
-		result, err := core.evalAB(ABUser{LoginID: "sticky-config-cache", Props: Properties{"is_member": false}}, spec, 0)
+		result, err := core.evalAB(User{LoginID: "sticky-config-cache", ABUserProperties: Properties{"is_member": false}}, spec, 0)
 		require.NoError(t, err)
 		require.NotNil(t, result.VariantID)
 		require.Equal(t, "v1", *result.VariantID)
@@ -263,7 +263,7 @@ func TestABCoreEvalConfigSticky(t *testing.T) {
 
 	t.Run("write-sticky-cache", func(t *testing.T) {
 		loginID := "sticky-config-new"
-		result, err := core.evalAB(ABUser{LoginID: loginID, Props: Properties{"is_member": true}}, spec, 0)
+		result, err := core.evalAB(User{LoginID: loginID, ABUserProperties: Properties{"is_member": true}}, spec, 0)
 		require.NoError(t, err)
 		require.NotNil(t, result.VariantID)
 
