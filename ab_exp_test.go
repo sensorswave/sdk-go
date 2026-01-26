@@ -512,7 +512,7 @@ func TestABCoreEvalExperimentGateTargetFail(t *testing.T) {
 	require.NotNil(t, exp)
 
 	t.Run("gate-fail-when-dependency-passes", func(t *testing.T) {
-		dep := core.getABSpec("New_Feature_Flag")
+		dep := core.getABSpec("TestSpec")
 		require.NotNil(t, dep)
 
 		var passingUser string

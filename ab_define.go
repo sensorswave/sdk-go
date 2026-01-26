@@ -33,7 +33,7 @@ func (s ABTypEnum) String() string {
 // ABSpec AB protocol data structure definition
 type ABSpec struct {
 	ID              int                               `json:"id"`
-	Key             string                            `json:"key"`     // featureKey
+	Key             string                            `json:"key"`     // gate/config/experiment key
 	Name            string                            `json:"name"`    //
 	Typ             int                               `json:"typ"`     //
 	Traffic         string                            `json:"traffic"` // 1:client 2:server

@@ -7,8 +7,8 @@
         "ab_specs": [
             {
                 "id": 1,
-                "key": "New_Feature_Flag",
-                "name": "New Feature Flag",
+                "key": "TestSpec",
+                "name": "TestSpec",
                 "typ": 1,
                 "traffic": "",
                 "subject_id": "LOGIN_ID",

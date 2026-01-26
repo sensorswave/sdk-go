@@ -14,7 +14,7 @@ func TestABCoreEvalGatePublicRollout(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "public.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -56,7 +56,7 @@ func TestABCoreEvalAllGatePublicRollout(t *testing.T) {
 			require.Len(t, results, 1)
 			require.NotNil(t, results[0].VariantID)
 			require.Equal(t, tc.want, results[0].CheckGate())
-			require.Equal(t, "New_Feature_Flag", results[0].Key)
+			require.Equal(t, "TestSpec", results[0].Key)
 		})
 	}
 }
@@ -65,7 +65,7 @@ func TestABCoreEvalGateAnyOfSensitiveProps(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "anyof_sensitive.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -108,7 +108,7 @@ func TestABCoreEvalGateNoneOfSensitiveProps(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "noneof_sensitive.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -156,7 +156,7 @@ func TestABCoreEvalGateNoneOfInsensitiveProps(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "noneof_insentive.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -204,7 +204,7 @@ func TestABCoreEvalGateIsNull(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "isnull.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -246,7 +246,7 @@ func TestABCoreEvalGateIsNotNull(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "isnotnull.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -285,7 +285,7 @@ func TestABCoreEvalGateVersionGT(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "greater_version.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -313,7 +313,7 @@ func TestABCoreEvalGateVersionGTE(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "greater_equal_version.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -340,7 +340,7 @@ func TestABCoreEvalGateVersionLT(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "less_version.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -367,7 +367,7 @@ func TestABCoreEvalGateVersionLTE(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "less_equal_version.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -394,7 +394,7 @@ func TestABCoreEvalGateVersionEQ(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "equal_version.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -422,7 +422,7 @@ func TestABCoreEvalGateVersionNEQ(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "not_equal.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -450,7 +450,7 @@ func TestABCoreEvalGateCustomField(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "custom_field.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -479,7 +479,7 @@ func TestABCoreEvalGateOverrideID(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "override_id.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -505,7 +505,7 @@ func TestABCoreEvalGateOverrideCondition(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "override_condition.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -557,7 +557,7 @@ func TestABCoreEvalGateDisabled(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "disable.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	testCases := []struct {
@@ -590,7 +590,7 @@ func TestABCoreEvalGateEmptyRules(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "missing_gate_rules.json"))
 	core := newTestAbCoreWithStorage(t, store)
 
-	spec := core.getABSpec("New_Feature_Flag")
+	spec := core.getABSpec("TestSpec")
 	require.NotNil(t, spec)
 
 	// Assuming if enabled is true but no rules, it defaults to false (safe default)

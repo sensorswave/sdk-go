@@ -7,8 +7,8 @@
         "ab_specs": [
             {
                 "id": 2,
-                "key": "New_Feature_Flag",
-                "name": "New Feature Flag",
+                "key": "TestSpec",
+                "name": "TestSpec",
                 "typ": 1,
                 "traffic": "",
                 "subject_id": "LOGIN_ID",
@@ -59,7 +59,7 @@
                                 {
                                     "field_class": "GATE",
                                     "field_typ": "STRING",
-                                    "field": "New_Feature_Flag",
+                                    "field": "TestSpec",
                                     "opt": "GATE_FAIL",
                                     "value": null
                                 }

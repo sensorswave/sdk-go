@@ -1,4 +1,4 @@
-// Package sensorswave provides the feature flag core logic.
+// Package sensorswave provides the AB evaluation core logic.
 package sensorswave
 
 import (
@@ -19,7 +19,7 @@ type httpResponseABLoadRemoteMeta struct {
 	Data    ABDataResp `json:"data"`
 }
 
-// ABDataResp contains the actual feature flag configuration data.
+// ABDataResp contains the actual AB configuration data.
 type ABDataResp struct {
 	Update     bool     `json:"update"`
 	UpdateTime int64    `json:"update_time"`
@@ -32,7 +32,7 @@ var (
 	VariantIDFail = "fail"
 )
 
-// loadRemoteMeta fetches the feature flag metadata from the remote server.
+// loadRemoteMeta fetches the AB metadata from the remote server.
 func (ffc *abCore) loadRemoteMeta() {
 	if ffc.cfg.AB.MetaLoader == nil {
 		return
@@ -89,21 +89,21 @@ func (ffc *abCore) loadRemoteMeta() {
 	ffc.cfg.Logger.Debugf("[%s] ab core ffLoadRemoteMeta from server: [%v]", ffc.sourceToken, s)
 }
 
-// ABEnv contains environment-level configurations for feature flags.
+// ABEnv contains environment-level configurations for AB evaluations.
 type ABEnv struct {
-	AlwaysTrack bool `json:"always_track"` // track event even if feature flag not pass, for accurate analysis but cost more, default false
+	AlwaysTrack bool `json:"always_track"` // track event even if evaluation does not pass, for accurate analysis but cost more, default false
 }
 
-// storage maintains the current state of feature flags in memory.
+// storage maintains the current AB state in memory.
 type storage struct { // read only
 	UpdateTime int64             // ms
 	ABEnv      ABEnv             // some config from remote server
-	ABSpecs    map[string]ABSpec // [featureKey]ABSpec
+	ABSpecs    map[string]ABSpec // [key]ABSpec
 }
 
 const maxRecursionDepth = 10
 
-// abCore is the heart of the feature flag evaluation engine.
+// abCore is the heart of the AB evaluation engine.
 type abCore struct {
 	sourceToken   string
 	projectSecret string
@@ -173,7 +173,7 @@ func (ffc *abCore) start() {
 	go ffc.loadRemoteMetaLoop()
 }
 
-// loadRemoteMetaLoop runs periodically to refresh feature flag metadata.
+// loadRemoteMetaLoop runs periodically to refresh AB metadata.
 func (ffc *abCore) loadRemoteMetaLoop() {
 	defer ffc.wg.Done()
 
@@ -196,7 +196,7 @@ func (ffc *abCore) stop() {
 	ffc.wg.Wait()
 }
 
-// storage returns the current feature flag config storage.
+// storage returns the current AB config storage.
 func (ffc *abCore) storage() *storage {
 	return (*storage)(atomic.LoadPointer(&ffc.storagePtr))
 }
@@ -207,26 +207,26 @@ func (ffc *abCore) setStorage(s *storage) {
 }
 
 // getABSpec retrieves a ABSpec by its key.
-func (ffc *abCore) getABSpec(featureKey string) *ABSpec {
+func (ffc *abCore) getABSpec(key string) *ABSpec {
 	storage := ffc.storage()
 	if storage != nil {
-		if spec, ok := storage.ABSpecs[featureKey]; ok {
+		if spec, ok := storage.ABSpecs[key]; ok {
 			return &spec
 		}
 	}
 	return nil
 }
 
-// eval evaluates a specific feature flag for a user.
-func (ffc *abCore) eval(user User, featureKey string) (result ABResult, err error) {
-	spec := ffc.getABSpec(featureKey)
+// eval evaluates a specific AB spec for a user.
+func (ffc *abCore) eval(user User, key string) (result ABResult, err error) {
+	spec := ffc.getABSpec(key)
 	if spec == nil {
 		return ABResult{}, nil
 	}
 	return ffc.evalAB(user, spec, 0)
 }
 
-// evalAll evaluates all active feature flags for a user.
+// evalAll evaluates all active AB specs for a user.
 func (ffc *abCore) evalAll(user User) (results []ABResult, err error) {
 	results = make([]ABResult, 0, 10)
 	storage := ffc.storage()
@@ -247,14 +247,14 @@ func (ffc *abCore) evalAll(user User) (results []ABResult, err error) {
 	return
 }
 
-// evalFF is the core evaluation logic for a single feature flag.
+// evalAB is the core evaluation logic for a single AB spec.
 func (ffc *abCore) evalAB(user User, spec *ABSpec, index int) (result ABResult, err error) {
 	if index >= maxRecursionDepth { // Prevent infinite recursion
 		return
 	}
 	index++
 	if !spec.Enabled {
-		return // feature flag is disabled
+		return // spec is disabled
 	}
 
 	var evalID string

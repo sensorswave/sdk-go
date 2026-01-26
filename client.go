@@ -47,11 +47,11 @@ type Client interface {
 
 	// ========== A/B Testing ==========
 
-	// ABEvaluate evaluates a single feature flag or A/B test for a user.
+	// ABEvaluate evaluates a single gate/config/experiment for a user.
 	// The withImpressionLog parameter controls whether to log an impression event (default: true).
 	ABEvaluate(user User, key string, withImpressionLog ...bool) (ABResult, error)
 
-	// ABEvaluateAll evaluates all applicable feature flags and A/B tests for a user.
+	// ABEvaluateAll evaluates all applicable gates/configs/experiments for a user.
 	ABEvaluateAll(user User) ([]ABResult, error)
 
 	// GetABSpecStorage exports the current A/B testing state for faster startup in future sessions.
@@ -309,7 +309,7 @@ func (c *client) DeleteUserProfile(user User) error {
 
 // ========== A/B Testing ==========
 
-func (c *client) ABEvaluate(user User, featureKey string, withImpressionLog ...bool) (ABResult, error) {
+func (c *client) ABEvaluate(user User, key string, withImpressionLog ...bool) (ABResult, error) {
 	if c.abCore == nil {
 		return ABResult{}, ErrABNotInited
 	}
@@ -320,10 +320,10 @@ func (c *client) ABEvaluate(user User, featureKey string, withImpressionLog ...b
 		return ABResult{}, err
 	}
 
-	// Evaluate the feature with the AB core.
-	result, err := c.abCore.eval(user, featureKey)
+	// Evaluate the gate/config/experiment with the AB core.
+	result, err := c.abCore.eval(user, key)
 	if err != nil {
-		c.cfg.Logger.Errorf("A/B test %s evaluation error: %v", featureKey, err)
+		c.cfg.Logger.Errorf("A/B test %s evaluation error: %v", key, err)
 		return ABResult{}, err
 	}
 

@@ -114,10 +114,10 @@ func runExample(args exampleArgs) error {
 	return nil
 }
 
-func runDynamicConfigExample(client sensorswave.Client, users []sensorswave.User, featureKey string) error {
+func runDynamicConfigExample(client sensorswave.Client, users []sensorswave.User, key string) error {
 	distribution := make(map[string]int, len(users))
 	for _, user := range users {
-		result, err := client.ABEvaluate(user, featureKey)
+		result, err := client.ABEvaluate(user, key)
 		if err != nil {
 			return fmt.Errorf("dynamic config eval failed for user %s: %w", user.LoginID, err)
 		}
@@ -132,10 +132,10 @@ func runDynamicConfigExample(client sensorswave.Client, users []sensorswave.User
 	return nil
 }
 
-func runGateExample(client sensorswave.Client, users []sensorswave.User, featureKey string) error {
+func runGateExample(client sensorswave.Client, users []sensorswave.User, key string) error {
 	var pass, fail int
 	for _, user := range users {
-		result, err := client.ABEvaluate(user, featureKey)
+		result, err := client.ABEvaluate(user, key)
 		if err != nil {
 			return fmt.Errorf("gate eval failed for user %s: %w", user.LoginID, err)
 		}
@@ -151,17 +151,17 @@ func runGateExample(client sensorswave.Client, users []sensorswave.User, feature
 		}
 	}
 
-	fmt.Printf("  gate %s -> pass:%d fail:%d\n", featureKey, pass, fail)
+	fmt.Printf("  gate %s -> pass:%d fail:%d\n", key, pass, fail)
 	return nil
 }
 
-func runExperimentExample(client sensorswave.Client, users []sensorswave.User, featureKey string) error {
+func runExperimentExample(client sensorswave.Client, users []sensorswave.User, key string) error {
 	variantCounts := make(map[string]int)
 	labelCounts := make(map[string]int)
 	var enabledTrue int
 
 	for _, user := range users {
-		result, err := client.ABEvaluate(user, featureKey)
+		result, err := client.ABEvaluate(user, key)
 		if err != nil {
 			return fmt.Errorf("experiment eval failed for user %s: %w", user.LoginID, err)
 		}
