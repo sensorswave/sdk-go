@@ -45,4 +45,5 @@ coverage*.out
 .chatgpt/
 .gpt/
 .openai/
+.claude/
 CLAUDE.md
