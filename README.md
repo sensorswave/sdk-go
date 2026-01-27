@@ -6,7 +6,7 @@ A lightweight Go SDK for event tracking and A/B testing.
 
 - **Event Tracking**: Track user events with custom properties
 - **User Profiles**: Set, increment, append, and manage user profile properties
-- **A/B Testing**: Evaluate gates, experiments, and dynamic configs
+- **A/B Testing**: Evaluate feature gates, experiments, and feature configs
 - **Automatic Exposure Logging**: Automatically track A/B test impressions
 - **Fast Boot**: Cache and restore A/B metadata for faster startup
 - **Sticky Sessions**: Persist traffic assignment for consistent user experiences
@@ -19,6 +19,8 @@ go get github.com/sensorswave/sdk-go
 
 ## Quick Start
 
+### Basic Event Tracking
+
 ```go
 package main
 
@@ -28,25 +30,17 @@ import (
 )
 
 func main() {
-    // 1. Create configuration
-    cfg := sensorswave.Config{
-        AB: &sensorswave.ABConfig{
-            ProjectSecret: "your-project-secret",
-        },
-    }
-
-    // 2. Create client
-    client, err := sensorswave.NewWithConfig(
-        "https://your-endpoint.com",
-        "your-source-token",
-        cfg,
+    // Create client with minimal configuration
+    client, err := sensorswave.New(
+        sensorswave.Endpoint("https://your-endpoint.com"),
+        sensorswave.SourceToken("your-source-token"),
     )
     if err != nil {
         log.Fatal(err)
     }
     defer client.Close()
 
-    // 3. Track events and evaluate A/B tests
+    // Track events
     user := sensorswave.User{
         LoginID: "user-123",
         AnonID:  "device-456",
@@ -56,6 +50,27 @@ func main() {
         "page": "/home",
     })
 }
+```
+
+### Enable A/B Testing (Optional)
+
+To enable A/B testing, provide an `ABConfig`:
+
+```go
+cfg := sensorswave.Config{
+    AB: &sensorswave.ABConfig{
+        ProjectSecret: "your-project-secret",
+    },
+}
+
+client, err := sensorswave.NewWithConfig(
+    sensorswave.Endpoint("https://your-endpoint.com"),
+    sensorswave.SourceToken("your-source-token"),
+    cfg,
+)
+
+// Now you can use A/B testing methods
+result, _ := client.ABEvaluate(user, "my_experiment")
 ```
 
 ## API Reference
@@ -226,7 +241,7 @@ err := client.DeleteUserProfile(user)
 
 ## A/B Testing
 
-### Evaluate a Single Experiment or Gate
+### Evaluate a Single Experiment or Feature Gate
 
 ```go
 user := sensorswave.User{
@@ -245,7 +260,7 @@ if err != nil {
 }
 ```
 
-### Check Gate (Boolean Toggle)
+### Check Feature Gate (Boolean Toggle)
 
 ```go
 result, _ := client.ABEvaluate(user, "new_feature_gate")
@@ -258,7 +273,7 @@ if result.CheckGate() {
 }
 ```
 
-### Get Dynamic Config Values
+### Get Feature Config Values
 
 ```go
 result, _ := client.ABEvaluate(user, "button_color_config")
@@ -284,19 +299,23 @@ settings := result.GetMap("settings", map[string]interface{}{})
 ```go
 result, _ := client.ABEvaluate(user, "pricing_experiment")
 
-if result.VariantID != nil {
-    switch *result.VariantID {
-    case "control":
-        showOriginalPricing()
-    case "variant_a":
-        showDiscountPricing()
-    case "variant_b":
-        showBundlePricing()
-    }
+// Get experiment variant parameter
+pricingStrategy := result.GetString("strategy", "original")
+
+// Execute different logic based on experiment variant
+switch pricingStrategy {
+case "original":
+    showOriginalPricing()
+case "discount":
+    showDiscountPricing(discount)
+case "bundle":
+    showBundlePricing(int(bundleSize))
+default:
+    showOriginalPricing()
 }
 ```
 
-### Evaluate All Experiments and Gates
+### Evaluate All Experiments and Feature Gates
 
 ```go
 results, err := client.ABEvaluateAll(user)
@@ -404,11 +423,10 @@ user = user.WithABProperty(sensorswave.PspCountry, "US")
 go run ./example \
     --source-token=your_token \
     --project-secret=your_secret \
-    --endpoint=http://localhost:8106 \
-    --meta-endpoint=http://localhost:8110 \
-    --gate-key=my_gate \
+    --endpoint=your_event_tracking_endpoint \
+    --gate-key=my_feature_gate \
     --experiment-key=my_experiment \
-    --dynamic-key=my_config
+    --dynamic-key=my_feature_config
 ```
 
 ---
