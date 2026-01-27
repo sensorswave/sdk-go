@@ -24,27 +24,37 @@ package main
 
 import (
     "log"
-    "time"
     "github.com/sensorswave/sdk-go"
 )
 
 func main() {
     // 1. Create configuration
-    cfg := sensorswave.DefaultConfig("your-endpoint", "your-source-token")
+    cfg := sensorswave.Config{
+        AB: &sensorswave.ABConfig{
+            ProjectSecret: "your-project-secret",
+        },
+    }
 
-    // 2. (Optional) Enable A/B testing
-    abCfg := sensorswave.DefaultABConfig("your-project-secret")
-    cfg.WithABConfig(abCfg)
-
-    // 3. Create client
-    client, err := sensorswave.New(cfg)
+    // 2. Create client
+    client, err := sensorswave.NewWithConfig(
+        "https://your-endpoint.com",
+        "your-source-token",
+        cfg,
+    )
     if err != nil {
         log.Fatal(err)
     }
     defer client.Close()
 
-    // 4. Track events and evaluate A/B tests
-    // ... see API reference below
+    // 3. Track events and evaluate A/B tests
+    user := sensorswave.User{
+        LoginID: "user-123",
+        AnonID:  "device-456",
+    }
+
+    client.TrackEvent(user, "page_view", sensorswave.Properties{
+        "page": "/home",
+    })
 }
 ```
 
@@ -55,55 +65,92 @@ func main() {
 ```go
 type Client interface {
     Close() error
-    Identify(anonID, loginID string) error
-    TrackEvent(anonID, loginID, event string, props Properties) error
+
+    // User Identity
+    Identify(user User) error
+
+    // Event Tracking
+    TrackEvent(user User, event string, properties Properties) error
     Track(event Event) error
-    
+
     // User Profile Methods
-    ProfileSet(anonID, loginID string, props Properties) error
-    ProfileSetOnce(anonID, loginID string, props Properties) error
-    ProfileIncrement(anonID, loginID string, props Properties) error
-    ProfileAppend(anonID, loginID string, props Properties) error
-    ProfileUnion(anonID, loginID string, props Properties) error
-    ProfileUnset(anonID, loginID string, properties ...string) error
-    ProfileDelete(anonID, loginID string) error
-    
+    SetUserProperties(user User, properties Properties) error
+    SetUserPropertiesOnce(user User, properties Properties) error
+    IncrementUserProperties(user User, properties Properties) error
+    AppendUserProperties(user User, properties Properties) error
+    UnionUserProperties(user User, properties Properties) error
+    UnsetUserProperties(user User, propertyKeys ...string) error
+    DeleteUserProfile(user User) error
+
     // A/B Testing Methods
-    ABEval(user ABUser, key string, withLog ...bool) (ABResult, error)
-    ABEvalAll(user ABUser) ([]ABResult, error)
-    ABStorageForFastBoot() ([]byte, error)
-    GetABSpecs() ([]ABSpec, int64, error)
+    ABEvaluate(user User, key string, withImpressionLog ...bool) (ABResult, error)
+    ABEvaluateAll(user User) ([]ABResult, error)
+    GetABSpecStorage() ([]byte, error)
 }
 ```
 
 ---
 
-### Event Tracking
+## User Type
 
-#### Identify User
+The `User` type represents a user identity for both event tracking and A/B testing:
+
+```go
+type User struct {
+    AnonID           string                 // Anonymous or device ID
+    LoginID          string                 // Login user ID
+    ABUserProperties map[string]interface{} // Properties for A/B test targeting
+}
+
+// Create user
+user := sensorswave.User{
+    LoginID: "user-123",
+    AnonID:  "device-456",
+}
+
+// Add A/B targeting properties (immutable pattern)
+user = user.WithABProperty(sensorswave.PspAppVer, "11.0")
+user = user.WithABProperty("is_premium", true)
+
+// Or add multiple properties at once
+user = user.WithABProperties(sensorswave.Properties{
+    sensorswave.PspAppVer: "11.0",
+    "is_premium":          true,
+})
+```
+
+---
+
+## Event Tracking
+
+### Identify User
 
 Links an anonymous ID with a login ID (sign-up event).
 
 ```go
-err := client.Identify("anon-123", "user-456")
+user := sensorswave.User{
+    AnonID:  "anon-123",
+    LoginID: "user-456",
+}
+err := client.Identify(user)
 ```
 
-#### Track Custom Event
+### Track Custom Event
 
 ```go
-err := client.TrackEvent(
-    "anon-123",
-    "user-456",
-    "purchase",
-    sensorswave.Properties{
-        "product_id": "SKU-001",
-        "price":      99.99,
-        "quantity":   2,
-    },
-)
+user := sensorswave.User{
+    AnonID:  "anon-123",
+    LoginID: "user-456",
+}
+
+err := client.TrackEvent(user, "purchase", sensorswave.Properties{
+    "product_id": "SKU-001",
+    "price":      99.99,
+    "quantity":   2,
+})
 ```
 
-#### Track with Full Event Structure
+### Track with Full Event Structure
 
 ```go
 event := sensorswave.NewEvent("anon-123", "user-456", "page_view").
@@ -116,82 +163,92 @@ err := client.Track(event)
 
 ---
 
-### User Profile Management
+## User Profile Management
 
-#### Set Profile Properties
+### Set Profile Properties
 
 ```go
-err := client.ProfileSet("anon-123", "user-456", sensorswave.Properties{
+user := sensorswave.User{AnonID: "anon-123", LoginID: "user-456"}
+
+err := client.SetUserProperties(user, sensorswave.Properties{
     "name":  "John Doe",
     "email": "john@example.com",
     "level": 5,
 })
 ```
 
-#### Set Once (Only if Not Exists)
+### Set Once (Only if Not Exists)
 
 ```go
-err := client.ProfileSetOnce("anon-123", "user-456", sensorswave.Properties{
+err := client.SetUserPropertiesOnce(user, sensorswave.Properties{
     "first_login_date": "2026-01-20",
 })
 ```
 
-#### Increment Numeric Properties
+### Increment Numeric Properties
 
 ```go
-err := client.ProfileIncrement("anon-123", "user-456", sensorswave.Properties{
+err := client.IncrementUserProperties(user, sensorswave.Properties{
     "login_count": 1,
     "points":      100,
 })
 ```
 
-#### Append to List Properties
+### Append to List Properties
 
 ```go
-err := client.ProfileAppend("anon-123", "user-456", sensorswave.Properties{
+err := client.AppendUserProperties(user, sensorswave.Properties{
     "tags": "premium",
 })
 ```
 
-#### Unset Properties
+### Union List Properties
 
 ```go
-err := client.ProfileUnset("anon-123", "user-456", "temp_field", "old_field")
+err := client.UnionUserProperties(user, sensorswave.Properties{
+    "categories": "sports",
+})
 ```
 
-#### Delete User Profile
+### Unset Properties
 
 ```go
-err := client.ProfileDelete("anon-123", "user-456")
+err := client.UnsetUserProperties(user, "temp_field", "old_field")
+```
+
+### Delete User Profile
+
+```go
+err := client.DeleteUserProfile(user)
 ```
 
 ---
 
-### A/B Testing
+## A/B Testing
 
-#### Evaluate a Single Experiment or Gate
+### Evaluate a Single Experiment or Gate
 
 ```go
-user := sensorswave.ABUser{
+user := sensorswave.User{
     LoginID: "user-456",
     AnonID:  "anon-123",
-    Props: sensorswave.Properties{
-        sensorswave.PspAppVer: "11.0",
-        "is_premium":          true,
-    },
 }
+user = user.WithABProperties(sensorswave.Properties{
+    sensorswave.PspAppVer: "11.0",
+    "is_premium":          true,
+})
 
-result, err := client.ABEval(user, "my_experiment")
+result, err := client.ABEvaluate(user, "my_experiment")
 if err != nil {
     log.Printf("AB eval error: %v", err)
     return
 }
 ```
 
-#### Check Gate (Boolean Toggle)
+### Check Gate (Boolean Toggle)
 
 ```go
-result, _ := client.ABEval(user, "new_feature_gate")
+result, _ := client.ABEvaluate(user, "new_feature_gate")
 if result.CheckGate() {
     // Feature is enabled for this user
     enableNewFeature()
@@ -201,10 +258,10 @@ if result.CheckGate() {
 }
 ```
 
-#### Get Dynamic Config Values
+### Get Dynamic Config Values
 
 ```go
-result, _ := client.ABEval(user, "button_color_config")
+result, _ := client.ABEvaluate(user, "button_color_config")
 
 // Get string value with fallback
 color := result.GetString("color", "blue")
@@ -222,10 +279,10 @@ items := result.GetSlice("items", []interface{}{})
 settings := result.GetMap("settings", map[string]interface{}{})
 ```
 
-#### Evaluate Experiment
+### Evaluate Experiment
 
 ```go
-result, _ := client.ABEval(user, "pricing_experiment")
+result, _ := client.ABEvaluate(user, "pricing_experiment")
 
 if result.VariantID != nil {
     switch *result.VariantID {
@@ -239,10 +296,10 @@ if result.VariantID != nil {
 }
 ```
 
-#### Evaluate All Experiments and Gates
+### Evaluate All Experiments and Gates
 
 ```go
-results, err := client.ABEvalAll(user)
+results, err := client.ABEvaluateAll(user)
 if err != nil {
     log.Fatal(err)
 }
@@ -252,16 +309,29 @@ for _, r := range results {
 }
 ```
 
-#### Fast Boot with Cached Metadata
+### Disable Automatic Impression Logging
+
+By default, A/B evaluation automatically logs an impression event. You can disable this:
+
+```go
+// Disable impression logging for this evaluation
+result, err := client.ABEvaluate(user, "my_experiment", false)
+```
+
+### Fast Boot with Cached Metadata
 
 ```go
 // Export current state for caching
-storage, _ := client.ABStorageForFastBoot()
+storage, _ := client.GetABSpecStorage()
 saveToCache(storage)
 
 // On next startup, use cached data for faster initialization
-cachedStorage := loadFromCache()
-abCfg.WithLocalStorageForFastBoot(cachedStorage)
+cfg := sensorswave.Config{
+    AB: &sensorswave.ABConfig{
+        ProjectSecret:           "your-secret",
+        LocalStorageForFastBoot: loadFromCache(),
+    },
+}
 ```
 
 ---
@@ -270,27 +340,61 @@ abCfg.WithLocalStorageForFastBoot(cachedStorage)
 
 ### Main Config
 
-| Method | Description | Default |
-|--------|-------------|---------|
-| `WithEndpoint(url)` | Event tracking server base URL | Empty (Required) |
-| `WithTrackURIPath(path)` | Track endpoint path | `/in/track` |
-| `WithTransport(transport)` | Custom HTTP transport | Default transport |
-| `WithLogger(logger)` | Custom logger implementation | Console logger |
-| `WithFlushInterval(duration)` | Event flush interval | 10 seconds |
-| `WithHTTPConcurrency(n)` | Max concurrent HTTP requests | 10 |
-| `WithHTTPTimeout(duration)` | HTTP request timeout | 3 seconds |
-| `WithHTTPRetry(n)` | HTTP retry count | 2 |
-| `WithABConfig(abConfig)` | Enable A/B testing | nil (disabled) |
+| Field | Description | Default |
+|-------|-------------|---------|
+| `TrackURIPath` | Event tracking endpoint path | `/in/track` |
+| `Transport` | Custom HTTP transport | Default transport |
+| `Logger` | Custom logger implementation | Console logger |
+| `FlushInterval` | Event flush interval | 10 seconds |
+| `HTTPConcurrency` | Max concurrent HTTP requests | 10 |
+| `HTTPTimeout` | HTTP request timeout | 3 seconds |
+| `HTTPRetry` | HTTP retry count | 2 |
+| `AB` | A/B testing configuration | nil (disabled) |
 
-### A/B Config
+### ABConfig
 
-| Method | Description | Default |
-|--------|-------------|---------|
-| `WithMetaEndpoint(url)` | A/B metadata server base URL | Empty (defaults to Config.Endpoint) |
-| `WithMetaURIPath(path)` | A/B metadata path | `/ab/all4eval` |
-| `WithLoadMetaInterval(duration)` | Metadata polling interval | 10 seconds |
-| `WithLocalStorageForFastBoot(data)` | Cached metadata for fast startup | nil |
-| `WithStickyHandler(handler)` | Custom sticky session handler | nil |
+| Field | Description | Default |
+|-------|-------------|---------|
+| `ProjectSecret` | Project secret for authentication | Required |
+| `MetaEndpoint` | A/B metadata server URL | Uses main endpoint |
+| `MetaURIPath` | A/B metadata path | `/ab/all4eval` |
+| `MetaLoadInterval` | Metadata polling interval | 30 seconds (minimum) |
+| `LocalStorageForFastBoot` | Cached metadata for fast startup | nil |
+| `StickyHandler` | Custom sticky session handler | nil |
+| `MetaLoader` | Custom metadata loader | nil |
+
+---
+
+## Predefined Properties
+
+The SDK provides predefined property constants for A/B testing targeting:
+
+```go
+const (
+    PspAppVer           = "$app_version"      // App version
+    PspOS               = "$os"               // Operating system
+    PspOSVer            = "$os_version"       // OS version
+    PspModel            = "$model"            // Device model
+    PspManufacturer     = "$manufacturer"     // Device manufacturer
+    PspScreenWidth      = "$screen_width"     // Screen width
+    PspScreenHeight     = "$screen_height"    // Screen height
+    PspNetworkType      = "$network_type"     // Network type
+    PspCarrier          = "$carrier"          // Mobile carrier
+    PspIsFirstDay       = "$is_first_day"     // Is first day
+    PspIsFirstTime      = "$is_first_time"    // Is first time
+    PspIP               = "$ip"               // IP address
+    PspCountry          = "$country"          // Country
+    PspProvince         = "$province"         // Province/State
+    PspCity             = "$city"             // City
+)
+```
+
+Usage:
+
+```go
+user = user.WithABProperty(sensorswave.PspAppVer, "2.1.0")
+user = user.WithABProperty(sensorswave.PspCountry, "US")
+```
 
 ---
 
@@ -306,3 +410,9 @@ go run ./example \
     --experiment-key=my_experiment \
     --dynamic-key=my_config
 ```
+
+---
+
+## License
+
+See LICENSE file for details.
