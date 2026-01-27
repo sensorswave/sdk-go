@@ -57,9 +57,6 @@ type Client interface {
 	// GetABSpecStorage exports the current A/B testing state for faster startup in future sessions.
 	GetABSpecStorage() ([]byte, error)
 
-	// GetABSpecs retrieves the raw A/B testing specifications and their update time.
-	GetABSpecs() ([]ABSpec, int64, error)
-
 	// ========== Low-level API ==========
 
 	// Track submits a fully populated Event structure directly.
@@ -111,7 +108,7 @@ func NewWithConfig(endpoint Endpoint, token SourceToken, cfg Config) (Client, er
 			return nil, err
 		}
 		c.abCore = abc
-		c.abCore.start()
+		c.abCore.Start()
 		c.cfg.Logger.Infof("sdk client initialized with A/B testing")
 	} else {
 		c.cfg.Logger.Infof("sdk client initialized")
@@ -132,7 +129,7 @@ type client struct {
 	quit        chan struct{}
 	msgchan     chan []byte
 	wg          sync.WaitGroup
-	abCore      *abCore
+	abCore      *ABCore
 	sem         chan struct{}
 }
 
@@ -142,7 +139,7 @@ func (c *client) Close() error {
 	}
 	close(c.quit)
 	if c.abCore != nil {
-		c.abCore.stop()
+		c.abCore.Stop()
 	}
 
 	c.wg.Wait()
@@ -321,7 +318,7 @@ func (c *client) ABEvaluate(user User, key string, withImpressionLog ...bool) (A
 	}
 
 	// Evaluate the gate/config/experiment with the AB core.
-	result, err := c.abCore.eval(user, key)
+	result, err := c.abCore.Evaluate(user, key)
 	if err != nil {
 		c.cfg.Logger.Errorf("A/B test %s evaluation error: %v", key, err)
 		return ABResult{}, err
@@ -351,25 +348,14 @@ func (c *client) ABEvaluateAll(user User) ([]ABResult, error) {
 		return nil, err
 	}
 
-	return c.abCore.evalAll(user)
+	return c.abCore.EvaluateAll(user)
 }
 
 func (c *client) GetABSpecStorage() ([]byte, error) {
 	if c.abCore == nil {
 		return nil, ErrABNotInited
 	}
-	storage := c.abCore.storage()
-	if storage == nil {
-		return nil, ErrABNotReady
-	}
-	return json.Marshal(storage)
-}
-
-func (c *client) GetABSpecs() ([]ABSpec, int64, error) {
-	if c.abCore == nil {
-		return nil, 0, ErrABNotInited
-	}
-	return c.abCore.GetABSpecs()
+	return c.abCore.GetStorageSnapshot()
 }
 
 // ========== Internal Helpers ==========

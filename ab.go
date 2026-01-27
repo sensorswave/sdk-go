@@ -33,20 +33,20 @@ var (
 )
 
 // loadRemoteMeta fetches the AB metadata from the remote server.
-func (ffc *abCore) loadRemoteMeta() {
-	if ffc.cfg.AB.MetaLoader == nil {
+func (abc *ABCore) loadRemoteMeta() {
+	if abc.abCfg.MetaLoader == nil {
 		return
 	}
 
-	abData, err := ffc.cfg.AB.MetaLoader.LoadMeta()
+	abData, err := abc.abCfg.MetaLoader.LoadMeta()
 	if err != nil {
-		ffc.cfg.Logger.Errorf("[%s] ab core loadRemoteMeta failed: %v", ffc.sourceToken, err)
+		abc.logger.Errorf("[%s] ab core loadRemoteMeta failed: %v", abc.sourceToken, err)
 		return
 	}
 
 	needupdate := abData.Update
 	if !needupdate {
-		storage := ffc.storage()
+		storage := abc.storage()
 		if storage != nil {
 			if storage.UpdateTime != abData.UpdateTime {
 				needupdate = true
@@ -57,7 +57,7 @@ func (ffc *abCore) loadRemoteMeta() {
 	}
 
 	if !needupdate {
-		ffc.cfg.Logger.Debugf("[%s] ab core loadRemoteMeta from server without new info", ffc.sourceToken)
+		abc.logger.Debugf("[%s] ab core loadRemoteMeta from server without new info", abc.sourceToken)
 		return
 	}
 
@@ -72,7 +72,7 @@ func (ffc *abCore) loadRemoteMeta() {
 			if len(payload) > 0 {
 				value := make(map[string]any)
 				if err = json.Unmarshal(payload, &value); err != nil {
-					ffc.cfg.Logger.Errorf("[%s] ab core json.Unmarshal VariantPayload error: %v, payload:%s", ffc.sourceToken, err, payload)
+					abc.logger.Errorf("[%s] ab core json.Unmarshal VariantPayload error: %v, payload:%s", abc.sourceToken, err, payload)
 					return
 				}
 				if spec.VariantValues == nil {
@@ -85,8 +85,8 @@ func (ffc *abCore) loadRemoteMeta() {
 		s.ABSpecs[spec.Key] = spec
 	}
 
-	ffc.setStorage(&s)
-	ffc.cfg.Logger.Debugf("[%s] ab core ffLoadRemoteMeta from server: [%v]", ffc.sourceToken, s)
+	abc.setStorage(&s)
+	abc.logger.Debugf("[%s] ab core ffLoadRemoteMeta from server: [%v]", abc.sourceToken, s)
 }
 
 // ABEnv contains environment-level configurations for AB evaluations.
@@ -103,11 +103,13 @@ type storage struct { // read only
 
 const maxRecursionDepth = 10
 
-// abCore is the heart of the AB evaluation engine.
-type abCore struct {
+// ABCore is the heart of the AB evaluation engine.
+// It can be used independently for AB testing without the full Client (which includes event tracking).
+type ABCore struct {
 	sourceToken   string
 	projectSecret string
-	cfg           *Config
+	abCfg         *ABConfig      // AB-specific configuration
+	logger        Logger         // Logger for AB operations
 	storagePtr    unsafe.Pointer // unsafe.Pointer(*storage)
 	wg            sync.WaitGroup
 	ctx           context.Context
@@ -115,100 +117,112 @@ type abCore struct {
 	h             *httpClient
 }
 
-// NewABCore creates a new abCore instance with the provided configuration and HTTP client.
-func NewABCore(endpoint, sourceToken string, config *Config, h *httpClient) (*abCore, error) {
-	ffc := &abCore{
+// NewABCore creates a new ABCore instance with the provided configuration and HTTP client.
+func NewABCore(endpoint, sourceToken string, config *Config, h *httpClient) (*ABCore, error) {
+	if config == nil {
+		return nil, fmt.Errorf("config is required")
+	}
+	if config.AB == nil {
+		return nil, fmt.Errorf("ab config is required")
+	}
+	if config.Logger == nil {
+		config.Logger = &defaultLogger{}
+	}
+	normalizeABConfig(config.AB)
+	abc := &ABCore{
 		sourceToken: sourceToken,
-		cfg:         config,
+		abCfg:       config.AB,
+		logger:      config.Logger,
 		h:           h,
 	}
 
-	ffc.projectSecret = ffc.cfg.AB.ProjectSecret
+	abc.projectSecret = abc.abCfg.ProjectSecret
 	// Initialize default meta loader if not provided
-	if ffc.cfg.AB.MetaLoader == nil {
-		metaEndpoint := ffc.cfg.AB.MetaEndpoint
+	if abc.abCfg.MetaLoader == nil {
+		metaEndpoint := abc.abCfg.MetaEndpoint
 		if metaEndpoint == "" {
 			metaEndpoint = endpoint
 		}
-		// Ensure meta endpoint is normalized if it came from ffc.endpoint
+		// Ensure meta endpoint is normalized if it came from abc.endpoint
 		if normalized, err := normalizeEndpoint(metaEndpoint); err == nil {
 			metaEndpoint = normalized
 		}
 
-		metaPath := ffc.cfg.AB.MetaURIPath
+		metaPath := abc.abCfg.MetaURIPath
 		if metaPath == "" {
 			metaPath = defaultABMetaPath
 		}
 
-		if ffc.cfg.AB.ProjectSecret == "" {
+		if abc.abCfg.ProjectSecret == "" {
 			return nil, fmt.Errorf("project secret is required when MetaLoader is nil")
 		}
-		ffc.cfg.AB.MetaLoader = &HTTPSignatureMetaLoader{
+		abc.abCfg.MetaLoader = &HTTPSignatureMetaLoader{
 			Endpoint:      metaEndpoint,
 			URIPath:       metaPath,
-			SourceToken:   ffc.sourceToken,
-			ProjectSecret: ffc.cfg.AB.ProjectSecret,
+			SourceToken:   abc.sourceToken,
+			ProjectSecret: abc.abCfg.ProjectSecret,
 			HTTPClient:    h,
 		}
-		ffc.cfg.Logger.Infof("ab core initialized with meta loader: [%v]", ffc.cfg.AB.MetaLoader)
+		abc.logger.Infof("ab core initialized with meta loader: [%v]", abc.abCfg.MetaLoader)
 	}
 
-	ffc.ctx, ffc.cancel = context.WithCancel(context.Background())
-	if len(ffc.cfg.AB.LocalStorageForFastBoot) > 0 {
+	abc.ctx, abc.cancel = context.WithCancel(context.Background())
+	if len(abc.abCfg.LocalStorageForFastBoot) > 0 {
 		s := storage{}
-		if json.Unmarshal(ffc.cfg.AB.LocalStorageForFastBoot, &s) == nil {
-			ffc.setStorage(&s)
+		if json.Unmarshal(abc.abCfg.LocalStorageForFastBoot, &s) == nil {
+			abc.setStorage(&s)
 		}
 	}
 
-	return ffc, nil
+	return abc, nil
 }
 
-// start initiates the meta data loading loop.
-func (ffc *abCore) start() {
-	if ffc.storage() == nil {
-		ffc.loadRemoteMeta() // fetch once at startup
+// Start initiates the meta data loading loop.
+// This must be called after creating an ABCore instance to begin fetching AB metadata.
+func (abc *ABCore) Start() {
+	if abc.storage() == nil {
+		abc.loadRemoteMeta() // fetch once at startup
 	}
-	ffc.wg.Add(1)
-	go ffc.loadRemoteMetaLoop()
+	abc.wg.Add(1)
+	go abc.loadRemoteMetaLoop()
 }
 
 // loadRemoteMetaLoop runs periodically to refresh AB metadata.
-func (ffc *abCore) loadRemoteMetaLoop() {
-	defer ffc.wg.Done()
+func (abc *ABCore) loadRemoteMetaLoop() {
+	defer abc.wg.Done()
 
-	tick := time.NewTicker(ffc.cfg.AB.MetaLoadInterval)
+	tick := time.NewTicker(abc.abCfg.MetaLoadInterval)
 	defer tick.Stop()
 	for {
 		select {
 		case <-tick.C:
-			ffc.loadRemoteMeta()
-		case <-ffc.ctx.Done():
-			ffc.cfg.Logger.Debugf("ff load meta loop closed")
+			abc.loadRemoteMeta()
+		case <-abc.ctx.Done():
+			abc.logger.Debugf("ff load meta loop closed")
 			return
 		}
 	}
 }
 
-// stop gracefully shuts down the FFCore service.
-func (ffc *abCore) stop() {
-	ffc.cancel()
-	ffc.wg.Wait()
+// Stop gracefully shuts down the ABCore service.
+func (abc *ABCore) Stop() {
+	abc.cancel()
+	abc.wg.Wait()
 }
 
 // storage returns the current AB config storage.
-func (ffc *abCore) storage() *storage {
-	return (*storage)(atomic.LoadPointer(&ffc.storagePtr))
+func (abc *ABCore) storage() *storage {
+	return (*storage)(atomic.LoadPointer(&abc.storagePtr))
 }
 
 // setStorage atomically updates the internal storage pointer.
-func (ffc *abCore) setStorage(s *storage) {
-	atomic.StorePointer(&ffc.storagePtr, unsafe.Pointer(s))
+func (abc *ABCore) setStorage(s *storage) {
+	atomic.StorePointer(&abc.storagePtr, unsafe.Pointer(s))
 }
 
 // getABSpec retrieves a ABSpec by its key.
-func (ffc *abCore) getABSpec(key string) *ABSpec {
-	storage := ffc.storage()
+func (abc *ABCore) getABSpec(key string) *ABSpec {
+	storage := abc.storage()
 	if storage != nil {
 		if spec, ok := storage.ABSpecs[key]; ok {
 			return &spec
@@ -217,23 +231,28 @@ func (ffc *abCore) getABSpec(key string) *ABSpec {
 	return nil
 }
 
-// eval evaluates a specific AB spec for a user.
-func (ffc *abCore) eval(user User, key string) (result ABResult, err error) {
-	spec := ffc.getABSpec(key)
+// Evaluate evaluates a specific AB spec for a user.
+// This is the public API for single AB evaluation.
+func (abc *ABCore) Evaluate(user User, key string) (result ABResult, err error) {
+	spec := abc.getABSpec(key)
 	if spec == nil {
 		return ABResult{}, nil
 	}
-	return ffc.evalAB(user, spec, 0)
+	return abc.evalAB(user, spec, 0)
 }
 
-// evalAll evaluates all active AB specs for a user.
-func (ffc *abCore) evalAll(user User) (results []ABResult, err error) {
+// EvaluateAll evaluates all active AB specs for a user.
+// This is the public API for batch AB evaluation.
+func (abc *ABCore) EvaluateAll(user User) (results []ABResult, err error) {
 	results = make([]ABResult, 0, 10)
-	storage := ffc.storage()
+	storage := abc.storage()
+	if storage == nil {
+		return results, nil
+	}
 
 	for _, spec := range storage.ABSpecs {
 		var ret ABResult
-		ret, err = ffc.evalAB(user, &spec, 0)
+		ret, err = abc.evalAB(user, &spec, 0)
 		if err != nil {
 			return
 		} else {
@@ -248,7 +267,7 @@ func (ffc *abCore) evalAll(user User) (results []ABResult, err error) {
 }
 
 // evalAB is the core evaluation logic for a single AB spec.
-func (ffc *abCore) evalAB(user User, spec *ABSpec, index int) (result ABResult, err error) {
+func (abc *ABCore) evalAB(user User, spec *ABSpec, index int) (result ABResult, err error) {
 	if index >= maxRecursionDepth { // Prevent infinite recursion
 		return
 	}
@@ -271,10 +290,10 @@ func (ffc *abCore) evalAB(user User, spec *ABSpec, index int) (result ABResult, 
 	}
 
 	if spec.Sticky {
-		if ffc.cfg.AB.StickyHandler != nil {
+		if abc.abCfg.StickyHandler != nil {
 			stickyDataKey := fmt.Sprintf("%d-%s", spec.ID, evalID)
 			var cacheResult string
-			cacheResult, err = ffc.cfg.AB.StickyHandler.GetStickyResult(stickyDataKey)
+			cacheResult, err = abc.abCfg.StickyHandler.GetStickyResult(stickyDataKey)
 			if err == nil {
 				if len(cacheResult) > 0 { // cache hit
 					cache := abResultCache{}
@@ -300,7 +319,7 @@ func (ffc *abCore) evalAB(user User, spec *ABSpec, index int) (result ABResult, 
 					cache := abResultCache{}
 					cache.VariantID = result.VariantID
 					b, _ := json.Marshal(cache)
-					err = ffc.cfg.AB.StickyHandler.SetStickyResult(stickyDataKey, string(b))
+					err = abc.abCfg.StickyHandler.SetStickyResult(stickyDataKey, string(b))
 				}
 			}()
 		} else {
@@ -336,7 +355,7 @@ func (ffc *abCore) evalAB(user User, spec *ABSpec, index int) (result ABResult, 
 	// 1. check override rules (highest priority)
 	if rules, ok := spec.Rules[RuleOverride]; ok {
 		for _, rule := range rules {
-			if pass, err = ffc.evalRule(&user, &rule, evalID, index); err != nil {
+			if pass, err = abc.evalRule(&user, &rule, evalID, index); err != nil {
 				return
 			} else {
 				if pass && rule.Override != nil {
@@ -354,7 +373,7 @@ func (ffc *abCore) evalAB(user User, spec *ABSpec, index int) (result ABResult, 
 	// 2. check traffic rules
 	if rules, ok := spec.Rules[RuleTraffic]; ok {
 		for _, rule := range rules {
-			pass, err = ffc.evalRule(&user, &rule, evalID, index)
+			pass, err = abc.evalRule(&user, &rule, evalID, index)
 			if err != nil {
 				return
 			}
@@ -374,7 +393,7 @@ func (ffc *abCore) evalAB(user User, spec *ABSpec, index int) (result ABResult, 
 	pass = false // assume fail until proven otherwise
 	if rules, ok := spec.Rules[RuleGate]; ok {
 		for _, rule := range rules {
-			if pass, err = ffc.evalRule(&user, &rule, evalID, index); err != nil {
+			if pass, err = abc.evalRule(&user, &rule, evalID, index); err != nil {
 				return
 			}
 			if pass {
@@ -402,7 +421,7 @@ func (ffc *abCore) evalAB(user User, spec *ABSpec, index int) (result ABResult, 
 	// 4. check group rules (only for experiments)
 	if rules, ok := spec.Rules[RuleGroup]; ok {
 		for _, rule := range rules {
-			if pass, err = ffc.evalRule(&user, &rule, evalID, index); err != nil {
+			if pass, err = abc.evalRule(&user, &rule, evalID, index); err != nil {
 				return
 			}
 			if pass {
@@ -419,13 +438,13 @@ func (ffc *abCore) evalAB(user User, spec *ABSpec, index int) (result ABResult, 
 }
 
 // evalRule evaluates all conditions within a rule and applies rollout logic.
-func (ffc *abCore) evalRule(user *User, rule *Rule, evalID string, index int) (pass bool, err error) {
+func (abc *ABCore) evalRule(user *User, rule *Rule, evalID string, index int) (pass bool, err error) {
 	pass = true
 	if rule.Rollout == 0.0 {
 		return false, nil
 	}
 	for _, cond := range rule.Conditions {
-		pass, err = ffc.evalCond(user, &cond, evalID, index)
+		pass, err = abc.evalCond(user, &cond, evalID, index)
 		if err != nil {
 			return false, err
 		}
@@ -445,7 +464,7 @@ func (ffc *abCore) evalRule(user *User, rule *Rule, evalID string, index int) (p
 }
 
 // evalCond evaluates a single condition.
-func (ffc *abCore) evalCond(user *User, cond *Condition, evalID string, index int) (pass bool, err error) {
+func (abc *ABCore) evalCond(user *User, cond *Condition, evalID string, index int) (pass bool, err error) {
 	// Preprocess left value
 	var left, right any
 	ok := false
@@ -470,7 +489,7 @@ func (ffc *abCore) evalCond(user *User, cond *Condition, evalID string, index in
 			left = nil // props missing, set left to nil
 		}
 	case strings.EqualFold(cond.FieldClass, "target"):
-		left = ffc.targetValue(evalID, cond.Field)
+		left = abc.targetValue(evalID, cond.Field)
 	default:
 		left = cond.Field
 	}
@@ -546,9 +565,9 @@ func (ffc *abCore) evalCond(user *User, cond *Condition, evalID string, index in
 			return false, fmt.Errorf("unknown bucket_set type: %T", right)
 		}
 	case strings.EqualFold(op, "gate_pass"):
-		gate := ffc.getABSpec(cond.Field)
+		gate := abc.getABSpec(cond.Field)
 		if gate != nil {
-			result, err1 := ffc.evalAB(*user, gate, index)
+			result, err1 := abc.evalAB(*user, gate, index)
 			if err1 != nil {
 				return false, err1
 			} else {
@@ -556,9 +575,9 @@ func (ffc *abCore) evalCond(user *User, cond *Condition, evalID string, index in
 			}
 		}
 	case strings.EqualFold(op, "gate_fail"):
-		gate := ffc.getABSpec(cond.Field)
+		gate := abc.getABSpec(cond.Field)
 		if gate != nil {
-			result, err1 := ffc.evalAB(*user, gate, index)
+			result, err1 := abc.evalAB(*user, gate, index)
 			if err1 != nil {
 				return false, err1
 			} else {
@@ -574,15 +593,15 @@ func (ffc *abCore) evalCond(user *User, cond *Condition, evalID string, index in
 }
 
 // targetValue retrieves target classification values.
-func (ffc *abCore) targetValue(evalID string, targetKey string) any {
+func (abc *ABCore) targetValue(evalID string, targetKey string) any {
 	// TODO: Integrate cohort/tag handlers here
 	var val any
 	return val
 }
 
 // GetABSpecs retrieves the cached AB specs (for abol export)
-func (ffc *abCore) GetABSpecs() ([]ABSpec, int64, error) {
-	storage := ffc.storage()
+func (abc *ABCore) GetABSpecs() ([]ABSpec, int64, error) {
+	storage := abc.storage()
 	if storage == nil {
 		return nil, 0, nil
 	}
@@ -593,4 +612,15 @@ func (ffc *abCore) GetABSpecs() ([]ABSpec, int64, error) {
 	}
 
 	return specs, storage.UpdateTime, nil
+}
+
+// GetStorageSnapshot returns the complete AB storage state as JSON bytes.
+// This is useful for exporting the full AB metadata including ABEnv and UpdateTime.
+// It serializes the entire storage structure, which is heavier than GetABSpecs but contains complete information.
+func (abc *ABCore) GetStorageSnapshot() ([]byte, error) {
+	storage := abc.storage()
+	if storage == nil {
+		return nil, ErrABNotReady
+	}
+	return json.Marshal(storage)
 }

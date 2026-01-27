@@ -207,4 +207,8 @@ func normalizeABConfig(cfg *ABConfig) {
 	if cfg.MetaLoadInterval == 0 {
 		cfg.MetaLoadInterval = 1 * time.Minute
 	}
+	// Enforce minimum interval of 30 seconds
+	if cfg.MetaLoadInterval < 30*time.Second {
+		cfg.MetaLoadInterval = 30 * time.Second
+	}
 }

@@ -137,6 +137,30 @@ func TestNewABCoreUsesConfigEndpointWhenMetaEndpointEmpty(t *testing.T) {
 	require.Equal(t, "/custom/path", loader.URIPath)
 }
 
+func TestNewABCoreRequiresABConfig(t *testing.T) {
+	cfg := testConfig()
+	cfg.Logger = &noopLogger{}
+
+	core, err := NewABCore("http://example.com", "project-token", cfg, nil)
+	require.Error(t, err)
+	require.Nil(t, core)
+}
+
+func TestNewABCoreNormalizesMetaLoadInterval(t *testing.T) {
+	cfg := testConfig()
+	cfg.AB = &ABConfig{
+		ProjectSecret:    "secret",
+		MetaEndpoint:     "http://example.com",
+		MetaLoadInterval: 0,
+	}
+	cfg.Logger = &noopLogger{}
+
+	core, err := NewABCore("http://example.com", "project-token", cfg, nil)
+	require.NoError(t, err)
+	require.NotNil(t, core)
+	require.GreaterOrEqual(t, core.abCfg.MetaLoadInterval, 30*time.Second)
+}
+
 func TestAbCoreLoadRemoteMetaLoop(t *testing.T) {
 	resp := httpResponseABLoadRemoteMeta{
 		Code: 0,
@@ -169,19 +193,27 @@ func TestAbCoreLoadRemoteMetaLoop(t *testing.T) {
 	ffcfg := &ABConfig{
 		ProjectSecret:    "secret",
 		MetaEndpoint:     "http://example.com/api",
-		MetaLoadInterval: 10 * time.Millisecond,
+		MetaLoadInterval: 10 * time.Millisecond, // Will be adjusted to 30s minimum
 	}
 	cfg.AB = ffcfg
 	cfg.Logger = &noopLogger{}
 
 	core, err := NewABCore(endpoint, token, cfg, client)
 	require.NoError(t, err)
+
+	// Verify that the interval was adjusted to minimum 30s
+	require.Equal(t, 30*time.Second, core.abCfg.MetaLoadInterval, "MetaLoadInterval should be enforced to minimum 30s")
+
+	// For testing purposes, manually override to a smaller interval
+	core.abCfg.MetaLoadInterval = 10 * time.Millisecond
+
 	// pre-fill storage so start() doesn't trigger an immediate sync
 	core.setStorage(&storage{ABSpecs: map[string]ABSpec{}})
 
-	core.start()
-	time.Sleep(35 * time.Millisecond)
-	core.stop()
+	// Test that the loop actually polls
+	core.Start()
+	time.Sleep(35 * time.Millisecond) // Wait for at least one poll
+	core.Stop()
 
 	transport.mu.Lock()
 	calls := transport.calls

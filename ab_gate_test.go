@@ -51,7 +51,7 @@ func TestABCoreEvalAllGatePublicRollout(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			core := newTestAbCoreWithStorage(t, store)
 
-			results, err := core.evalAll(User{LoginID: tc.loginID})
+			results, err := core.EvaluateAll(User{LoginID: tc.loginID})
 			require.NoError(t, err)
 			require.Len(t, results, 1)
 			require.NotNil(t, results[0].VariantID)
@@ -1240,7 +1240,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			results, err := core.evalAll(tc.user)
+			results, err := core.EvaluateAll(tc.user)
 			require.NoError(t, err)
 
 			// All gates should be returned in results, regardless of pass/fail

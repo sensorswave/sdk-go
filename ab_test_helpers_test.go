@@ -77,7 +77,7 @@ func (n *noopLogger) Infof(string, ...any)  {}
 func (n *noopLogger) Warnf(string, ...any)  {}
 func (n *noopLogger) Errorf(string, ...any) {}
 
-func newTestAbCoreWithStorage(t *testing.T, store *storage) *abCore {
+func newTestAbCoreWithStorage(t *testing.T, store *storage) *ABCore {
 	t.Helper()
 
 	endpoint := "http://example.com"
@@ -93,7 +93,7 @@ func newTestAbCoreWithStorage(t *testing.T, store *storage) *abCore {
 	return core
 }
 
-func newTestAbCoreWithStorageAndSticky(t *testing.T, store *storage, stickyHandler IABStickyHandler) *abCore {
+func newTestAbCoreWithStorageAndSticky(t *testing.T, store *storage, stickyHandler IABStickyHandler) *ABCore {
 	t.Helper()
 
 	endpoint := "http://example.com"
