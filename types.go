@@ -399,7 +399,7 @@ func (p Properties) City() string {
 type User struct {
 	AnonID           string     `json:"anon_id,omitempty"`  // Anonymous or device ID
 	LoginID          string     `json:"login_id,omitempty"` // Login user ID
-	ABUserProperties Properties // Private: only used for A/B test targeting
+	ABUserProperties Properties `json:"props,omitempty"`    // Properties for A/B test targeting
 }
 
 // WithABProperty adds a single A/B testing property for targeting.
