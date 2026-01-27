@@ -8,8 +8,6 @@ A lightweight Go SDK for event tracking and A/B testing.
 - **User Profiles**: Set, increment, append, and manage user profile properties
 - **A/B Testing**: Evaluate feature gates, experiments, and feature configs
 - **Automatic Exposure Logging**: Automatically track A/B test impressions
-- **Fast Boot**: Cache and restore A/B metadata for faster startup
-- **Sticky Sessions**: Persist traffic assignment for consistent user experiences
 
 ## Installation
 
@@ -335,22 +333,6 @@ By default, A/B evaluation automatically logs an impression event. You can disab
 ```go
 // Disable impression logging for this evaluation
 result, err := client.ABEvaluate(user, "my_experiment", false)
-```
-
-### Fast Boot with Cached Metadata
-
-```go
-// Export current state for caching
-storage, _ := client.GetABSpecStorage()
-saveToCache(storage)
-
-// On next startup, use cached data for faster initialization
-cfg := sensorswave.Config{
-    AB: &sensorswave.ABConfig{
-        ProjectSecret:           "your-secret",
-        LocalStorageForFastBoot: loadFromCache(),
-    },
-}
 ```
 
 ---
