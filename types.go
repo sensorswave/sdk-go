@@ -397,9 +397,9 @@ func (p Properties) City() string {
 // User represents a unified user identity for both A/B testing and event tracking.
 // Use struct literal to create: sensorswave.User{LoginID: "user-123"}
 type User struct {
-	AnonID           string     `json:"anon_id,omitempty"`  // Anonymous or device ID
-	LoginID          string     `json:"login_id,omitempty"` // Login user ID
-	ABUserProperties Properties `json:"props,omitempty"`    // Properties for A/B test targeting
+	AnonID           string     `json:"anon_id,omitempty"`       // Anonymous or device ID
+	LoginID          string     `json:"login_id,omitempty"`      // Login user ID
+	ABUserProperties Properties `json:"ab_user_props,omitempty"` // Properties for A/B test targeting
 }
 
 // WithABProperty adds a single A/B testing property for targeting.
