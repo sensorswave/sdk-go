@@ -48,3 +48,4 @@ coverage*.out
 .claude/
 CLAUDE.md
 .worktrees/
+.serena/
