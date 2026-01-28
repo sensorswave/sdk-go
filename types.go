@@ -50,7 +50,7 @@ type Event struct {
 	UserProperties UserPropertyOpts `json:"user_properties,omitempty"` // User properties
 }
 
-func NewEvent(anonID string, loginID string, event string) Event {
+func NewEvent(anonID, loginID, event string) Event {
 	return Event{
 		AnonID:  anonID,
 		LoginID: loginID,
@@ -86,7 +86,7 @@ func (e *Event) Bytes() []byte {
 }
 
 func (e *Event) Normalize() error {
-	if len(e.AnonID) == 0 && len(e.LoginID) == 0 {
+	if e.AnonID == "" && e.LoginID == "" {
 		return ErrEmptyUserIDs
 	}
 
@@ -96,7 +96,7 @@ func (e *Event) Normalize() error {
 	}
 
 	// check trace id
-	if len(e.TraceID) == 0 {
+	if e.TraceID == "" {
 		e.TraceID = NewUUID()
 	}
 
@@ -284,16 +284,6 @@ func (p Properties) Merge(properties Properties) Properties {
 	return p
 }
 
-// SetDeviceInfo sets the $device_info property.
-func (p Properties) SetDeviceInfo(info string) Properties {
-	return p.Set(PspDeviceInfo, info)
-}
-
-func (p Properties) DeviceInfo() string {
-	info, _ := p[PspDeviceInfo].(string)
-	return info
-}
-
 // SetIP sets the $ip property.
 func (p Properties) SetIP(ip string) Properties {
 	return p.Set(PspIP, ip)
@@ -302,16 +292,6 @@ func (p Properties) SetIP(ip string) Properties {
 func (p Properties) IP() string {
 	ip, _ := p[PspIP].(string)
 	return ip
-}
-
-// SetUA sets the $ua property.
-func (p Properties) SetUA(ua string) Properties {
-	return p.Set(PspUA, ua)
-}
-
-func (p Properties) UA() string {
-	ua, _ := p[PspUA].(string)
-	return ua
 }
 
 // SetOS sets the $os property.
@@ -354,14 +334,24 @@ func (p Properties) AppVersion() string {
 	return appver
 }
 
-// SetSDKType sets the $sdk_type property.
-func (p Properties) SetSDKType(sdktype string) Properties {
-	return p.Set(PspSDKType, sdktype)
+// SetBrowser sets the $browser property.
+func (p Properties) SetBrowser(browser string) Properties {
+	return p.Set(PspBrowser, browser)
 }
 
-func (p Properties) SDKType() string {
-	sdktype, _ := p[PspSDKType].(string)
-	return sdktype
+func (p Properties) Browser() string {
+	browser, _ := p[PspBrowser].(string)
+	return browser
+}
+
+// SetBrowserVersion sets the $browser_version property.
+func (p Properties) SetBrowserVersion(browserVer string) Properties {
+	return p.Set(PspBrowserVer, browserVer)
+}
+
+func (p Properties) BrowserVersion() string {
+	browserVer, _ := p[PspBrowserVer].(string)
+	return browserVer
 }
 
 // SetCountry sets the $country property.
@@ -402,9 +392,9 @@ type User struct {
 	ABUserProperties Properties `json:"ab_user_props,omitempty"` // Properties for A/B test targeting
 }
 
-// WithABProperty adds a single A/B testing property for targeting.
+// WithABUserProperty adds a single A/B testing user property for targeting.
 // Returns a new User with the property added (does not modify the original).
-func (u User) WithABProperty(key string, value any) User {
+func (u User) WithABUserProperty(key string, value any) User {
 	if u.ABUserProperties == nil {
 		u.ABUserProperties = make(Properties)
 	} else {
@@ -419,9 +409,9 @@ func (u User) WithABProperty(key string, value any) User {
 	return u
 }
 
-// WithABProperties adds multiple A/B testing properties for targeting.
+// WithABUserProperties adds multiple A/B testing user properties for targeting.
 // Returns a new User with the properties added (does not modify the original).
-func (u User) WithABProperties(properties Properties) User {
+func (u User) WithABUserProperties(properties Properties) User {
 	if properties == nil {
 		return u
 	}
@@ -439,13 +429,4 @@ func (u User) WithABProperties(properties Properties) User {
 		u.ABUserProperties[k] = v
 	}
 	return u
-}
-
-// toABUser converts User to ABUser for internal A/B testing evaluation.
-func (u User) toABUser() ABUser {
-	return ABUser{
-		AnonID:     u.AnonID,
-		LoginID:    u.LoginID,
-		Properties: u.ABUserProperties,
-	}
 }

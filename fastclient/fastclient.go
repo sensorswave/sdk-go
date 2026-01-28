@@ -55,17 +55,12 @@ func NewHTTPClient(cfg *Config) *HTTPClient {
 }
 
 // DoRequest executes a general request
-func (c *HTTPClient) DoRequest(ctx context.Context, method, url string, headers map[string]string, body []byte) ([]byte, int, error) {
+func (c *HTTPClient) DoRequest(ctx context.Context, method, url string, headers map[string]string, body []byte) (respBody []byte, httpCode int, err error) {
 	// Acquire request/response from object pool
 	req := c.reqPool.Get().(*fasthttp.Request)
 	defer c.reqPool.Put(req)
 	resp := c.respPool.Get().(*fasthttp.Response)
 	defer c.respPool.Put(resp)
-
-	// req := fasthttp.AcquireRequest()
-	// defer fasthttp.ReleaseRequest(req)
-	// resp := fasthttp.AcquireResponse()
-	// defer fasthttp.ReleaseResponse(resp)
 
 	// Initialize request
 	req.Reset()
@@ -84,7 +79,6 @@ func (c *HTTPClient) DoRequest(ctx context.Context, method, url string, headers 
 	// Listen for context cancellation signal
 	done := make(chan struct{})
 	defer close(done)
-	var err error
 	go func() {
 		select {
 		case <-ctx.Done(): // Context canceled
@@ -95,7 +89,7 @@ func (c *HTTPClient) DoRequest(ctx context.Context, method, url string, headers 
 	}()
 
 	// Execute request
-	if err = c.client.DoRedirects(req, resp, 10); err != nil {
+	if err := c.client.DoRedirects(req, resp, 10); err != nil {
 		return nil, 0, err
 	}
 
@@ -106,17 +100,17 @@ func (c *HTTPClient) DoRequest(ctx context.Context, method, url string, headers 
 }
 
 // Get is a shortcut for GET requests.
-func (c *HTTPClient) Get(ctx context.Context, url string, headers map[string]string) ([]byte, int, error) {
+func (c *HTTPClient) Get(ctx context.Context, url string, headers map[string]string) (respBody []byte, httpCode int, err error) {
 	return c.DoRequest(ctx, fasthttp.MethodGet, url, headers, nil)
 }
 
 // Post is a shortcut for POST requests.
-func (c *HTTPClient) Post(ctx context.Context, url string, headers map[string]string, body []byte) ([]byte, int, error) {
+func (c *HTTPClient) Post(ctx context.Context, url string, headers map[string]string, body []byte) (respBody []byte, httpCode int, err error) {
 	return c.DoRequest(ctx, fasthttp.MethodPost, url, headers, body)
 }
 
 // PostForm sends a POST request with form data.
-func (c *HTTPClient) PostForm(ctx context.Context, url string, headers map[string]string, params map[string]string) ([]byte, int, error) {
+func (c *HTTPClient) PostForm(ctx context.Context, url string, headers, params map[string]string) (respBody []byte, httpCode int, err error) {
 	args := fasthttp.AcquireArgs()
 	defer fasthttp.ReleaseArgs(args)
 
@@ -131,7 +125,7 @@ func (c *HTTPClient) PostForm(ctx context.Context, url string, headers map[strin
 }
 
 // PostJSON JSON format POST
-func (c *HTTPClient) PostJSON(ctx context.Context, url string, headers map[string]string, jsonbody []byte) ([]byte, int, error) {
+func (c *HTTPClient) PostJSON(ctx context.Context, url string, headers map[string]string, jsonbody []byte) (respBody []byte, httpCode int, err error) {
 	headers["Content-Type"] = "application/json"
 	return c.DoRequest(ctx, fasthttp.MethodPost, url,
 		headers,
@@ -139,6 +133,6 @@ func (c *HTTPClient) PostJSON(ctx context.Context, url string, headers map[strin
 }
 
 // Put Put shortcut method
-func (c *HTTPClient) Put(ctx context.Context, url string, headers map[string]string, body []byte) ([]byte, int, error) {
+func (c *HTTPClient) Put(ctx context.Context, url string, headers map[string]string, body []byte) (respBody []byte, httpCode int, err error) {
 	return c.DoRequest(ctx, fasthttp.MethodPut, url, headers, body)
 }

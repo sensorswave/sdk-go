@@ -17,10 +17,11 @@ var (
 	// limit.
 	ErrMessageTooBig = errors.New("the message batch exceeds the maximum allowed http body size")
 
-	ErrEventNameEmpty     = errors.New("event name is empty")
-	ErrEventNameTooLong   = errors.New("event name is too long, >128")
-	ErrPropertyKeyTooLong = errors.New("property key is too long, >128")
-	ErrEmptyUserIDs       = errors.New("login_id and anon_id are both empty")
+	ErrEventNameEmpty          = errors.New("event name is empty")
+	ErrEventNameTooLong        = errors.New("event name is too long, >128")
+	ErrPropertyKeyTooLong      = errors.New("property key is too long, >128")
+	ErrEmptyUserIDs            = errors.New("login_id and anon_id are both empty")
+	ErrIdentifyRequiredBothIDs = errors.New("Identify requires both login_id and anon_id to be non-empty")
 
 	//
 	ErrABNotInited     = errors.New("ab core not inited")

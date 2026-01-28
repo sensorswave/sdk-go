@@ -47,3 +47,5 @@ coverage*.out
 .openai/
 .claude/
 CLAUDE.md
+.worktrees/
+.serena/

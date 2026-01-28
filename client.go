@@ -24,38 +24,43 @@ type Client interface {
 
 	// ========== User Profile Operations ==========
 
-	// SetUserProperties sets user profile properties ($set).
-	SetUserProperties(user User, properties Properties) error
+	// ProfileSet sets user profile properties ($set).
+	ProfileSet(user User, properties Properties) error
 
-	// SetUserPropertiesOnce sets user profile properties only if they don't already exist ($set_once).
-	SetUserPropertiesOnce(user User, properties Properties) error
+	// ProfileSetOnce sets user profile properties only if they don't already exist ($set_once).
+	ProfileSetOnce(user User, properties Properties) error
 
-	// IncrementUserProperties increments numeric user profile properties ($increment).
-	IncrementUserProperties(user User, properties Properties) error
+	// ProfileIncrement increments numeric user profile properties ($increment).
+	ProfileIncrement(user User, properties Properties) error
 
-	// AppendUserProperties appends values to list user profile properties ($append).
-	AppendUserProperties(user User, properties Properties) error
+	// ProfileAppend appends values to list user profile properties ($append).
+	ProfileAppend(user User, properties Properties) error
 
-	// UnionUserProperties adds unique values to list user profile properties ($union).
-	UnionUserProperties(user User, properties Properties) error
+	// ProfileUnion adds unique values to list user profile properties ($union).
+	ProfileUnion(user User, properties Properties) error
 
-	// UnsetUserProperties removes user profile properties ($unset).
-	UnsetUserProperties(user User, propertyKeys ...string) error
+	// ProfileUnset removes user profile properties ($unset).
+	ProfileUnset(user User, propertyKeys ...string) error
 
-	// DeleteUserProfile deletes the entire user profile ($delete).
-	DeleteUserProfile(user User) error
+	// ProfileDelete deletes the entire user profile ($delete).
+	ProfileDelete(user User) error
 
 	// ========== A/B Testing ==========
 
-	// ABEvaluate evaluates a single gate/config/experiment for a user.
-	// The withImpressionLog parameter controls whether to log an impression event (default: true).
-	ABEvaluate(user User, key string, withImpressionLog ...bool) (ABResult, error)
+	// CheckFeatureGate evaluates a feature gate and returns whether it passes.
+	// Returns (false, nil) if the key doesn't exist or is not a gate type.
+	CheckFeatureGate(user User, key string) (bool, error)
 
-	// ABEvaluateAll evaluates all applicable gates/configs/experiments for a user.
-	ABEvaluateAll(user User) ([]ABResult, error)
+	// GetFeatureConfig evaluates a dynamic config for a user.
+	// Returns empty result if the key doesn't exist or is not a config type.
+	GetFeatureConfig(user User, key string) (ABResult, error)
 
-	// GetABSpecStorage exports the current A/B testing state for faster startup in future sessions.
-	GetABSpecStorage() ([]byte, error)
+	// GetExperiment evaluates an experiment for a user.
+	// Returns empty result if the key doesn't exist or is not an experiment type.
+	GetExperiment(user User, key string) (ABResult, error)
+
+	// GetABSpecs exports the current A/B testing state for faster startup in future sessions.
+	GetABSpecs() ([]byte, error)
 
 	// ========== Low-level API ==========
 
@@ -149,9 +154,11 @@ func (c *client) Close() error {
 
 // ========== User Identity ==========
 
+// Identify links an anonymous ID with a login ID.
+// Both AnonID and LoginID must be non-empty.
 func (c *client) Identify(user User) error {
-	if err := c.validateUser(user); err != nil {
-		return err
+	if user.AnonID == "" || user.LoginID == "" {
+		return ErrIdentifyRequiredBothIDs
 	}
 	event := NewEvent(user.AnonID, user.LoginID, PseIdentify)
 	return c.Track(event)
@@ -169,7 +176,7 @@ func (c *client) TrackEvent(user User, eventName string, properties Properties) 
 }
 
 func (c *client) Track(event Event) error {
-	if len(event.AnonID) == 0 && len(event.LoginID) == 0 {
+	if event.AnonID == "" && event.LoginID == "" {
 		return ErrEmptyUserIDs
 	}
 
@@ -196,7 +203,7 @@ func (c *client) Track(event Event) error {
 
 // ========== User Profile Operations ==========
 
-func (c *client) SetUserProperties(user User, properties Properties) error {
+func (c *client) ProfileSet(user User, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -212,7 +219,7 @@ func (c *client) SetUserProperties(user User, properties Properties) error {
 	return c.Track(event)
 }
 
-func (c *client) SetUserPropertiesOnce(user User, properties Properties) error {
+func (c *client) ProfileSetOnce(user User, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -228,7 +235,7 @@ func (c *client) SetUserPropertiesOnce(user User, properties Properties) error {
 	return c.Track(event)
 }
 
-func (c *client) IncrementUserProperties(user User, properties Properties) error {
+func (c *client) ProfileIncrement(user User, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -244,7 +251,7 @@ func (c *client) IncrementUserProperties(user User, properties Properties) error
 	return c.Track(event)
 }
 
-func (c *client) AppendUserProperties(user User, properties Properties) error {
+func (c *client) ProfileAppend(user User, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -260,7 +267,7 @@ func (c *client) AppendUserProperties(user User, properties Properties) error {
 	return c.Track(event)
 }
 
-func (c *client) UnionUserProperties(user User, properties Properties) error {
+func (c *client) ProfileUnion(user User, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -276,7 +283,7 @@ func (c *client) UnionUserProperties(user User, properties Properties) error {
 	return c.Track(event)
 }
 
-func (c *client) UnsetUserProperties(user User, propertyKeys ...string) error {
+func (c *client) ProfileUnset(user User, propertyKeys ...string) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -292,7 +299,7 @@ func (c *client) UnsetUserProperties(user User, propertyKeys ...string) error {
 	return c.Track(event)
 }
 
-func (c *client) DeleteUserProfile(user User) error {
+func (c *client) ProfileDelete(user User) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -306,7 +313,31 @@ func (c *client) DeleteUserProfile(user User) error {
 
 // ========== A/B Testing ==========
 
-func (c *client) ABEvaluate(user User, key string, withImpressionLog ...bool) (ABResult, error) {
+func (c *client) CheckFeatureGate(user User, key string) (bool, error) {
+	if c.abCore == nil {
+		return false, ErrABNotInited
+	}
+	if c.abCore.storage() == nil {
+		return false, ErrABNotReady
+	}
+	if err := c.validateUser(user); err != nil {
+		return false, err
+	}
+
+	result, err := c.abCore.Evaluate(user, key, ABTypGate)
+	if err != nil {
+		c.cfg.Logger.Errorf("feature gate %s evaluation error: %v", key, err)
+		return false, err
+	}
+
+	if !result.DisableImpress && result.Key != "" {
+		c.logABImpression(user, result)
+	}
+
+	return result.CheckFeatureGate(), nil
+}
+
+func (c *client) GetFeatureConfig(user User, key string) (ABResult, error) {
 	if c.abCore == nil {
 		return ABResult{}, ErrABNotInited
 	}
@@ -317,41 +348,44 @@ func (c *client) ABEvaluate(user User, key string, withImpressionLog ...bool) (A
 		return ABResult{}, err
 	}
 
-	// Evaluate the gate/config/experiment with the AB core.
-	result, err := c.abCore.Evaluate(user, key)
+	result, err := c.abCore.Evaluate(user, key, ABTypConfig)
 	if err != nil {
-		c.cfg.Logger.Errorf("A/B test %s evaluation error: %v", key, err)
+		c.cfg.Logger.Errorf("feature config %s evaluation error: %v", key, err)
 		return ABResult{}, err
 	}
 
-	// Log impression events by default unless explicitly disabled.
-	logImpression := !result.DisableImpress
-	if len(withImpressionLog) > 0 {
-		logImpression = withImpressionLog[0]
-	}
-
-	if logImpression && result.Key != "" {
+	if !result.DisableImpress && result.Key != "" {
 		c.logABImpression(user, result)
 	}
 
 	return result, nil
 }
 
-func (c *client) ABEvaluateAll(user User) ([]ABResult, error) {
+func (c *client) GetExperiment(user User, key string) (ABResult, error) {
 	if c.abCore == nil {
-		return nil, ErrABNotInited
+		return ABResult{}, ErrABNotInited
 	}
 	if c.abCore.storage() == nil {
-		return nil, ErrABNotReady
+		return ABResult{}, ErrABNotReady
 	}
 	if err := c.validateUser(user); err != nil {
-		return nil, err
+		return ABResult{}, err
 	}
 
-	return c.abCore.EvaluateAll(user)
+	result, err := c.abCore.Evaluate(user, key, ABTypExp)
+	if err != nil {
+		c.cfg.Logger.Errorf("experiment %s evaluation error: %v", key, err)
+		return ABResult{}, err
+	}
+
+	if !result.DisableImpress && result.Key != "" {
+		c.logABImpression(user, result)
+	}
+
+	return result, nil
 }
 
-func (c *client) GetABSpecStorage() ([]byte, error) {
+func (c *client) GetABSpecs() ([]byte, error) {
 	if c.abCore == nil {
 		return nil, ErrABNotInited
 	}

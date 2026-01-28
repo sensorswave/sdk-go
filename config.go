@@ -60,8 +60,9 @@ type ABConfig struct {
 	// MetaLoader is a custom metadata loader. If set, MetaEndpoint is ignored.
 	MetaLoader IABMetaLoader
 
-	// LocalStorageForFastBoot is JSON metadata for faster initial startup.
-	LocalStorageForFastBoot []byte
+	// LoadABSpecs is JSON metadata for faster initial startup.
+	// please set value from GetABSpecs()
+	LoadABSpecs []byte
 }
 
 // IABStickyHandler is the interface for persisting traffic assignment results.
@@ -136,7 +137,7 @@ func normalizeEndpoint(endpoint string) (string, error) {
 	return normalized, nil
 }
 
-func normalizeURIPath(path string, defaultPath string) (string, error) {
+func normalizeURIPath(path, defaultPath string) (string, error) {
 	if path == "" {
 		return defaultPath, nil
 	}
@@ -172,7 +173,7 @@ func normalizeConfig(config *Config) {
 		config.FlushInterval = 10 * time.Second
 	}
 	if config.HTTPConcurrency == 0 {
-		config.HTTPConcurrency = 10
+		config.HTTPConcurrency = 1
 	}
 	if config.HTTPTimeout == 0 {
 		config.HTTPTimeout = 3 * time.Second

@@ -30,7 +30,7 @@ func TestABCoreEvalGatePublicRollout(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(User{LoginID: tc.loginID}, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -55,7 +55,7 @@ func TestABCoreEvalAllGatePublicRollout(t *testing.T) {
 			require.NoError(t, err)
 			require.Len(t, results, 1)
 			require.NotNil(t, results[0].VariantID)
-			require.Equal(t, tc.want, results[0].CheckGate())
+			require.Equal(t, tc.want, results[0].CheckFeatureGate())
 			require.Equal(t, "TestSpec", results[0].Key)
 		})
 	}
@@ -99,7 +99,7 @@ func TestABCoreEvalGateAnyOfSensitiveProps(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -147,7 +147,7 @@ func TestABCoreEvalGateNoneOfSensitiveProps(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -195,7 +195,7 @@ func TestABCoreEvalGateNoneOfInsensitiveProps(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -237,7 +237,7 @@ func TestABCoreEvalGateIsNull(t *testing.T) {
 				require.False(t, tc.want)
 				return
 			}
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -276,7 +276,7 @@ func TestABCoreEvalGateIsNotNull(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -304,7 +304,7 @@ func TestABCoreEvalGateVersionGT(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -331,7 +331,7 @@ func TestABCoreEvalGateVersionGTE(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -358,7 +358,7 @@ func TestABCoreEvalGateVersionLT(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -385,7 +385,7 @@ func TestABCoreEvalGateVersionLTE(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -413,7 +413,7 @@ func TestABCoreEvalGateVersionEQ(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
 			require.NotNil(t, result.VariantID)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -441,7 +441,7 @@ func TestABCoreEvalGateVersionNEQ(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
 			require.NotNil(t, result.VariantID)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -470,7 +470,7 @@ func TestABCoreEvalGateCustomField(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
 			require.NotNil(t, result.VariantID)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -496,7 +496,7 @@ func TestABCoreEvalGateOverrideID(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -523,7 +523,7 @@ func TestABCoreEvalGateOverrideCondition(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -548,7 +548,7 @@ func TestABCoreEvalGateAnonIDSubject(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -573,7 +573,7 @@ func TestABCoreEvalGateDisabled(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(User{LoginID: tc.loginID}, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -596,7 +596,7 @@ func TestABCoreEvalGateEmptyRules(t *testing.T) {
 	// Assuming if enabled is true but no rules, it defaults to false (safe default)
 	result, err := core.evalAB(User{LoginID: "user-any"}, spec, 0)
 	require.NoError(t, err)
-	require.False(t, result.CheckGate())
+	require.False(t, result.CheckFeatureGate())
 }
 
 func TestABCoreEvalGateFilter(t *testing.T) {
@@ -610,7 +610,7 @@ func TestABCoreEvalGateFilter(t *testing.T) {
 		user := User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.1"}}
 		result, err := core.evalAB(user, spec, 0)
 		require.NoError(t, err)
-		require.False(t, result.CheckGate())
+		require.False(t, result.CheckFeatureGate())
 	})
 
 	if spec, ok := store.ABSpecs["EasyFilterGate"]; ok {
@@ -630,7 +630,7 @@ func TestABCoreEvalGateFilter(t *testing.T) {
 		user := User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "10.1"}}
 		result, err := core.evalAB(user, spec, 0)
 		require.NoError(t, err)
-		require.True(t, result.CheckGate())
+		require.True(t, result.CheckFeatureGate())
 	})
 
 	t.Run("dependency-fails-condition", func(t *testing.T) {
@@ -642,7 +642,7 @@ func TestABCoreEvalGateFilter(t *testing.T) {
 		user := User{LoginID: "user-pass", ABUserProperties: Properties{PspAppVer: "9.9"}}
 		result, err := core.evalAB(user, spec, 0)
 		require.NoError(t, err)
-		require.False(t, result.CheckGate())
+		require.False(t, result.CheckFeatureGate())
 	})
 }
 
@@ -731,7 +731,7 @@ func TestABCoreEvalGateComplicate(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -774,7 +774,7 @@ func TestABCoreEvalGateHoldout(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -801,7 +801,7 @@ func TestABCoreEvalGateRelease(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(User{LoginID: tc.loginID}, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -814,9 +814,21 @@ func (m *memoryStickyHandler) GetStickyResult(key string) (string, error) {
 	return m.data[key], nil
 }
 
-func (m *memoryStickyHandler) SetStickyResult(key string, result string) error {
+func (m *memoryStickyHandler) SetStickyResult(key, result string) error {
 	m.data[key] = result
 	return nil
+}
+
+type failStickyHandler struct {
+	data map[string]string
+}
+
+func (f *failStickyHandler) GetStickyResult(key string) (string, error) {
+	return f.data[key], nil
+}
+
+func (f *failStickyHandler) SetStickyResult(key string, result string) error {
+	return fmt.Errorf("sticky write failed")
 }
 
 func TestABCoreEvalGateSticky(t *testing.T) {
@@ -837,14 +849,14 @@ func TestABCoreEvalGateSticky(t *testing.T) {
 
 		result, err := core.evalAB(User{LoginID: "user-cache", ABUserProperties: Properties{"is_premium": false}}, spec, 0)
 		require.NoError(t, err)
-		require.True(t, result.CheckGate())
+		require.True(t, result.CheckFeatureGate())
 	})
 
 	t.Run("write-sticky-cache", func(t *testing.T) {
 		loginID := "user-new"
 		result, err := core.evalAB(User{LoginID: loginID, ABUserProperties: Properties{"is_premium": true}}, spec, 0)
 		require.NoError(t, err)
-		require.True(t, result.CheckGate())
+		require.True(t, result.CheckFeatureGate())
 
 		key := fmt.Sprintf("%d-%s", spec.ID, loginID)
 		cache, ok := handler.data[key]
@@ -855,6 +867,39 @@ func TestABCoreEvalGateSticky(t *testing.T) {
 		require.NotNil(t, cacheResult.VariantID)
 		require.Equal(t, VariantIDPass, *cacheResult.VariantID)
 	})
+}
+
+func TestABCoreEvalRuleErrorPropagation(t *testing.T) {
+	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "is_true.json"))
+	core := newTestAbCoreWithStorage(t, store)
+
+	spec := core.getABSpec("Is_True_Gate")
+	require.NotNil(t, spec)
+
+	// 注入非法规则触发 evalCond 错误
+	spec.Rules = map[RuleTypEnum][]Rule{
+		RuleGate: {
+			{
+				Conditions: []Condition{{FieldClass: "COMMON", Field: "unknown", Opt: "IS_TRUE"}},
+				Rollout:    100,
+			},
+		},
+	}
+
+	_, err := core.evalAB(User{LoginID: "u"}, spec, 0)
+	require.Error(t, err)
+}
+
+func TestABCoreStickyWriteErrorPropagation(t *testing.T) {
+	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "sticky.json"))
+	handler := &failStickyHandler{data: make(map[string]string)}
+	core := newTestAbCoreWithStorageAndSticky(t, store, handler)
+
+	spec := core.getABSpec("Sticky_Is_True_Gate")
+	require.NotNil(t, spec)
+
+	_, err := core.evalAB(User{LoginID: "user-fail", ABUserProperties: Properties{"is_premium": true}}, spec, 0)
+	require.Error(t, err)
 }
 
 func TestABCoreEvalCondEdgeCases(t *testing.T) {
@@ -916,7 +961,7 @@ func TestABCoreEvalGateGTE(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -943,7 +988,7 @@ func TestABCoreEvalGateLT(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -970,7 +1015,7 @@ func TestABCoreEvalGateLTE(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -996,7 +1041,7 @@ func TestABCoreEvalGateIsTrue(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -1022,7 +1067,7 @@ func TestABCoreEvalGateIsFalse(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -1049,7 +1094,7 @@ func TestABCoreEvalGateEQ(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -1076,7 +1121,7 @@ func TestABCoreEvalGateNEQ(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -1103,7 +1148,7 @@ func TestABCoreEvalGateBefore(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -1130,7 +1175,7 @@ func TestABCoreEvalGateAfter(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -1163,7 +1208,7 @@ func TestABCoreEvalGateFail(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := core.evalAB(tc.user, spec, 0)
 			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckGate())
+			require.Equal(t, tc.want, result.CheckFeatureGate())
 		})
 	}
 }
@@ -1256,7 +1301,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 			gateA, ok := resultMap["Gate_A"]
 			require.True(t, ok, "Gate_A should be in results")
 			require.NotNil(t, gateA.VariantID, "Gate_A VariantID should not be nil")
-			require.Equal(t, tc.wantGateA, gateA.CheckGate(), "Gate_A pass check mismatch")
+			require.Equal(t, tc.wantGateA, gateA.CheckFeatureGate(), "Gate_A pass check mismatch")
 			if tc.wantGateA {
 				require.Equal(t, VariantIDPass, *gateA.VariantID)
 			} else {
@@ -1267,7 +1312,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 			gateB, ok := resultMap["Gate_B"]
 			require.True(t, ok, "Gate_B should be in results")
 			require.NotNil(t, gateB.VariantID, "Gate_B VariantID should not be nil")
-			require.Equal(t, tc.wantGateB, gateB.CheckGate(), "Gate_B pass check mismatch")
+			require.Equal(t, tc.wantGateB, gateB.CheckFeatureGate(), "Gate_B pass check mismatch")
 			if tc.wantGateB {
 				require.Equal(t, VariantIDPass, *gateB.VariantID)
 			} else {
@@ -1278,7 +1323,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 			gateC, ok := resultMap["Gate_C"]
 			require.True(t, ok, "Gate_C should be in results")
 			require.NotNil(t, gateC.VariantID, "Gate_C VariantID should not be nil")
-			require.Equal(t, tc.wantGateC, gateC.CheckGate(), "Gate_C pass check mismatch")
+			require.Equal(t, tc.wantGateC, gateC.CheckFeatureGate(), "Gate_C pass check mismatch")
 			if tc.wantGateC {
 				require.Equal(t, VariantIDPass, *gateC.VariantID)
 			} else {
@@ -1288,7 +1333,7 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 			// Count how many gates passed
 			hitCount := 0
 			for _, r := range results {
-				if r.CheckGate() {
+				if r.CheckFeatureGate() {
 					hitCount++
 				}
 			}
