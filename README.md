@@ -1,5 +1,12 @@
 # SensorsWave SDK
 
+[![Release](https://img.shields.io/github/v/release/sensorswave/sdk-go.svg)](https://github.com/sensorswave/sdk-go/releases)
+[![Go Doc](https://godoc.org/github.com/sensorswave/sdk-go?status.svg)](https://godoc.org/github.com/sensorswave/sdk-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sensorswave/sdk-go)](https://goreportcard.com/report/github.com/sensorswave/sdk-go)
+[![Test](https://github.com/sensorswave/sdk-go/actions/workflows/test.yml/badge.svg)](https://github.com/sensorswave/sdk-go/actions/workflows/test.yml)
+[![Lint](https://github.com/sensorswave/sdk-go/actions/workflows/lint.yml/badge.svg)](https://github.com/sensorswave/sdk-go/actions/workflows/lint.yml)
+[![License](https://img.shields.io/github/license/sensorswave/sdk-go.svg)](https://github.com/sensorswave/sdk-go/blob/main/LICENSE)
+
 A lightweight Go SDK for event tracking and A/B testing.
 
 ## Features
@@ -138,7 +145,7 @@ type Client interface {
     // Returns (false, nil) if the key doesn't exist or is not a gate type.
     CheckFeatureGate(user User, key string) (bool, error)
 
-    // GetFeatureConfig evaluates a dynamic config for a user.
+    // GetFeatureConfig evaluates a feature config for a user.
     // Returns empty result if the key doesn't exist or is not a config type.
     GetFeatureConfig(user User, key string) (ABResult, error)
 
@@ -348,42 +355,6 @@ err := client.ProfileDelete(user)
 
 ## A/B Testing
 
-### Evaluate a Single Experiment
-
-```go
-user := sensorswave.User{
-    LoginID: "user-456",
-    AnonID:  "anon-123",
-}
-user = user.WithABUserProperties(sensorswave.Properties{
-    sensorswave.PspAppVer: "11.0",
-    "is_premium":          true,
-})
-
-result, err := client.GetExperiment(user, "my_experiment")
-if err != nil {
-    log.Printf("AB eval error: %v", err)
-    return
-}
-```
-
-### Check Feature Gate (Boolean Toggle)
-
-```go
-passed, err := client.CheckFeatureGate(user, "new_feature_gate")
-if err != nil {
-    log.Printf("Gate eval error: %v", err)
-    return
-}
-if passed {
-    // Feature is enabled for this user
-    enableNewFeature()
-} else {
-    // Feature is disabled
-    useOldBehavior()
-}
-```
-
 ### Get Feature Config Values
 
 ```go
@@ -447,7 +418,7 @@ default:
 ### User Identity
 
 | Method | Signature | Parameters | Returns | Description |
-|--------|-----------|------------|---------|-------------|
+|---|---|---|---|---|
 | **Identify** | `Identify(user User) error` | `user`: User with both AnonID and LoginID | `error` | Creates a `$SignUp` event linking anonymous and authenticated identities |
 
 ### Event Tracking
@@ -459,41 +430,30 @@ default:
 
 ### User Profile Operations
 
-| Method | Signature | Operation | Description | Use Case |
-|--------|-----------|-----------|-------------|----------|
-| **ProfileSet** | `ProfileSet(user User, properties Properties) error` | `$set` | Sets or overwrites profile properties | Update user name, email, settings |
-| **ProfileSetOnce** | `ProfileSetOnce(user User, properties Properties) error` | `$set_once` | Sets properties only if they don't exist | Record registration date, first source |
-| **ProfileIncrement** | `ProfileIncrement(user User, properties Properties) error` | `$increment` | Increments numeric properties | Login count, points, score |
-| **ProfileAppend** | `ProfileAppend(user User, properties Properties) error` | `$append` | Appends to list properties (allows duplicates) | Add purchase history, activity log |
-| **ProfileUnion** | `ProfileUnion(user User, properties Properties) error` | `$union` | Adds unique values to list properties | Add interests, tags, categories |
-| **ProfileUnset** | `ProfileUnset(user User, propertyKeys ...string) error` | `$unset` | Removes specified properties | Clear temporary or deprecated fields |
-| **ProfileDelete** | `ProfileDelete(user User) error` | `$delete` | Deletes entire user profile (irreversible) | GDPR data deletion requests |
+| Method | Signature | Description | Use Case |
+|--------|-----------|-------------|----------|
+| **ProfileSet** | `ProfileSet(user User, properties Properties) error` | Sets or overwrites profile properties | Update user name, email, settings |
+| **ProfileSetOnce** | `ProfileSetOnce(user User, properties Properties) error` | Sets properties only if they don't exist | Record registration date, first source |
+| **ProfileIncrement** | `ProfileIncrement(user User, properties Properties) error` | Increments numeric properties | Login count, points, score |
+| **ProfileAppend** | `ProfileAppend(user User, properties Properties) error` | Appends to list properties (allows duplicates) | Add purchase history, activity log |
+| **ProfileUnion** | `ProfileUnion(user User, properties Properties) error` | Adds unique values to list properties | Add interests, tags, categories |
+| **ProfileUnset** | `ProfileUnset(user User, propertyKeys ...string) error` | Removes specified properties | Clear temporary or deprecated fields |
+| **ProfileDelete** | `ProfileDelete(user User) error` | Deletes entire user profile (irreversible) | GDPR data deletion requests |
 
 ### A/B Testing
 
 | Method | Signature | Parameters | Returns | Description |
-|--------|-----------|------------|---------|-------------|
-| **CheckFeatureGate** | `CheckFeatureGate(user User, key string) (bool, error)` | `user`: User with AB properties<br/>`key`: Gate key | `bool, error` | Evaluates a feature gate. Returns (false, nil) if key not found or wrong type |
-| **GetFeatureConfig** | `GetFeatureConfig(user User, key string) (ABResult, error)` | `user`: User with AB properties<br/>`key`: Config key | `ABResult, error` | Evaluates a dynamic config. Returns empty result if key not found or wrong type |
-| **GetExperiment** | `GetExperiment(user User, key string) (ABResult, error)` | `user`: User with AB properties<br/>`key`: Experiment key | `ABResult, error` | Evaluates an experiment. Returns empty result if key not found or wrong type |
+|---|---|---|---|---|
+| **CheckFeatureGate** | `CheckFeatureGate(user User, key string) (bool, error)` | `user`: User, `key`: Gate key | `bool, error` | Evaluates a feature gate. Returns (false, nil) if key not found or wrong type |
+| **GetFeatureConfig** | `GetFeatureConfig(user User, key string) (ABResult, error)` | `user`: User, `key`: Config key | `ABResult, error` | Evaluates a dynamic config. Returns empty result if key not found or wrong type |
+| **GetExperiment** | `GetExperiment(user User, key string) (ABResult, error)` | `user`: User, `key`: Experiment key | `ABResult, error` | Evaluates an experiment. Returns empty result if key not found or wrong type |
 | **GetABSpecs** | `GetABSpecs() ([]byte, error)` | None | `[]byte, error` | Exports current A/B metadata as JSON for caching and faster startup |
-
-### ABResult Methods
-
-| Method | Signature | Returns | Description |
-|--------|-----------|---------|-------------|
-| **CheckFeatureGate** | `CheckFeatureGate() bool` | `bool` | Returns true if feature gate is enabled for the user |
-| **GetString** | `GetString(key, fallback string) string` | `string` | Gets string parameter or fallback if not found |
-| **GetNumber** | `GetNumber(key string, fallback float64) float64` | `float64` | Gets numeric parameter or fallback if not found |
-| **GetBool** | `GetBool(key string, fallback bool) bool` | `bool` | Gets boolean parameter or fallback if not found |
-| **GetSlice** | `GetSlice(key string, fallback []interface{}) []interface{}` | `[]interface{}` | Gets slice parameter or fallback if not found |
-| **GetMap** | `GetMap(key string, fallback map[string]interface{}) map[string]interface{}` | `map[string]interface{}` | Gets map parameter or fallback if not found |
 
 ---
 
 ## Configuration Options
 
-### Main Config
+### Client Config
 
 | Field | Description | Default |
 |-------|-------------|---------|
@@ -501,7 +461,7 @@ default:
 | `Transport` | Custom HTTP transport | Default transport |
 | `Logger` | Custom logger implementation | Console logger |
 | `FlushInterval` | Event flush interval | 10 seconds |
-| `HTTPConcurrency` | Max concurrent HTTP requests | 10 |
+| `HTTPConcurrency` | Max concurrent HTTP requests | 1 |
 | `HTTPTimeout` | HTTP request timeout | 3 seconds |
 | `HTTPRetry` | HTTP retry count | 2 |
 | `AB` | A/B testing configuration | nil (disabled) |
@@ -509,7 +469,7 @@ default:
 ### ABConfig
 
 | Field | Description | Default |
-|-------|-------------|---------|
+|---|---|---|
 | `ProjectSecret` | Project secret for authentication | Required |
 | `MetaEndpoint` | A/B metadata server URL | Uses main endpoint |
 | `MetaURIPath` | A/B metadata path | `/ab/all4eval` |
@@ -517,6 +477,34 @@ default:
 | `LoadABSpecs` | Cached A/B specs from `GetABSpecs()` for fast startup | nil |
 | `StickyHandler` | Custom sticky session handler | nil |
 | `MetaLoader` | Custom metadata loader | nil |
+
+## Advanced: Caching A/B Specs
+
+To improve startup performance, you can cache the A/B specifications and load them upon client initialization.
+
+```go
+// 1. Get specs from an initialized client
+specs, err := client.GetABSpecs()
+if err != nil {
+    // handle error
+}
+
+// 2. Save specs to persistent storage (e.g. file, database, redis)
+// saveToStorage(specs)
+
+// 3. Load specs when creating a new client
+savedSpecs := loadFromStorage()
+
+cfg := sensorswave.Config{
+    AB: &sensorswave.ABConfig{
+        ProjectSecret: "your-project-secret",
+        LoadABSpecs:   savedSpecs, // Inject cached specs
+    },
+}
+
+// Client will be immediately ready for A/B evaluation using cached specs
+client, err := sensorswave.NewWithConfig(..., cfg)
+```
 
 ---
 
@@ -570,7 +558,7 @@ go run ./example \
     --endpoint=your_event_tracking_endpoint \
     --gate-key=my_feature_gate \
     --experiment-key=my_experiment \
-    --dynamic-key=my_feature_config
+    --feature-config-key=my_feature_config
 ```
 
 ---

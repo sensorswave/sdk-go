@@ -18,13 +18,13 @@ import (
 //		--project-id=123 \
 //		--track-endpoint=https://example.sensorswave.com/in/track \
 //	    --meta-endpoint=https://example.sensorswave.com/ab/all4eval \
-//	    --dynamic-key=example_dynamic_config_key \
+//	    --feature-config-key=example_feature_config_key \
 //	    --gate-key=example_gate_toggle_key \
 //	    --experiment-key=example_experiment_key
 const (
 	totalUsers              = 1000
 	appVersion              = "11.0"
-	defaultDynamicConfigKey = "example_dynamic_config_key"
+	defaultFeatureConfigKey = "example_feature_config_key"
 	defaultGateKey          = "example_gate_toggle_key"
 	defaultExperimentKey    = "example_experiment_key"
 )
@@ -34,7 +34,7 @@ type exampleArgs struct {
 	projectSecret    string
 	endpoint         string
 	metaEndpoint     string
-	dynamicConfigKey string
+	featureConfigKey string
 	gateKey          string
 	experimentKey    string
 }
@@ -61,7 +61,7 @@ func parseArgs() (exampleArgs, error) {
 	// (Optional) A/B testing config
 	flag.StringVar(&args.projectSecret, "project-secret", "", "project secret used by SDK client")
 	flag.StringVar(&args.metaEndpoint, "meta-endpoint", "http://example.sensorswave.com", "meta endpoint base url")
-	flag.StringVar(&args.dynamicConfigKey, "dynamic-key", defaultDynamicConfigKey, "key for dynamic config example")
+	flag.StringVar(&args.featureConfigKey, "feature-config-key", defaultFeatureConfigKey, "key for feature config example")
 	flag.StringVar(&args.gateKey, "gate-key", defaultGateKey, "key for gate example")
 	flag.StringVar(&args.experimentKey, "experiment-key", defaultExperimentKey, "key for experiment example")
 	flag.Parse()
@@ -77,7 +77,7 @@ func parseArgs() (exampleArgs, error) {
 }
 
 // runExample configures the SDK client, generates users sharing the same
-// $app_version property, and runs three FF examples: dynamic config, gate,
+// $app_version property, and runs three FF examples: feature config, gate,
 // and experiment.
 func runExample(args exampleArgs) error {
 	client, err := sensorswave.NewWithConfig(
@@ -96,8 +96,8 @@ func runExample(args exampleArgs) error {
 
 	users := buildUsers(totalUsers, appVersion)
 
-	fmt.Println("== Dynamic Config Example (color config) ==")
-	if err := runDynamicConfigExample(client, users, args.dynamicConfigKey); err != nil {
+	fmt.Println("== Feature Config Example (color config) ==")
+	if err := runFeatureConfigExample(client, users, args.featureConfigKey); err != nil {
 		return err
 	}
 
@@ -114,12 +114,12 @@ func runExample(args exampleArgs) error {
 	return nil
 }
 
-func runDynamicConfigExample(client sensorswave.Client, users []sensorswave.User, key string) error {
+func runFeatureConfigExample(client sensorswave.Client, users []sensorswave.User, key string) error {
 	distribution := make(map[string]int, len(users))
 	for _, user := range users {
 		result, err := client.GetFeatureConfig(user, key)
 		if err != nil {
-			return fmt.Errorf("dynamic config eval failed for user %s: %w", user.LoginID, err)
+			return fmt.Errorf("feature config eval failed for user %s: %w", user.LoginID, err)
 		}
 
 		// Skip if key doesn't exist or type doesn't match

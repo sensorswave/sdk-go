@@ -51,7 +51,7 @@ type Client interface {
 	// Returns (false, nil) if the key doesn't exist or is not a gate type.
 	CheckFeatureGate(user User, key string) (bool, error)
 
-	// GetFeatureConfig evaluates a dynamic config for a user.
+	// GetFeatureConfig evaluates a feature config for a user.
 	// Returns empty result if the key doesn't exist or is not a config type.
 	GetFeatureConfig(user User, key string) (ABResult, error)
 
