@@ -136,7 +136,7 @@ func normalizeEndpoint(endpoint string) (string, error) {
 	return normalized, nil
 }
 
-func normalizeURIPath(path string, defaultPath string) (string, error) {
+func normalizeURIPath(path, defaultPath string) (string, error) {
 	if path == "" {
 		return defaultPath, nil
 	}

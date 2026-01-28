@@ -58,7 +58,7 @@ func parseArgs() (exampleArgs, error) {
 	// please replace with your own endpoint
 	flag.StringVar(&args.endpoint, "endpoint", "http://example.sensorswave.com", "track endpoint base url")
 
-	//(Optional) A/B testing config
+	// (Optional) A/B testing config
 	flag.StringVar(&args.projectSecret, "project-secret", "", "project secret used by SDK client")
 	flag.StringVar(&args.metaEndpoint, "meta-endpoint", "http://example.sensorswave.com", "meta endpoint base url")
 	flag.StringVar(&args.dynamicConfigKey, "dynamic-key", defaultDynamicConfigKey, "key for dynamic config example")

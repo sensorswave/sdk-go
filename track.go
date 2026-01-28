@@ -15,7 +15,6 @@ type messageQueue struct {
 	pending  [][]byte
 	size     int // length of pending
 	bodySize int
-	// jsonBody []byte
 }
 
 func (q *messageQueue) push(msg []byte) (jsonBody []byte) {
@@ -23,7 +22,6 @@ func (q *messageQueue) push(msg []byte) (jsonBody []byte) {
 		q.pending = make([][]byte, 0, maxBatchSize)
 		q.size = 0
 		q.bodySize = 0
-		// q.jsonBody = make([]byte, 0)
 	}
 	q.pending = append(q.pending, msg)
 	q.size++
@@ -59,7 +57,7 @@ func (c *client) loop() {
 	tick := time.NewTicker(c.cfg.FlushInterval)
 	defer tick.Stop()
 
-	msgQue := messageQueue{} // make([]message, 0, c.cfg.MaxBatchSize)
+	msgQue := messageQueue{}
 	for {
 		select {
 		case msg := <-c.msgchan:
@@ -123,8 +121,10 @@ func (c *client) send(jsonBody []byte) {
 		if err != nil || httpcode != http.StatusOK {
 			c.cfg.Logger.Errorf("http send event error: %v httpcode:%d", err, httpcode)
 			if c.cfg.OnTrackFailHandler != nil {
-				events := []Event{}
-				json.Unmarshal(jsonBody, &events)
+				var events []Event
+				if err := json.Unmarshal(jsonBody, &events); err != nil {
+					c.cfg.Logger.Errorf("unmarshal fail events error: %v", err)
+				}
 				c.cfg.OnTrackFailHandler(events, err)
 			}
 			if len(jsonBody) > 100 {
@@ -136,12 +136,4 @@ func (c *client) send(jsonBody []byte) {
 			c.cfg.Logger.Debugf("http send body length: %d ", len(jsonBody))
 		}
 	}(jsonBody)
-}
-
-// check target is valid
-func (c *client) isUserInvalid(user *ABUser) bool {
-	if user.LoginID == "" && user.AnonID == "" {
-		return true
-	}
-	return false
 }

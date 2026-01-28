@@ -35,10 +35,9 @@ func (r *ABResult) JSONPayload() (p json.RawMessage) {
 }
 
 // GetString returns a string parameter value by key, or the fallback value if not found or not a string.
-func (r *ABResult) GetString(key string, fallback string) string {
+func (r *ABResult) GetString(key, fallback string) string {
 	if v, ok := r.VariantParamValue[key]; ok {
-		switch val := v.(type) {
-		case string:
+		if val, ok := v.(string); ok {
 			return val
 		}
 	}
@@ -48,8 +47,7 @@ func (r *ABResult) GetString(key string, fallback string) string {
 // GetNumber returns a numeric parameter value by key, or the fallback value if not found or not a number.
 func (r *ABResult) GetNumber(key string, fallback float64) float64 {
 	if v, ok := r.VariantParamValue[key]; ok {
-		switch val := v.(type) {
-		case float64:
+		if val, ok := v.(float64); ok {
 			return val
 		}
 	}
@@ -59,8 +57,7 @@ func (r *ABResult) GetNumber(key string, fallback float64) float64 {
 // GetBool returns a boolean parameter value by key, or the fallback value if not found or not a boolean.
 func (r *ABResult) GetBool(key string, fallback bool) bool {
 	if v, ok := r.VariantParamValue[key]; ok {
-		switch val := v.(type) {
-		case bool:
+		if val, ok := v.(bool); ok {
 			return val
 		}
 	}
@@ -71,8 +68,7 @@ func (r *ABResult) GetBool(key string, fallback bool) bool {
 // GetSlice returns a slice parameter value by key, or the fallback value if not found or not a slice.
 func (r *ABResult) GetSlice(key string, fallback []interface{}) []interface{} {
 	if v, ok := r.VariantParamValue[key]; ok {
-		switch val := v.(type) {
-		case []interface{}:
+		if val, ok := v.([]interface{}); ok {
 			return val
 		}
 	}
@@ -83,8 +79,7 @@ func (r *ABResult) GetSlice(key string, fallback []interface{}) []interface{} {
 // GetMap returns a map parameter value by key, or the fallback value if not found or not a map.
 func (r *ABResult) GetMap(key string, fallback map[string]interface{}) map[string]interface{} {
 	if v, ok := r.VariantParamValue[key]; ok {
-		switch val := v.(type) {
-		case map[string]interface{}:
+		if val, ok := v.(map[string]interface{}); ok {
 			return val
 		}
 	}

@@ -50,7 +50,7 @@ type Event struct {
 	UserProperties UserPropertyOpts `json:"user_properties,omitempty"` // User properties
 }
 
-func NewEvent(anonID string, loginID string, event string) Event {
+func NewEvent(anonID, loginID, event string) Event {
 	return Event{
 		AnonID:  anonID,
 		LoginID: loginID,
@@ -86,7 +86,7 @@ func (e *Event) Bytes() []byte {
 }
 
 func (e *Event) Normalize() error {
-	if len(e.AnonID) == 0 && len(e.LoginID) == 0 {
+	if e.AnonID == "" && e.LoginID == "" {
 		return ErrEmptyUserIDs
 	}
 
@@ -96,7 +96,7 @@ func (e *Event) Normalize() error {
 	}
 
 	// check trace id
-	if len(e.TraceID) == 0 {
+	if e.TraceID == "" {
 		e.TraceID = NewUUID()
 	}
 
@@ -439,13 +439,4 @@ func (u User) WithABProperties(properties Properties) User {
 		u.ABUserProperties[k] = v
 	}
 	return u
-}
-
-// toABUser converts User to ABUser for internal A/B testing evaluation.
-func (u User) toABUser() ABUser {
-	return ABUser{
-		AnonID:     u.AnonID,
-		LoginID:    u.LoginID,
-		Properties: u.ABUserProperties,
-	}
 }

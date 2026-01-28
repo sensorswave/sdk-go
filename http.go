@@ -126,7 +126,7 @@ func (h *httpClient) Do(ctx context.Context, opts *requestOpts) (respBody []byte
 	return
 }
 
-func (h *httpClient) doWithTimeout(ctx context.Context, opts *requestOpts) ([]byte, int, error) {
+func (h *httpClient) doWithTimeout(ctx context.Context, opts *requestOpts) (respBody []byte, httpCode int, err error) {
 	if opts.Timeout > 0 {
 		ctxTimeout, cancel := context.WithTimeout(ctx, opts.Timeout)
 		defer cancel()
@@ -139,7 +139,7 @@ func (h *httpClient) doWithTimeout(ctx context.Context, opts *requestOpts) ([]by
 	return h.do(ctx, opts)
 }
 
-func (h *httpClient) do(ctx context.Context, opts *requestOpts) ([]byte, int, error) {
+func (h *httpClient) do(ctx context.Context, opts *requestOpts) (respBody []byte, httpCode int, err error) {
 	var bodyReader io.Reader
 	if opts.Body != nil {
 		bodyReader = bytes.NewReader(opts.Body)
@@ -165,7 +165,7 @@ func (h *httpClient) do(ctx context.Context, opts *requestOpts) ([]byte, int, er
 	defer resp.Body.Close() // Ensure response body is closed
 
 	// 4. Read response
-	respBody, err := io.ReadAll(resp.Body)
+	respBody, err = io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, resp.StatusCode, err
 	}
@@ -174,14 +174,14 @@ func (h *httpClient) do(ctx context.Context, opts *requestOpts) ([]byte, int, er
 }
 
 // Get is a shortcut for GET requests.
-func (h *httpClient) Get(ctx context.Context, url string, headers map[string]string) ([]byte, int, error) {
+func (h *httpClient) Get(ctx context.Context, url string, headers map[string]string) (respBody []byte, httpCode int, err error) {
 	params := newRequestOpts().WithMethod("GET").WithURL(url).WithHeaders(headers)
 
 	return h.Do(ctx, params)
 }
 
 // Post is a shortcut for POST requests.
-func (h *httpClient) Post(ctx context.Context, url string, headers map[string]string, body []byte) ([]byte, int, error) {
+func (h *httpClient) Post(ctx context.Context, url string, headers map[string]string, body []byte) (respBody []byte, httpCode int, err error) {
 	params := newRequestOpts().WithMethod("POST").WithURL(url).WithHeaders(headers).WithBody(body)
 	return h.Do(ctx, params)
 }

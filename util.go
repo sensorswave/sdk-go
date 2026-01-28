@@ -41,7 +41,7 @@ func NewBucketBitmap(bits int) BucketBitmap {
 
 // SaveNetworkByteOrderString saves the bitmap as a big-endian hex string
 func (bm *BucketBitmap) SaveNetworkByteOrderString() string {
-	return hex.EncodeToString(bm.data[:])
+	return hex.EncodeToString(bm.data)
 }
 
 // LoadNetworkByteOrderString loads the bitmap from a big-endian hex string
@@ -51,9 +51,9 @@ func (bm *BucketBitmap) LoadNetworkByteOrderString(encoded string) error {
 		return err
 	}
 	if len(bytes) > len(bm.data) {
-		copy(bm.data[:], bytes[:len(bm.data)])
+		copy(bm.data, bytes[:len(bm.data)])
 	} else {
-		copy(bm.data[:], bytes)
+		copy(bm.data, bytes)
 	}
 
 	return nil
@@ -113,7 +113,7 @@ func hash(key string) []byte {
 	return hasher.Sum(nil)
 }
 
-func hashUint64(key string, salt string) uint64 {
+func hashUint64(key, salt string) uint64 {
 	hash := hash(fmt.Sprintf("%s.%s", key, salt))
 	return binary.BigEndian.Uint64(hash)
 }
@@ -162,7 +162,7 @@ func splitVersionString(version string) ([]int64, error) {
 	return numParts, nil
 }
 
-func compareVersionsSlice(v1 []int64, v2 []int64) int {
+func compareVersionsSlice(v1, v2 []int64) int {
 	i := 0
 	v1len := len(v1)
 	v2len := len(v2)
@@ -199,7 +199,7 @@ func compareVersions(a, b interface{}, fun func(x, y []int64) bool) bool {
 	}
 	v1 := strings.Split(strA, "-")[0]
 	v2 := strings.Split(strB, "-")[0]
-	if len(v1) == 0 || len(v2) == 0 {
+	if v1 == "" || v2 == "" {
 		return false
 	}
 
@@ -218,7 +218,7 @@ func maxInt(x, y int) int {
 	return y
 }
 
-func arrayAny(val interface{}, arr interface{}, fun func(x, y interface{}) bool) bool {
+func arrayAny(val, arr interface{}, fun func(x, y interface{}) bool) bool {
 	if array, ok := arr.([]interface{}); ok {
 		for _, arrVal := range array {
 			if fun(val, arrVal) {
@@ -229,7 +229,7 @@ func arrayAny(val interface{}, arr interface{}, fun func(x, y interface{}) bool)
 	return false
 }
 
-func compareStrings(s1 interface{}, s2 interface{}, ignoreCase bool, fun func(x, y string) bool) bool {
+func compareStrings(s1, s2 interface{}, ignoreCase bool, fun func(x, y string) bool) bool {
 	var str1, str2 string
 	if s1 == nil || s2 == nil {
 		return false
@@ -313,7 +313,7 @@ func getUnixTimestamp(v interface{}) int64 {
 	return 0
 }
 
-func deepEqual(left any, right any) bool {
+func deepEqual(left, right any) bool {
 	equal := false
 	if right == nil {
 		equal = left == nil || left == ""

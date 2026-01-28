@@ -169,7 +169,7 @@ func (c *client) TrackEvent(user User, eventName string, properties Properties) 
 }
 
 func (c *client) Track(event Event) error {
-	if len(event.AnonID) == 0 && len(event.LoginID) == 0 {
+	if event.AnonID == "" && event.LoginID == "" {
 		return ErrEmptyUserIDs
 	}
 
