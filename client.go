@@ -47,12 +47,20 @@ type Client interface {
 
 	// ========== A/B Testing ==========
 
-	// ABEvaluate evaluates a single gate/config/experiment for a user.
+	// CheckFeatureGate evaluates a feature gate and returns whether it passes.
+	// Returns (false, nil) if the key doesn't exist or is not a gate type.
 	// The withImpressionLog parameter controls whether to log an impression event (default: true).
-	ABEvaluate(user User, key string, withImpressionLog ...bool) (ABResult, error)
+	CheckFeatureGate(user User, key string, withImpressionLog ...bool) (bool, error)
 
-	// ABEvaluateAll evaluates all applicable gates/configs/experiments for a user.
-	ABEvaluateAll(user User) ([]ABResult, error)
+	// GetFeatureConfig evaluates a dynamic config for a user.
+	// Returns empty result if the key doesn't exist or is not a config type.
+	// The withImpressionLog parameter controls whether to log an impression event (default: true).
+	GetFeatureConfig(user User, key string, withImpressionLog ...bool) (ABResult, error)
+
+	// GetExperiment evaluates an experiment for a user.
+	// Returns empty result if the key doesn't exist or is not an experiment type.
+	// The withImpressionLog parameter controls whether to log an impression event (default: true).
+	GetExperiment(user User, key string, withImpressionLog ...bool) (ABResult, error)
 
 	// GetABSpecs exports the current A/B testing state for faster startup in future sessions.
 	GetABSpecs() ([]byte, error)
@@ -308,7 +316,36 @@ func (c *client) ProfileDelete(user User) error {
 
 // ========== A/B Testing ==========
 
-func (c *client) ABEvaluate(user User, key string, withImpressionLog ...bool) (ABResult, error) {
+func (c *client) CheckFeatureGate(user User, key string, withImpressionLog ...bool) (bool, error) {
+	if c.abCore == nil {
+		return false, ErrABNotInited
+	}
+	if c.abCore.storage() == nil {
+		return false, ErrABNotReady
+	}
+	if err := c.validateUser(user); err != nil {
+		return false, err
+	}
+
+	result, err := c.abCore.Evaluate(user, key, ABTypGate)
+	if err != nil {
+		c.cfg.Logger.Errorf("feature gate %s evaluation error: %v", key, err)
+		return false, err
+	}
+
+	logImpression := !result.DisableImpress
+	if len(withImpressionLog) > 0 {
+		logImpression = withImpressionLog[0]
+	}
+
+	if logImpression && result.Key != "" {
+		c.logABImpression(user, result)
+	}
+
+	return result.CheckFeatureGate(), nil
+}
+
+func (c *client) GetFeatureConfig(user User, key string, withImpressionLog ...bool) (ABResult, error) {
 	if c.abCore == nil {
 		return ABResult{}, ErrABNotInited
 	}
@@ -319,14 +356,12 @@ func (c *client) ABEvaluate(user User, key string, withImpressionLog ...bool) (A
 		return ABResult{}, err
 	}
 
-	// Evaluate the gate/config/experiment with the AB core.
-	result, err := c.abCore.Evaluate(user, key)
+	result, err := c.abCore.Evaluate(user, key, ABTypConfig)
 	if err != nil {
-		c.cfg.Logger.Errorf("A/B test %s evaluation error: %v", key, err)
+		c.cfg.Logger.Errorf("feature config %s evaluation error: %v", key, err)
 		return ABResult{}, err
 	}
 
-	// Log impression events by default unless explicitly disabled.
 	logImpression := !result.DisableImpress
 	if len(withImpressionLog) > 0 {
 		logImpression = withImpressionLog[0]
@@ -339,18 +374,33 @@ func (c *client) ABEvaluate(user User, key string, withImpressionLog ...bool) (A
 	return result, nil
 }
 
-func (c *client) ABEvaluateAll(user User) ([]ABResult, error) {
+func (c *client) GetExperiment(user User, key string, withImpressionLog ...bool) (ABResult, error) {
 	if c.abCore == nil {
-		return nil, ErrABNotInited
+		return ABResult{}, ErrABNotInited
 	}
 	if c.abCore.storage() == nil {
-		return nil, ErrABNotReady
+		return ABResult{}, ErrABNotReady
 	}
 	if err := c.validateUser(user); err != nil {
-		return nil, err
+		return ABResult{}, err
 	}
 
-	return c.abCore.EvaluateAll(user)
+	result, err := c.abCore.Evaluate(user, key, ABTypExp)
+	if err != nil {
+		c.cfg.Logger.Errorf("experiment %s evaluation error: %v", key, err)
+		return ABResult{}, err
+	}
+
+	logImpression := !result.DisableImpress
+	if len(withImpressionLog) > 0 {
+		logImpression = withImpressionLog[0]
+	}
+
+	if logImpression && result.Key != "" {
+		c.logABImpression(user, result)
+	}
+
+	return result, nil
 }
 
 func (c *client) GetABSpecs() ([]byte, error) {

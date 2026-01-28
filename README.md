@@ -68,7 +68,7 @@ client, err := sensorswave.NewWithConfig(
 )
 
 // Now you can use A/B testing methods
-result, _ := client.ABEvaluate(user, "my_experiment")
+result, _ := client.GetExperiment(user, "my_experiment")
 ```
 
 ## API Reference
@@ -133,16 +133,22 @@ type Client interface {
     ProfileDelete(user User) error
 
     // ========== A/B Testing ==========
-    
-    // ABEvaluate evaluates a single gate/config/experiment for a user.
-    // Returns the evaluation result including variant assignment and parameters.
+
+    // CheckFeatureGate evaluates a feature gate and returns whether it passes.
+    // Returns (false, nil) if the key doesn't exist or is not a gate type.
     // The withImpressionLog parameter controls automatic impression logging (default: true).
-    ABEvaluate(user User, key string, withImpressionLog ...bool) (ABResult, error)
-    
-    // ABEvaluateAll evaluates all applicable gates/configs/experiments for a user.
-    // Returns results for all experiments that the user qualifies for.
-    ABEvaluateAll(user User) ([]ABResult, error)
-    
+    CheckFeatureGate(user User, key string, withImpressionLog ...bool) (bool, error)
+
+    // GetFeatureConfig evaluates a dynamic config for a user.
+    // Returns empty result if the key doesn't exist or is not a config type.
+    // The withImpressionLog parameter controls automatic impression logging (default: true).
+    GetFeatureConfig(user User, key string, withImpressionLog ...bool) (ABResult, error)
+
+    // GetExperiment evaluates an experiment for a user.
+    // Returns empty result if the key doesn't exist or is not an experiment type.
+    // The withImpressionLog parameter controls automatic impression logging (default: true).
+    GetExperiment(user User, key string, withImpressionLog ...bool) (ABResult, error)
+
     // GetABSpecs exports the current A/B testing metadata as JSON.
     // Use this to cache the A/B configuration for faster startup in future sessions.
     // Pass the returned bytes to ABConfig.LoadABSpecs on next initialization.
@@ -345,7 +351,7 @@ err := client.ProfileDelete(user)
 
 ## A/B Testing
 
-### Evaluate a Single Experiment or Feature Gate
+### Evaluate a Single Experiment
 
 ```go
 user := sensorswave.User{
@@ -357,7 +363,7 @@ user = user.WithABUserProperties(sensorswave.Properties{
     "is_premium":          true,
 })
 
-result, err := client.ABEvaluate(user, "my_experiment")
+result, err := client.GetExperiment(user, "my_experiment")
 if err != nil {
     log.Printf("AB eval error: %v", err)
     return
@@ -367,8 +373,12 @@ if err != nil {
 ### Check Feature Gate (Boolean Toggle)
 
 ```go
-result, _ := client.ABEvaluate(user, "new_feature_gate")
-if result.CheckFeatureGate() {
+passed, err := client.CheckFeatureGate(user, "new_feature_gate")
+if err != nil {
+    log.Printf("Gate eval error: %v", err)
+    return
+}
+if passed {
     // Feature is enabled for this user
     enableNewFeature()
 } else {
@@ -380,7 +390,11 @@ if result.CheckFeatureGate() {
 ### Get Feature Config Values
 
 ```go
-result, _ := client.ABEvaluate(user, "button_color_config")
+result, err := client.GetFeatureConfig(user, "button_color_config")
+if err != nil {
+    log.Printf("Feature config eval error: %v", err)
+    return
+}
 
 // Get string value with fallback
 color := result.GetString("color", "blue")
@@ -401,7 +415,11 @@ settings := result.GetMap("settings", map[string]interface{}{})
 ### Evaluate Experiment
 
 ```go
-result, _ := client.ABEvaluate(user, "pricing_experiment")
+result, err := client.GetExperiment(user, "pricing_experiment")
+if err != nil {
+    log.Printf("Experiment eval error: %v", err)
+    return
+}
 
 // Get experiment variant parameter
 pricingStrategy := result.GetString("strategy", "original")
@@ -419,26 +437,19 @@ default:
 }
 ```
 
-### Evaluate All Experiments and Feature Gates
-
-```go
-results, err := client.ABEvaluateAll(user)
-if err != nil {
-    log.Fatal(err)
-}
-
-for _, r := range results {
-    fmt.Printf("Key: %s, Variant: %v\n", r.Key, r.VariantID)
-}
-```
-
 ### Disable Automatic Impression Logging
 
 By default, A/B evaluation automatically logs an impression event. You can disable this:
 
 ```go
-// Disable impression logging for this evaluation
-result, err := client.ABEvaluate(user, "my_experiment", false)
+// Disable impression logging for experiment
+result, err := client.GetExperiment(user, "my_experiment", false)
+
+// Disable impression logging for feature gate
+passed, err := client.CheckFeatureGate(user, "my_gate", false)
+
+// Disable impression logging for dynamic config
+config, err := client.GetFeatureConfig(user, "my_config", false)
 ```
 
 ---
@@ -480,8 +491,9 @@ result, err := client.ABEvaluate(user, "my_experiment", false)
 
 | Method | Signature | Parameters | Returns | Description |
 |--------|-----------|------------|---------|-------------|
-| **ABEvaluate** | `ABEvaluate(user User, key string, withImpressionLog ...bool) (ABResult, error)` | `user`: User with AB properties<br/>`key`: Experiment/gate key<br/>`withImpressionLog`: Auto-log impression (default: true) | `ABResult, error` | Evaluates a single experiment/gate. Returns variant assignment and parameters |
-| **ABEvaluateAll** | `ABEvaluateAll(user User) ([]ABResult, error)` | `user`: User with AB properties | `[]ABResult, error` | Evaluates all experiments the user qualifies for |
+| **CheckFeatureGate** | `CheckFeatureGate(user User, key string, withImpressionLog ...bool) (bool, error)` | `user`: User with AB properties<br/>`key`: Gate key<br/>`withImpressionLog`: Auto-log impression (default: true) | `bool, error` | Evaluates a feature gate. Returns (false, nil) if key not found or wrong type |
+| **GetFeatureConfig** | `GetFeatureConfig(user User, key string, withImpressionLog ...bool) (ABResult, error)` | `user`: User with AB properties<br/>`key`: Config key<br/>`withImpressionLog`: Auto-log impression (default: true) | `ABResult, error` | Evaluates a dynamic config. Returns empty result if key not found or wrong type |
+| **GetExperiment** | `GetExperiment(user User, key string, withImpressionLog ...bool) (ABResult, error)` | `user`: User with AB properties<br/>`key`: Experiment key<br/>`withImpressionLog`: Auto-log impression (default: true) | `ABResult, error` | Evaluates an experiment. Returns empty result if key not found or wrong type |
 | **GetABSpecs** | `GetABSpecs() ([]byte, error)` | None | `[]byte, error` | Exports current A/B metadata as JSON for caching and faster startup |
 
 ### ABResult Methods

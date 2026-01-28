@@ -233,10 +233,15 @@ func (abc *ABCore) getABSpec(key string) *ABSpec {
 }
 
 // Evaluate evaluates a specific AB spec for a user.
-// This is the public API for single AB evaluation.
-func (abc *ABCore) Evaluate(user User, key string) (result ABResult, err error) {
+// If typ is provided, validates that the spec matches the expected type.
+// Returns empty result if key not found or type doesn't match.
+func (abc *ABCore) Evaluate(user User, key string, typ ...ABTypEnum) (result ABResult, err error) {
 	spec := abc.getABSpec(key)
 	if spec == nil {
+		return ABResult{}, nil
+	}
+	// Type validation: return empty result if type doesn't match
+	if len(typ) > 0 && ABTypEnum(spec.Typ) != typ[0] {
 		return ABResult{}, nil
 	}
 	return abc.evalAB(user, spec, 0)
