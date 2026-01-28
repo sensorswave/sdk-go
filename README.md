@@ -76,6 +76,14 @@ client, err := sensorswave.NewWithConfig(
 
 // Now you can use A/B testing methods
 result, _ := client.GetExperiment(user, "my_experiment")
+
+// Get parameters from the experiment result
+btnColor := result.GetString("button_color", "blue")
+showBanner := result.GetBool("show_banner", false)
+discount := int(result.GetNumber("discount_percent", 0))
+
+fmt.Printf("Experiment: %s, Button: %s, Banner: %v, Discount: %d%%\n",
+    result.Key, btnColor, showBanner, discount)
 ```
 
 ## API Reference
@@ -445,7 +453,7 @@ default:
 | Method | Signature | Parameters | Returns | Description |
 |---|---|---|---|---|
 | **CheckFeatureGate** | `CheckFeatureGate(user User, key string) (bool, error)` | `user`: User, `key`: Gate key | `bool, error` | Evaluates a feature gate. Returns (false, nil) if key not found or wrong type |
-| **GetFeatureConfig** | `GetFeatureConfig(user User, key string) (ABResult, error)` | `user`: User, `key`: Config key | `ABResult, error` | Evaluates a dynamic config. Returns empty result if key not found or wrong type |
+| **GetFeatureConfig** | `GetFeatureConfig(user User, key string) (ABResult, error)` | `user`: User, `key`: Config key | `ABResult, error` | Evaluates a feature config. Returns empty result if key not found or wrong type |
 | **GetExperiment** | `GetExperiment(user User, key string) (ABResult, error)` | `user`: User, `key`: Experiment key | `ABResult, error` | Evaluates an experiment. Returns empty result if key not found or wrong type |
 | **GetABSpecs** | `GetABSpecs() ([]byte, error)` | None | `[]byte, error` | Exports current A/B metadata as JSON for caching and faster startup |
 
