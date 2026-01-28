@@ -21,6 +21,11 @@ jobs:
           go-version: '1.24'
           cache: true
 
+      - name: Temporarily downgrade go.mod for linter compatibility
+        run: |
+          sed -i 's/^go 1\.25\.0/go 1.24.0/' go.mod
+          go mod tidy
+
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v4
         with:
