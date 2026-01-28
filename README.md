@@ -269,7 +269,10 @@ user := sensorswave.User{
     AnonID:  "anon-123",
     LoginID: "user-456",
 }
-err := client.Identify(user)
+if err := client.Identify(user); err != nil {
+    fmt.Printf("Identify failed: %v\n", err)
+    return
+}
 ```
 
 ### Track Custom Event
@@ -285,6 +288,10 @@ err := client.TrackEvent(user, "purchase", sensorswave.Properties{
     "price":      99.99,
     "quantity":   2,
 })
+if err != nil {
+    fmt.Printf("Track event failed: %v\n", err)
+    return
+}
 ```
 
 ### Track with Full Event Structure
@@ -295,7 +302,10 @@ event := sensorswave.NewEvent("anon-123", "user-456", "page_view").
         Set("page", "/home").
         Set("referrer", "google.com"))
 
-err := client.Track(event)
+if err := client.Track(event); err != nil {
+    fmt.Printf("Track failed: %v\n", err)
+    return
+}
 ```
 
 ---
@@ -312,6 +322,10 @@ err := client.ProfileSet(user, sensorswave.Properties{
     "email": "john@example.com",
     "level": 5,
 })
+if err != nil {
+    fmt.Printf("ProfileSet failed: %v\n", err)
+    return
+}
 ```
 
 ### Set Once (Only if Not Exists)
@@ -320,6 +334,10 @@ err := client.ProfileSet(user, sensorswave.Properties{
 err := client.ProfileSetOnce(user, sensorswave.Properties{
     "first_login_date": "2026-01-20",
 })
+if err != nil {
+    fmt.Printf("ProfileSetOnce failed: %v\n", err)
+    return
+}
 ```
 
 ### Increment Numeric Properties
@@ -329,6 +347,10 @@ err := client.ProfileIncrement(user, sensorswave.Properties{
     "login_count": 1,
     "points":      100,
 })
+if err != nil {
+    fmt.Printf("ProfileIncrement failed: %v\n", err)
+    return
+}
 ```
 
 ### Append to List Properties
@@ -337,6 +359,10 @@ err := client.ProfileIncrement(user, sensorswave.Properties{
 err := client.ProfileAppend(user, sensorswave.Properties{
     "tags": "premium",
 })
+if err != nil {
+    fmt.Printf("ProfileAppend failed: %v\n", err)
+    return
+}
 ```
 
 ### Union List Properties
@@ -345,18 +371,30 @@ err := client.ProfileAppend(user, sensorswave.Properties{
 err := client.ProfileUnion(user, sensorswave.Properties{
     "categories": "sports",
 })
+if err != nil {
+    fmt.Printf("ProfileUnion failed: %v\n", err)
+    return
+}
 ```
 
 ### Unset Properties
 
 ```go
 err := client.ProfileUnset(user, "temp_field", "old_field")
+if err != nil {
+    fmt.Printf("ProfileUnset failed: %v\n", err)
+    return
+}
 ```
 
 ### Delete User Profile
 
 ```go
 err := client.ProfileDelete(user)
+if err != nil {
+    fmt.Printf("ProfileDelete failed: %v\n", err)
+    return
+}
 ```
 
 ---
@@ -368,7 +406,7 @@ err := client.ProfileDelete(user)
 ```go
 result, err := client.GetFeatureConfig(user, "button_color_config")
 if err != nil {
-    log.Printf("Feature config eval error: %v", err)
+    fmt.Printf("Feature config eval error: %v\n", err)
     return
 }
 
@@ -393,7 +431,7 @@ settings := result.GetMap("settings", map[string]interface{}{})
 ```go
 result, err := client.GetExperiment(user, "pricing_experiment")
 if err != nil {
-    log.Printf("Experiment eval error: %v", err)
+    fmt.Printf("Experiment eval error: %v\n", err)
     return
 }
 
