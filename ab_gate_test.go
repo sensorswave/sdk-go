@@ -1066,7 +1066,7 @@ func TestABCoreEvalGateNEQ(t *testing.T) {
 		user User
 		want bool
 	}{
-		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: true},                                              // nil != 0 is true
+		{name: "missing-prop", user: User{LoginID: "user-pass"}, want: true},                                                    // nil != 0 is true
 		{name: "equal-value", user: User{LoginID: "user-pass", ABUserProperties: Properties{"level": float64(0)}}, want: false}, // Use float64 to match JSON deserialization
 		{name: "not-equal-positive", user: User{LoginID: "user-pass", ABUserProperties: Properties{"level": 5}}, want: true},
 		{name: "not-equal-negative", user: User{LoginID: "user-pass", ABUserProperties: Properties{"level": -1}}, want: true},
