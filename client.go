@@ -49,18 +49,15 @@ type Client interface {
 
 	// CheckFeatureGate evaluates a feature gate and returns whether it passes.
 	// Returns (false, nil) if the key doesn't exist or is not a gate type.
-	// The withImpressionLog parameter controls whether to log an impression event (default: true).
-	CheckFeatureGate(user User, key string, withImpressionLog ...bool) (bool, error)
+	CheckFeatureGate(user User, key string) (bool, error)
 
 	// GetFeatureConfig evaluates a dynamic config for a user.
 	// Returns empty result if the key doesn't exist or is not a config type.
-	// The withImpressionLog parameter controls whether to log an impression event (default: true).
-	GetFeatureConfig(user User, key string, withImpressionLog ...bool) (ABResult, error)
+	GetFeatureConfig(user User, key string) (ABResult, error)
 
 	// GetExperiment evaluates an experiment for a user.
 	// Returns empty result if the key doesn't exist or is not an experiment type.
-	// The withImpressionLog parameter controls whether to log an impression event (default: true).
-	GetExperiment(user User, key string, withImpressionLog ...bool) (ABResult, error)
+	GetExperiment(user User, key string) (ABResult, error)
 
 	// GetABSpecs exports the current A/B testing state for faster startup in future sessions.
 	GetABSpecs() ([]byte, error)
@@ -316,7 +313,7 @@ func (c *client) ProfileDelete(user User) error {
 
 // ========== A/B Testing ==========
 
-func (c *client) CheckFeatureGate(user User, key string, withImpressionLog ...bool) (bool, error) {
+func (c *client) CheckFeatureGate(user User, key string) (bool, error) {
 	if c.abCore == nil {
 		return false, ErrABNotInited
 	}
@@ -333,19 +330,14 @@ func (c *client) CheckFeatureGate(user User, key string, withImpressionLog ...bo
 		return false, err
 	}
 
-	logImpression := !result.DisableImpress
-	if len(withImpressionLog) > 0 {
-		logImpression = withImpressionLog[0]
-	}
-
-	if logImpression && result.Key != "" {
+	if !result.DisableImpress && result.Key != "" {
 		c.logABImpression(user, result)
 	}
 
 	return result.CheckFeatureGate(), nil
 }
 
-func (c *client) GetFeatureConfig(user User, key string, withImpressionLog ...bool) (ABResult, error) {
+func (c *client) GetFeatureConfig(user User, key string) (ABResult, error) {
 	if c.abCore == nil {
 		return ABResult{}, ErrABNotInited
 	}
@@ -362,19 +354,14 @@ func (c *client) GetFeatureConfig(user User, key string, withImpressionLog ...bo
 		return ABResult{}, err
 	}
 
-	logImpression := !result.DisableImpress
-	if len(withImpressionLog) > 0 {
-		logImpression = withImpressionLog[0]
-	}
-
-	if logImpression && result.Key != "" {
+	if !result.DisableImpress && result.Key != "" {
 		c.logABImpression(user, result)
 	}
 
 	return result, nil
 }
 
-func (c *client) GetExperiment(user User, key string, withImpressionLog ...bool) (ABResult, error) {
+func (c *client) GetExperiment(user User, key string) (ABResult, error) {
 	if c.abCore == nil {
 		return ABResult{}, ErrABNotInited
 	}
@@ -391,12 +378,7 @@ func (c *client) GetExperiment(user User, key string, withImpressionLog ...bool)
 		return ABResult{}, err
 	}
 
-	logImpression := !result.DisableImpress
-	if len(withImpressionLog) > 0 {
-		logImpression = withImpressionLog[0]
-	}
-
-	if logImpression && result.Key != "" {
+	if !result.DisableImpress && result.Key != "" {
 		c.logABImpression(user, result)
 	}
 

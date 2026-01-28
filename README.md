@@ -136,18 +136,15 @@ type Client interface {
 
     // CheckFeatureGate evaluates a feature gate and returns whether it passes.
     // Returns (false, nil) if the key doesn't exist or is not a gate type.
-    // The withImpressionLog parameter controls automatic impression logging (default: true).
-    CheckFeatureGate(user User, key string, withImpressionLog ...bool) (bool, error)
+    CheckFeatureGate(user User, key string) (bool, error)
 
     // GetFeatureConfig evaluates a dynamic config for a user.
     // Returns empty result if the key doesn't exist or is not a config type.
-    // The withImpressionLog parameter controls automatic impression logging (default: true).
-    GetFeatureConfig(user User, key string, withImpressionLog ...bool) (ABResult, error)
+    GetFeatureConfig(user User, key string) (ABResult, error)
 
     // GetExperiment evaluates an experiment for a user.
     // Returns empty result if the key doesn't exist or is not an experiment type.
-    // The withImpressionLog parameter controls automatic impression logging (default: true).
-    GetExperiment(user User, key string, withImpressionLog ...bool) (ABResult, error)
+    GetExperiment(user User, key string) (ABResult, error)
 
     // GetABSpecs exports the current A/B testing metadata as JSON.
     // Use this to cache the A/B configuration for faster startup in future sessions.
@@ -437,21 +434,6 @@ default:
 }
 ```
 
-### Disable Automatic Impression Logging
-
-By default, A/B evaluation automatically logs an impression event. You can disable this:
-
-```go
-// Disable impression logging for experiment
-result, err := client.GetExperiment(user, "my_experiment", false)
-
-// Disable impression logging for feature gate
-passed, err := client.CheckFeatureGate(user, "my_gate", false)
-
-// Disable impression logging for dynamic config
-config, err := client.GetFeatureConfig(user, "my_config", false)
-```
-
 ---
 
 ## Complete API Method Reference
@@ -491,9 +473,9 @@ config, err := client.GetFeatureConfig(user, "my_config", false)
 
 | Method | Signature | Parameters | Returns | Description |
 |--------|-----------|------------|---------|-------------|
-| **CheckFeatureGate** | `CheckFeatureGate(user User, key string, withImpressionLog ...bool) (bool, error)` | `user`: User with AB properties<br/>`key`: Gate key<br/>`withImpressionLog`: Auto-log impression (default: true) | `bool, error` | Evaluates a feature gate. Returns (false, nil) if key not found or wrong type |
-| **GetFeatureConfig** | `GetFeatureConfig(user User, key string, withImpressionLog ...bool) (ABResult, error)` | `user`: User with AB properties<br/>`key`: Config key<br/>`withImpressionLog`: Auto-log impression (default: true) | `ABResult, error` | Evaluates a dynamic config. Returns empty result if key not found or wrong type |
-| **GetExperiment** | `GetExperiment(user User, key string, withImpressionLog ...bool) (ABResult, error)` | `user`: User with AB properties<br/>`key`: Experiment key<br/>`withImpressionLog`: Auto-log impression (default: true) | `ABResult, error` | Evaluates an experiment. Returns empty result if key not found or wrong type |
+| **CheckFeatureGate** | `CheckFeatureGate(user User, key string) (bool, error)` | `user`: User with AB properties<br/>`key`: Gate key | `bool, error` | Evaluates a feature gate. Returns (false, nil) if key not found or wrong type |
+| **GetFeatureConfig** | `GetFeatureConfig(user User, key string) (ABResult, error)` | `user`: User with AB properties<br/>`key`: Config key | `ABResult, error` | Evaluates a dynamic config. Returns empty result if key not found or wrong type |
+| **GetExperiment** | `GetExperiment(user User, key string) (ABResult, error)` | `user`: User with AB properties<br/>`key`: Experiment key | `ABResult, error` | Evaluates an experiment. Returns empty result if key not found or wrong type |
 | **GetABSpecs** | `GetABSpecs() ([]byte, error)` | None | `[]byte, error` | Exports current A/B metadata as JSON for caching and faster startup |
 
 ### ABResult Methods
