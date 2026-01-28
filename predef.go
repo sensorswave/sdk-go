@@ -7,16 +7,8 @@ import (
 
 // Predefined events
 const (
-	PseAppInstall = "$app_install"
-	PseLaunch     = "$launch"
-	PseDaily      = "$daily"
-	PseIdentify   = "$Identify" // User correlation event
-	PseTick       = "$tick"
-	PseShow       = "$show"
-	PseClick      = "$click"
-
+	PseIdentify  = "$identify"  // User correlation event
 	PseABImpress = "$ABImpress" // AB impression event
-
 	// Internal events from def package
 	PseUserSet = "$UserSet" // User property event
 )
@@ -39,17 +31,16 @@ const (
 
 // Predefined properties
 const (
-	PspDeviceInfo = "$device_info" // v:string json -- for ad tracking proc & result
-	PspIP         = "$ip"          // v:string      -- set by sdk
-	PspUA         = "$ua"          // v:string      -- set by sdk
-	PspOS         = "$os"          // v:string: ios android harmony -- set by sdk
-	PspOSVer      = "$os_version"  // v:string      -- set by sdk
-	PspModel      = "$model"       // v:string      -- set by sdk
-	PspAppVer     = "$app_version" // v:string      -- set by sdk
-	PspSDKType    = "$sdk_type"    // v:string      -- set by sdk
-	PspCountry    = "$country"     // v:string      -- set by sdk or geoip
-	PspProvince   = "$province"    // v:string      -- set by sdk or geoip
-	PspCity       = "$city"        // v:string      -- set by sdk or geoip
+	PspAppVer     = "$app_version"     // v:string      -- app version
+	PspBrowser    = "$browser"         // v:string      -- browser name
+	PspBrowserVer = "$browser_version" // v:string      -- browser version
+	PspModel      = "$model"           // v:string      -- device model
+	PspIP         = "$ip"              // v:string      -- IP address
+	PspOS         = "$os"              // v:string      -- operating system: ios/android/harmony
+	PspOSVer      = "$os_version"      // v:string      -- OS version
+	PspCountry    = "$country"         // v:string      -- country (set by SDK or GeoIP)
+	PspProvince   = "$province"        // v:string      -- province/state (set by SDK or GeoIP)
+	PspCity       = "$city"            // v:string      -- city (set by SDK or GeoIP)
 )
 
 // FormatABPropertyName returns the AB property name in the unified format "$ab_{ID}".

@@ -149,9 +149,11 @@ func (c *client) Close() error {
 
 // ========== User Identity ==========
 
+// Identify links an anonymous ID with a login ID.
+// Both AnonID and LoginID must be non-empty.
 func (c *client) Identify(user User) error {
-	if err := c.validateUser(user); err != nil {
-		return err
+	if user.AnonID == "" || user.LoginID == "" {
+		return ErrIdentifyRequiredBothIDs
 	}
 	event := NewEvent(user.AnonID, user.LoginID, PseIdentify)
 	return c.Track(event)

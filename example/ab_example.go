@@ -200,7 +200,7 @@ func buildUsers(total int, appVersion string) []sensorswave.User {
 		user := sensorswave.User{
 			AnonID:  fmt.Sprintf("anon-%03d-%s", i, randomID(rnd, loginIDLength)),
 			LoginID: fmt.Sprintf("user-%s", randomID(rnd, loginIDLength)),
-		}.WithABProperty(sensorswave.PspAppVer, appVersion)
+		}.WithABUserProperty(sensorswave.PspAppVer, appVersion)
 		users = append(users, user)
 	}
 	return users
