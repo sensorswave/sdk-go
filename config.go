@@ -173,7 +173,7 @@ func normalizeConfig(config *Config) {
 		config.FlushInterval = 10 * time.Second
 	}
 	if config.HTTPConcurrency == 0 {
-		config.HTTPConcurrency = 10
+		config.HTTPConcurrency = 1
 	}
 	if config.HTTPTimeout == 0 {
 		config.HTTPTimeout = 3 * time.Second
