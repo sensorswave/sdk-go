@@ -814,9 +814,21 @@ func (m *memoryStickyHandler) GetStickyResult(key string) (string, error) {
 	return m.data[key], nil
 }
 
-func (m *memoryStickyHandler) SetStickyResult(key string, result string) error {
+func (m *memoryStickyHandler) SetStickyResult(key, result string) error {
 	m.data[key] = result
 	return nil
+}
+
+type failStickyHandler struct {
+	data map[string]string
+}
+
+func (f *failStickyHandler) GetStickyResult(key string) (string, error) {
+	return f.data[key], nil
+}
+
+func (f *failStickyHandler) SetStickyResult(key string, result string) error {
+	return fmt.Errorf("sticky write failed")
 }
 
 func TestABCoreEvalGateSticky(t *testing.T) {
@@ -855,6 +867,39 @@ func TestABCoreEvalGateSticky(t *testing.T) {
 		require.NotNil(t, cacheResult.VariantID)
 		require.Equal(t, VariantIDPass, *cacheResult.VariantID)
 	})
+}
+
+func TestABCoreEvalRuleErrorPropagation(t *testing.T) {
+	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "is_true.json"))
+	core := newTestAbCoreWithStorage(t, store)
+
+	spec := core.getABSpec("Is_True_Gate")
+	require.NotNil(t, spec)
+
+	// 注入非法规则触发 evalCond 错误
+	spec.Rules = map[RuleTypEnum][]Rule{
+		RuleGate: {
+			{
+				Conditions: []Condition{{FieldClass: "COMMON", Field: "unknown", Opt: "IS_TRUE"}},
+				Rollout:    100,
+			},
+		},
+	}
+
+	_, err := core.evalAB(User{LoginID: "u"}, spec, 0)
+	require.Error(t, err)
+}
+
+func TestABCoreStickyWriteErrorPropagation(t *testing.T) {
+	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "sticky.json"))
+	handler := &failStickyHandler{data: make(map[string]string)}
+	core := newTestAbCoreWithStorageAndSticky(t, store, handler)
+
+	spec := core.getABSpec("Sticky_Is_True_Gate")
+	require.NotNil(t, spec)
+
+	_, err := core.evalAB(User{LoginID: "user-fail", ABUserProperties: Properties{"is_premium": true}}, spec, 0)
+	require.Error(t, err)
 }
 
 func TestABCoreEvalCondEdgeCases(t *testing.T) {
