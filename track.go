@@ -63,17 +63,17 @@ func (c *client) loop() {
 	for {
 		select {
 		case msg := <-c.msgchan:
-			c.push(&msgQue, msg)
+			_ = c.push(&msgQue, msg)
 		case <-tick.C:
-			c.flush(&msgQue)
+			_ = c.flush(&msgQue)
 		case <-c.quit:
 			c.cfg.Logger.Debugf("loop closing: draining messages")
 			close(c.msgchan)
 			for msg := range c.msgchan {
-				c.push(&msgQue, msg)
+				_ = c.push(&msgQue, msg)
 			}
 
-			c.flush(&msgQue)
+			_ = c.flush(&msgQue)
 			return
 		}
 	}

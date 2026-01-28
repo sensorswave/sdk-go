@@ -24,26 +24,26 @@ type Client interface {
 
 	// ========== User Profile Operations ==========
 
-	// SetUserProperties sets user profile properties ($set).
-	SetUserProperties(user User, properties Properties) error
+	// ProfileSet sets user profile properties ($set).
+	ProfileSet(user User, properties Properties) error
 
-	// SetUserPropertiesOnce sets user profile properties only if they don't already exist ($set_once).
-	SetUserPropertiesOnce(user User, properties Properties) error
+	// ProfileSetOnce sets user profile properties only if they don't already exist ($set_once).
+	ProfileSetOnce(user User, properties Properties) error
 
-	// IncrementUserProperties increments numeric user profile properties ($increment).
-	IncrementUserProperties(user User, properties Properties) error
+	// ProfileIncrement increments numeric user profile properties ($increment).
+	ProfileIncrement(user User, properties Properties) error
 
-	// AppendUserProperties appends values to list user profile properties ($append).
-	AppendUserProperties(user User, properties Properties) error
+	// ProfileAppend appends values to list user profile properties ($append).
+	ProfileAppend(user User, properties Properties) error
 
-	// UnionUserProperties adds unique values to list user profile properties ($union).
-	UnionUserProperties(user User, properties Properties) error
+	// ProfileUnion adds unique values to list user profile properties ($union).
+	ProfileUnion(user User, properties Properties) error
 
-	// UnsetUserProperties removes user profile properties ($unset).
-	UnsetUserProperties(user User, propertyKeys ...string) error
+	// ProfileUnset removes user profile properties ($unset).
+	ProfileUnset(user User, propertyKeys ...string) error
 
-	// DeleteUserProfile deletes the entire user profile ($delete).
-	DeleteUserProfile(user User) error
+	// ProfileDelete deletes the entire user profile ($delete).
+	ProfileDelete(user User) error
 
 	// ========== A/B Testing ==========
 
@@ -196,7 +196,7 @@ func (c *client) Track(event Event) error {
 
 // ========== User Profile Operations ==========
 
-func (c *client) SetUserProperties(user User, properties Properties) error {
+func (c *client) ProfileSet(user User, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -212,7 +212,7 @@ func (c *client) SetUserProperties(user User, properties Properties) error {
 	return c.Track(event)
 }
 
-func (c *client) SetUserPropertiesOnce(user User, properties Properties) error {
+func (c *client) ProfileSetOnce(user User, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -228,7 +228,7 @@ func (c *client) SetUserPropertiesOnce(user User, properties Properties) error {
 	return c.Track(event)
 }
 
-func (c *client) IncrementUserProperties(user User, properties Properties) error {
+func (c *client) ProfileIncrement(user User, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -244,7 +244,7 @@ func (c *client) IncrementUserProperties(user User, properties Properties) error
 	return c.Track(event)
 }
 
-func (c *client) AppendUserProperties(user User, properties Properties) error {
+func (c *client) ProfileAppend(user User, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -260,7 +260,7 @@ func (c *client) AppendUserProperties(user User, properties Properties) error {
 	return c.Track(event)
 }
 
-func (c *client) UnionUserProperties(user User, properties Properties) error {
+func (c *client) ProfileUnion(user User, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -276,7 +276,7 @@ func (c *client) UnionUserProperties(user User, properties Properties) error {
 	return c.Track(event)
 }
 
-func (c *client) UnsetUserProperties(user User, propertyKeys ...string) error {
+func (c *client) ProfileUnset(user User, propertyKeys ...string) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -292,7 +292,7 @@ func (c *client) UnsetUserProperties(user User, propertyKeys ...string) error {
 	return c.Track(event)
 }
 
-func (c *client) DeleteUserProfile(user User) error {
+func (c *client) ProfileDelete(user User) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}

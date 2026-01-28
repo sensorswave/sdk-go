@@ -62,11 +62,6 @@ func (c *HTTPClient) DoRequest(ctx context.Context, method, url string, headers 
 	resp := c.respPool.Get().(*fasthttp.Response)
 	defer c.respPool.Put(resp)
 
-	// req := fasthttp.AcquireRequest()
-	// defer fasthttp.ReleaseRequest(req)
-	// resp := fasthttp.AcquireResponse()
-	// defer fasthttp.ReleaseResponse(resp)
-
 	// Initialize request
 	req.Reset()
 	resp.Reset()

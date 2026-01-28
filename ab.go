@@ -655,7 +655,7 @@ func (abc *ABCore) evalCondGateMatch(user *User, field string, index int, invert
 	if err != nil {
 		return false, err
 	}
-	pass := result.CheckGate()
+	pass := result.CheckFeatureGate()
 	if invert {
 		return !pass, nil
 	}

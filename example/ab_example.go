@@ -53,9 +53,9 @@ func main() {
 func parseArgs() (exampleArgs, error) {
 	var args exampleArgs
 
-	//please replace with your own source token
+	// please replace with your own source token
 	flag.StringVar(&args.sourceToken, "source-token", "", "project token used by SDK client")
-	//please replace with your own endpoint
+	// please replace with your own endpoint
 	flag.StringVar(&args.endpoint, "endpoint", "http://example.sensorswave.com", "track endpoint base url")
 
 	//(Optional) A/B testing config
@@ -144,7 +144,7 @@ func runGateExample(client sensorswave.Client, users []sensorswave.User, key str
 			continue
 		}
 
-		if result.CheckGate() {
+		if result.CheckFeatureGate() {
 			pass++
 		} else {
 			fail++

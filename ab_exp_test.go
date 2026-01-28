@@ -520,7 +520,7 @@ func TestABCoreEvalExperimentGateTargetFail(t *testing.T) {
 			uid := fmt.Sprintf("user-pass-%d", i)
 			depRes, err := core.evalAB(User{LoginID: uid, ABUserProperties: Properties{"$app_version": "10.1"}}, dep, 0)
 			require.NoError(t, err)
-			if depRes.VariantID != nil && depRes.CheckGate() {
+			if depRes.VariantID != nil && depRes.CheckFeatureGate() {
 				passingUser = uid
 				break
 			}

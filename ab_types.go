@@ -19,8 +19,8 @@ type ABResult struct {
 	DisableImpress    bool           `json:"disable_impress,omitempty"` // Disable Impress
 }
 
-// CheckGate returns true if the AB result indicates a "pass" for a gate.
-func (r *ABResult) CheckGate() bool {
+// CheckFeatureGate returns true if the AB result indicates a "pass" for a gate.
+func (r *ABResult) CheckFeatureGate() bool {
 	// Early exit for various reasons, default is Fail
 	if r.VariantID == nil {
 		return false
