@@ -168,9 +168,9 @@ func NewABCore(endpoint, sourceToken string, config *Config, h *httpClient) (*AB
 	}
 
 	abc.ctx, abc.cancel = context.WithCancel(context.Background())
-	if len(abc.abCfg.LocalStorageForFastBoot) > 0 {
+	if len(abc.abCfg.LoadABSpecs) > 0 {
 		s := storage{}
-		if json.Unmarshal(abc.abCfg.LocalStorageForFastBoot, &s) == nil {
+		if json.Unmarshal(abc.abCfg.LoadABSpecs, &s) == nil {
 			abc.setStorage(&s)
 		}
 	}

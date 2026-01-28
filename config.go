@@ -60,8 +60,9 @@ type ABConfig struct {
 	// MetaLoader is a custom metadata loader. If set, MetaEndpoint is ignored.
 	MetaLoader IABMetaLoader
 
-	// LocalStorageForFastBoot is JSON metadata for faster initial startup.
-	LocalStorageForFastBoot []byte
+	// LoadABSpecs is JSON metadata for faster initial startup.
+	// please set value from GetABSpecs()
+	LoadABSpecs []byte
 }
 
 // IABStickyHandler is the interface for persisting traffic assignment results.

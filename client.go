@@ -54,8 +54,8 @@ type Client interface {
 	// ABEvaluateAll evaluates all applicable gates/configs/experiments for a user.
 	ABEvaluateAll(user User) ([]ABResult, error)
 
-	// GetABSpecStorage exports the current A/B testing state for faster startup in future sessions.
-	GetABSpecStorage() ([]byte, error)
+	// GetABSpecs exports the current A/B testing state for faster startup in future sessions.
+	GetABSpecs() ([]byte, error)
 
 	// ========== Low-level API ==========
 
@@ -351,7 +351,7 @@ func (c *client) ABEvaluateAll(user User) ([]ABResult, error) {
 	return c.abCore.EvaluateAll(user)
 }
 
-func (c *client) GetABSpecStorage() ([]byte, error) {
+func (c *client) GetABSpecs() ([]byte, error) {
 	if c.abCore == nil {
 		return nil, ErrABNotInited
 	}
