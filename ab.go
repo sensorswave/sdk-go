@@ -433,7 +433,11 @@ func (abc *ABCore) evalABSticky(spec *ABSpec, evalID string, result *ABResult) (
 
 	stickyDataKey = fmt.Sprintf("%d-%s", spec.ID, evalID)
 	cacheResult, err := abc.abCfg.StickyHandler.GetStickyResult(stickyDataKey)
-	if err == nil && cacheResult != "" {
+	if err != nil {
+		return false, stickyDataKey, err
+	}
+
+	if cacheResult != "" {
 		cache := abResultCache{}
 		if err := json.Unmarshal([]byte(cacheResult), &cache); err == nil {
 			result.ID = spec.ID
@@ -446,8 +450,6 @@ func (abc *ABCore) evalABSticky(spec *ABSpec, evalID string, result *ABResult) (
 			}
 			return true, stickyDataKey, nil
 		}
-	} else if err != nil {
-		return false, stickyDataKey, err
 	}
 
 	return false, stickyDataKey, nil
