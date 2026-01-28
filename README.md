@@ -551,8 +551,18 @@ user = user.WithABUserProperty(sensorswave.PspCountry, "US")
 
 ## Running the Example
 
+Track/Identify/ProfileSet example:
+
 ```bash
-go run ./example \
+go run -tags=track_example ./example \
+    --source-token=your_token \
+    --endpoint=your_event_tracking_endpoint
+```
+
+AB testing example:
+
+```bash
+go run -tags=ab_example ./example \
     --source-token=your_token \
     --project-secret=your_secret \
     --endpoint=your_event_tracking_endpoint \

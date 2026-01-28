@@ -1,3 +1,6 @@
+//go:build ab_example
+// +build ab_example
+
 package main
 
 import (
@@ -53,12 +56,12 @@ func main() {
 func parseArgs() (exampleArgs, error) {
 	var args exampleArgs
 
-	// please replace with your own source token
+	// Please replace with your own source token.
 	flag.StringVar(&args.sourceToken, "source-token", "", "project token used by SDK client")
-	// please replace with your own endpoint
+	// Please replace with your own endpoint.
 	flag.StringVar(&args.endpoint, "endpoint", "http://example.sensorswave.com", "track endpoint base url")
 
-	// (Optional) A/B testing config
+	// (Optional) A/B testing config.
 	flag.StringVar(&args.projectSecret, "project-secret", "", "project secret used by SDK client")
 	flag.StringVar(&args.metaEndpoint, "meta-endpoint", "http://example.sensorswave.com", "meta endpoint base url")
 	flag.StringVar(&args.featureConfigKey, "feature-config-key", defaultFeatureConfigKey, "key for feature config example")
@@ -122,7 +125,7 @@ func runFeatureConfigExample(client sensorswave.Client, users []sensorswave.User
 			return fmt.Errorf("feature config eval failed for user %s: %w", user.LoginID, err)
 		}
 
-		// Skip if key doesn't exist or type doesn't match
+		// Skip if key doesn't exist or type doesn't match.
 		if result.Key == "" {
 			continue
 		}
