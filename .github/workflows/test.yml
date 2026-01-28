@@ -53,6 +53,3 @@ jobs:
 
       - name: Build
         run: go build -v ./...
-
-      - name: Build example
-        run: go build -v ./example
