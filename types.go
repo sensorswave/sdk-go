@@ -267,6 +267,21 @@ func NewProperties() Properties {
 	return make(Properties, 10)
 }
 
+// ListProperties is used for operations that require list values (Append, Union).
+// Each value must be a slice to ensure type safety for list-based user profile updates.
+type ListProperties map[string][]any
+
+// NewListProperties creates a new ListProperties map.
+func NewListProperties() ListProperties {
+	return make(ListProperties, 10)
+}
+
+// Set adds a key with slice value.
+func (lp ListProperties) Set(name string, value []any) ListProperties {
+	lp[name] = value
+	return lp
+}
+
 func (p Properties) Set(name string, value any) Properties {
 	p[name] = value
 	return p

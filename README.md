@@ -133,11 +133,11 @@ type Client interface {
     
     // ProfileAppend appends values to list user profile properties ($append).
     // Allows duplicates in the list.
-    ProfileAppend(user User, properties Properties) error
+    ProfileAppend(user User, properties ListProperties) error
     
     // ProfileUnion adds unique values to list user profile properties ($union).
     // Ensures no duplicates in the list.
-    ProfileUnion(user User, properties Properties) error
+    ProfileUnion(user User, properties ListProperties) error
     
     // ProfileUnset removes user profile properties ($unset).
     // Deletes the specified properties from the user profile.
@@ -356,8 +356,8 @@ if err != nil {
 ### Append to List Properties
 
 ```go
-err := client.ProfileAppend(user, sensorswave.Properties{
-    "tags": "premium",
+err := client.ProfileAppend(user, sensorswave.ListProperties{
+    "tags": []any{"premium"},
 })
 if err != nil {
     fmt.Printf("ProfileAppend failed: %v\n", err)
@@ -368,8 +368,8 @@ if err != nil {
 ### Union List Properties
 
 ```go
-err := client.ProfileUnion(user, sensorswave.Properties{
-    "categories": "sports",
+err := client.ProfileUnion(user, sensorswave.ListProperties{
+    "categories": []any{"sports"},
 })
 if err != nil {
     fmt.Printf("ProfileUnion failed: %v\n", err)
@@ -481,8 +481,8 @@ default:
 | **ProfileSet** | `ProfileSet(user User, properties Properties) error` | Sets or overwrites profile properties | Update user name, email, settings |
 | **ProfileSetOnce** | `ProfileSetOnce(user User, properties Properties) error` | Sets properties only if they don't exist | Record registration date, first source |
 | **ProfileIncrement** | `ProfileIncrement(user User, properties Properties) error` | Increments numeric properties | Login count, points, score |
-| **ProfileAppend** | `ProfileAppend(user User, properties Properties) error` | Appends to list properties (allows duplicates) | Add purchase history, activity log |
-| **ProfileUnion** | `ProfileUnion(user User, properties Properties) error` | Adds unique values to list properties | Add interests, tags, categories |
+| **ProfileAppend** | `ProfileAppend(user User, properties ListProperties) error` | Appends to list properties (allows duplicates) | Add purchase history, activity log |
+| **ProfileUnion** | `ProfileUnion(user User, properties ListProperties) error` | Adds unique values to list properties | Add interests, tags, categories |
 | **ProfileUnset** | `ProfileUnset(user User, propertyKeys ...string) error` | Removes specified properties | Clear temporary or deprecated fields |
 | **ProfileDelete** | `ProfileDelete(user User) error` | Deletes entire user profile (irreversible) | GDPR data deletion requests |
 

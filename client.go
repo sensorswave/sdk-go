@@ -34,10 +34,11 @@ type Client interface {
 	ProfileIncrement(user User, properties Properties) error
 
 	// ProfileAppend appends values to list user profile properties ($append).
-	ProfileAppend(user User, properties Properties) error
+	// Allows duplicates in the list.
+	ProfileAppend(user User, properties ListProperties) error
 
 	// ProfileUnion adds unique values to list user profile properties ($union).
-	ProfileUnion(user User, properties Properties) error
+	ProfileUnion(user User, properties ListProperties) error
 
 	// ProfileUnset removes user profile properties ($unset).
 	ProfileUnset(user User, propertyKeys ...string) error
@@ -251,7 +252,7 @@ func (c *client) ProfileIncrement(user User, properties Properties) error {
 	return c.Track(event)
 }
 
-func (c *client) ProfileAppend(user User, properties Properties) error {
+func (c *client) ProfileAppend(user User, properties ListProperties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
@@ -267,7 +268,7 @@ func (c *client) ProfileAppend(user User, properties Properties) error {
 	return c.Track(event)
 }
 
-func (c *client) ProfileUnion(user User, properties Properties) error {
+func (c *client) ProfileUnion(user User, properties ListProperties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
 	}
