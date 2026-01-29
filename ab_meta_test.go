@@ -87,6 +87,8 @@ func TestAbCoreLoadRemoteMeta(t *testing.T) {
 	// require.Equal(t, "Bearer "+ffcfg.accountAPIToken, req.Header.Get("Authorization"))
 	require.Contains(t, req.Header.Get("Authorization"), SignatureAlgorithm)
 	require.Equal(t, token, req.Header.Get(HeaderSourceToken))
+	require.Equal(t, sdkType, req.Header.Get("X-SDK"))
+	require.Empty(t, req.Header.Get("X-SDK-Type"))
 
 	storage := core.storage()
 	require.NotNil(t, storage)

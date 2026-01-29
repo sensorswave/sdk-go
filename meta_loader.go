@@ -26,7 +26,7 @@ func (l *HTTPSignatureMetaLoader) LoadMeta() (*ABDataResp, error) {
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
 	headers[HeaderSourceToken] = l.SourceToken
-	headers["X-SDK-Type"] = sdkType
+	headers["X-SDK"] = sdkType
 	headers["X-SDK-Version"] = strings.TrimPrefix(version, "v")
 
 	uriPath := l.URIPath
