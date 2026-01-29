@@ -22,10 +22,6 @@ jobs:
         with:
           go-version: '1.25'
       
-      - name: Extract version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-      
       - name: Generate Changelog
         uses: orhun/git-cliff-action@v4
         with:
@@ -34,9 +30,9 @@ jobs:
         env:
           OUTPUT: CHANGELOG.md
       
-      - name: Build with version injection
+      - name: Build
         run: |
-          go build -ldflags="-X 'github.com/sensorswave/sdk-go.version=${{ steps.version.outputs.VERSION }}'" ./...
+          go build ./...
       
       - name: Run tests
         run: go test -v ./...

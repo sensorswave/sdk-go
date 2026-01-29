@@ -1,11 +1,5 @@
 package sensorswave
 
-// SDK information
-const (
-	SdkName    = "go-sdk"
-	SdkVersion = "1.0.0"
-)
-
 const (
 	HeaderProject         = "Project"
 	HeaderSourceToken     = "SourceToken"
