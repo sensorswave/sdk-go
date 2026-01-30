@@ -103,7 +103,7 @@ type Client interface {
     // ========== User Identity ==========
     
     // Identify links an anonymous ID with a login ID (signup event).
-    // This creates a $SignUp event that connects the user's anonymous
+    // This creates a $identify event that connects the user's anonymous
     // session with their authenticated identity.
     Identify(user User) error
 
@@ -465,7 +465,7 @@ default:
 
 | Method | Signature | Parameters | Returns | Description |
 |---|---|---|---|---|
-| **Identify** | `Identify(user User) error` | `user`: User with both AnonID and LoginID | `error` | Creates a `$SignUp` event linking anonymous and authenticated identities |
+| **Identify** | `Identify(user User) error` | `user`: User with both AnonID and LoginID | `error` | Creates a `$identify` event linking anonymous and authenticated identities |
 
 ### Event Tracking
 
