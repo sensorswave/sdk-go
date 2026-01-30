@@ -51,8 +51,8 @@ func main() {
         AnonID:  "device-456",
     }
 
-    client.TrackEvent(user, "page_view", sensorswave.Properties{
-        "page": "/home",
+    client.TrackEvent(user, "PageView", sensorswave.Properties{
+        "page_name": "/home",
     })
 }
 ```
@@ -283,10 +283,10 @@ user := sensorswave.User{
     LoginID: "user-456",
 }
 
-err := client.TrackEvent(user, "purchase", sensorswave.Properties{
-    "product_id": "SKU-001",
-    "price":      99.99,
-    "quantity":   2,
+err := client.TrackEvent(user, "Purchase", sensorswave.Properties{
+    "product_id":   "SKU-001",
+    "total_amount": 99.99,
+    "item_count":   2,
 })
 if err != nil {
     fmt.Printf("Track event failed: %v\n", err)
@@ -297,9 +297,9 @@ if err != nil {
 ### Track with Full Event Structure
 
 ```go
-event := sensorswave.NewEvent("anon-123", "user-456", "page_view").
+event := sensorswave.NewEvent("anon-123", "user-456", "PageView").
     WithProperties(sensorswave.NewProperties().
-        Set("page", "/home").
+        Set("page_name", "/home").
         Set("referrer", "google.com"))
 
 if err := client.Track(event); err != nil {
@@ -318,9 +318,9 @@ if err := client.Track(event); err != nil {
 user := sensorswave.User{AnonID: "anon-123", LoginID: "user-456"}
 
 err := client.ProfileSet(user, sensorswave.Properties{
-    "name":  "John Doe",
-    "email": "john@example.com",
-    "level": 5,
+    "name":             "John Doe",
+    "email":            "john@example.com",
+    "membership_level": 5,
 })
 if err != nil {
     fmt.Printf("ProfileSet failed: %v\n", err)
@@ -579,7 +579,7 @@ const (
 Usage in events:
 
 ```go
-err := client.TrackEvent(user, "purchase", sensorswave.Properties{
+err := client.TrackEvent(user, "Purchase", sensorswave.Properties{
     sensorswave.PspAppVer: "2.1.0",
     sensorswave.PspCountry: "US",
     "product_id": "SKU-001",
