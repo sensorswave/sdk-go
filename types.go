@@ -105,6 +105,17 @@ func (e *Event) Normalize() error {
 		e.Time = time.Now().UnixMilli()
 	}
 
+	// inject default $lib and $lib_version properties
+	if e.Properties == nil {
+		e.Properties = NewProperties()
+	}
+	if _, exists := e.Properties[PspLib]; !exists {
+		e.Properties[PspLib] = sdkType
+	}
+	if _, exists := e.Properties[PspLibVersion]; !exists {
+		e.Properties[PspLibVersion] = version
+	}
+
 	return nil
 }
 

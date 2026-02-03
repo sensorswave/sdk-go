@@ -7,7 +7,7 @@ import (
 
 // Predefined events
 const (
-	PseIdentify  = "$identify"  // User correlation event
+	PseIdentify  = "$Identify"  // User correlation event
 	PseABImpress = "$ABImpress" // AB impression event
 	// Internal events from def package
 	PseUserSet = "$UserSet" // User property event
@@ -31,6 +31,8 @@ const (
 
 // Predefined properties
 const (
+	PspLib        = "$lib"             // v:string      -- SDK library name
+	PspLibVersion = "$lib_version"     // v:string      -- SDK library version
 	PspAppVer     = "$app_version"     // v:string      -- app version
 	PspBrowser    = "$browser"         // v:string      -- browser name
 	PspBrowserVer = "$browser_version" // v:string      -- browser version
