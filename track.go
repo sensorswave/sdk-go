@@ -106,6 +106,7 @@ func (c *client) send(jsonBody []byte) {
 
 		headers := map[string]string{
 			"Content-Type":    "application/json",
+			"User-Agent":      "", // Disable default Go User-Agent; SDK info is sent via other headers
 			HeaderSourceToken: c.sourceToken,
 		}
 

@@ -7,8 +7,9 @@ import (
 
 // Predefined events
 const (
-	PseIdentify  = "$Identify"  // User correlation event
-	PseABImpress = "$ABImpress" // AB impression event
+	PseIdentify       = "$Identify"       // User correlation event
+	PseFeatureImpress = "$FeatureImpress" // Feature impression event (Gate/Config)
+	PseExpImpress     = "$ExpImpress"     // Experiment impression event
 	// Internal events from def package
 	PseUserSet = "$UserSet" // User property event
 )
@@ -26,7 +27,11 @@ const (
 
 // Predefined property keys
 const (
-	PspUserSetType = "$user_set_type" // User property set type
+	PspUserSetType    = "$user_set_type" // User property set type
+	PspFeatureKey     = "$feature_key"
+	PspFeatureVariant = "$feature_variant"
+	PspExpKey         = "$exp_key"
+	PspExpVariant     = "$exp_variant"
 )
 
 // Predefined properties
@@ -45,7 +50,12 @@ const (
 	PspCity       = "$city"            // v:string      -- city (set by SDK or GeoIP)
 )
 
-// FormatABPropertyName returns the AB property name in the unified format "$ab_{ID}".
-func FormatABPropertyName(id int) string {
-	return "$ab_" + strconv.Itoa(id)
+// FormatFeaturePropertyName returns the feature user property name in the format "$feature_{ID}".
+func FormatFeaturePropertyName(id int) string {
+	return "$feature_" + strconv.Itoa(id)
+}
+
+// FormatExpPropertyName returns the experiment user property name in the format "$exp_{ID}".
+func FormatExpPropertyName(id int) string {
+	return "$exp_" + strconv.Itoa(id)
 }
