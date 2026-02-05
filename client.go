@@ -403,20 +403,44 @@ func (c *client) validateUser(user User) error {
 }
 
 func (c *client) logABImpression(user User, result ABResult) {
-	var userPropertyOpts UserPropertyOpts
-	propertyKey := FormatABPropertyName(result.ID)
+	var (
+		eventName   string
+		userPropKey string
+		eventProps  = NewProperties()
+		userProps   UserPropertyOpts
+	)
+
+	switch ABTypEnum(result.Typ) {
+	case ABTypGate, ABTypConfig:
+		eventName = PseFeatureImpress
+		userPropKey = FormatFeaturePropertyName(result.ID)
+		eventProps.Set(PspFeatureKey, result.Key)
+		if result.VariantID != nil {
+			eventProps.Set(PspFeatureVariant, *result.VariantID)
+		}
+	case ABTypExp:
+		eventName = PseExpImpress
+		userPropKey = FormatExpPropertyName(result.ID)
+		eventProps.Set(PspExpKey, result.Key)
+		if result.VariantID != nil {
+			eventProps.Set(PspExpVariant, *result.VariantID)
+		}
+	default:
+		return
+	}
 
 	if result.VariantID != nil {
-		userPropertyOpts = NewUserPropertyOpts().Set(propertyKey, *result.VariantID)
+		userProps = NewUserPropertyOpts().Set(userPropKey, *result.VariantID)
 	} else {
-		userPropertyOpts = NewUserPropertyOpts().Unset(propertyKey)
+		userProps = NewUserPropertyOpts().Unset(userPropKey)
 	}
 
 	event := Event{
 		AnonID:         user.AnonID,
 		LoginID:        user.LoginID,
-		Event:          PseABImpress,
-		UserProperties: userPropertyOpts,
+		Event:          eventName,
+		Properties:     eventProps,
+		UserProperties: userProps,
 	}
 
 	if err := c.Track(event); err != nil {
