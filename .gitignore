@@ -49,3 +49,4 @@ coverage*.out
 CLAUDE.md
 .worktrees/
 .serena/
+AGENTS.md
