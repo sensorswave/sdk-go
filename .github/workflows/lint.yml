@@ -2,9 +2,9 @@ name: Lint
 
 on:
   push:
-    branches: [ main, develop, 'release/*' ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop, 'release/*' ]
+    branches: [ main ]
 
 jobs:
   golangci-lint:
