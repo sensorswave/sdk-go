@@ -23,7 +23,7 @@ jobs:
 
       - name: Temporarily downgrade go.mod for linter compatibility
         run: |
-          sed -i 's/^go 1\.25\.0/go 1.24.0/' go.mod
+          sed -E -i 's/^go 1\.25\.[0-9]+/go 1.24.0/' go.mod
           go mod tidy
 
       - name: Run golangci-lint
@@ -43,7 +43,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25'
+          go-version: '1.25.7'
 
       - name: Check formatting
         run: |
@@ -64,7 +64,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25'
+          go-version: '1.25.7'
           cache: true
 
       - name: Run go vet
@@ -81,7 +81,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25'
+          go-version: '1.25.7'
           cache: true
 
       - name: Check go mod tidy
@@ -104,7 +104,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.25'
+          go-version: '1.25.7'
           cache: true
 
       - name: Install gocyclo
