@@ -253,31 +253,12 @@ func TestABCoreEvalExperimentLayer(t *testing.T) {
 	// Test traffic allocation using BUCKET_SET
 	// The TRAFFIC rule uses BUCKET_SET which determines if user enters the experiment
 	t.Run("traffic-allocation", func(t *testing.T) {
-		testLoginIDs := []string{
+		userInTraffic, userOutTraffic := findLayerTrafficUsers(t, core, spec, []string{
 			"user0", "user1", "user2", "user3", "user4", "user5",
 			"user6", "user7", "user8", "user9", "user10",
 			"user11", "user12", "user13", "user14", "user15",
 			"alice", "bob", "charlie", "david", "eve",
-		}
-
-		var userInTraffic, userOutTraffic string
-		for _, uid := range testLoginIDs {
-			result, err := core.evalAB(User{LoginID: uid}, spec, 0)
-			require.NoError(t, err)
-
-			if result.VariantID != nil && userInTraffic == "" {
-				userInTraffic = uid
-			}
-			if result.VariantID == nil && userOutTraffic == "" {
-				userOutTraffic = uid
-			}
-			if userInTraffic != "" && userOutTraffic != "" {
-				break
-			}
-		}
-
-		require.NotEmpty(t, userInTraffic, "Could not find user in traffic")
-		require.NotEmpty(t, userOutTraffic, "Could not find user out of traffic")
+		})
 
 		// Verify user in traffic gets a variant
 		result1, err := core.evalAB(User{LoginID: userInTraffic}, spec, 0)
@@ -293,33 +274,13 @@ func TestABCoreEvalExperimentLayer(t *testing.T) {
 
 	// Test variant distribution and payloads for users in traffic
 	t.Run("variant-distribution-and-payloads", func(t *testing.T) {
-		testLoginIDs := []string{
+		variant1User, variant2User := findLayerVariantUsers(t, core, spec, []string{
 			"user0", "user1", "user2", "user3", "user4", "user5",
 			"user6", "user7", "user8", "user9", "user10",
 			"user11", "user12", "user13", "user14", "user15",
 			"alice", "bob", "charlie", "david", "eve",
 			"frank", "grace", "henry", "iris", "jack",
-		}
-
-		var variant1User, variant2User string
-		for _, uid := range testLoginIDs {
-			result, err := core.evalAB(User{LoginID: uid}, spec, 0)
-			require.NoError(t, err)
-			if result.VariantID != nil {
-				if *result.VariantID == "v1" && variant1User == "" {
-					variant1User = uid
-				}
-				if *result.VariantID == "v2" && variant2User == "" {
-					variant2User = uid
-				}
-			}
-			if variant1User != "" && variant2User != "" {
-				break
-			}
-		}
-
-		require.NotEmpty(t, variant1User, "Could not find user for variant 1")
-		require.NotEmpty(t, variant2User, "Could not find user for variant 2")
+		})
 
 		// Verify variant 1 payload
 		result1, err := core.evalAB(User{LoginID: variant1User}, spec, 0)
@@ -338,30 +299,86 @@ func TestABCoreEvalExperimentLayer(t *testing.T) {
 
 	// Test that variants are split approximately 50-50 within the traffic
 	t.Run("variant-split-ratio", func(t *testing.T) {
-		testLoginIDs := make([]string, 0, 100)
-		for i := 0; i < 100; i++ {
-			testLoginIDs = append(testLoginIDs, fmt.Sprintf("testuser%d", i))
-		}
-
-		variant1Count := 0
-		variant2Count := 0
-		for _, uid := range testLoginIDs {
-			result, err := core.evalAB(User{LoginID: uid}, spec, 0)
-			require.NoError(t, err)
-			if result.VariantID != nil {
-				switch *result.VariantID {
-				case "v1":
-					variant1Count++
-				case "v2":
-					variant2Count++
-				}
-			}
-		}
+		variant1Count, variant2Count := countLayerVariants(t, core, spec, 100)
 
 		// We should have users in both variants
 		require.Greater(t, variant1Count, 0, "Should have users in variant 1")
 		require.Greater(t, variant2Count, 0, "Should have users in variant 2")
 	})
+}
+
+func findLayerTrafficUsers(t *testing.T, core *ABCore, spec *ABSpec, loginIDs []string) (string, string) {
+	t.Helper()
+
+	var userInTraffic, userOutTraffic string
+	for _, uid := range loginIDs {
+		result, err := core.evalAB(User{LoginID: uid}, spec, 0)
+		require.NoError(t, err)
+
+		if result.VariantID != nil && userInTraffic == "" {
+			userInTraffic = uid
+		}
+		if result.VariantID == nil && userOutTraffic == "" {
+			userOutTraffic = uid
+		}
+		if userInTraffic != "" && userOutTraffic != "" {
+			break
+		}
+	}
+
+	require.NotEmpty(t, userInTraffic, "Could not find user in traffic")
+	require.NotEmpty(t, userOutTraffic, "Could not find user out of traffic")
+
+	return userInTraffic, userOutTraffic
+}
+
+func findLayerVariantUsers(t *testing.T, core *ABCore, spec *ABSpec, loginIDs []string) (string, string) {
+	t.Helper()
+
+	var variant1User, variant2User string
+	for _, uid := range loginIDs {
+		result, err := core.evalAB(User{LoginID: uid}, spec, 0)
+		require.NoError(t, err)
+		if result.VariantID != nil {
+			if *result.VariantID == "v1" && variant1User == "" {
+				variant1User = uid
+			}
+			if *result.VariantID == "v2" && variant2User == "" {
+				variant2User = uid
+			}
+		}
+		if variant1User != "" && variant2User != "" {
+			break
+		}
+	}
+
+	require.NotEmpty(t, variant1User, "Could not find user for variant 1")
+	require.NotEmpty(t, variant2User, "Could not find user for variant 2")
+
+	return variant1User, variant2User
+}
+
+func countLayerVariants(t *testing.T, core *ABCore, spec *ABSpec, sampleSize int) (int, int) {
+	t.Helper()
+
+	variant1Count := 0
+	variant2Count := 0
+	for i := 0; i < sampleSize; i++ {
+		uid := fmt.Sprintf("testuser%d", i)
+		result, err := core.evalAB(User{LoginID: uid}, spec, 0)
+		require.NoError(t, err)
+		if result.VariantID == nil {
+			continue
+		}
+		switch *result.VariantID {
+		case "v1":
+			variant1Count++
+		case "v2":
+			variant2Count++
+		}
+	}
+
+	return variant1Count, variant2Count
 }
 
 func TestABCoreEvalExperimentHoldout(t *testing.T) {

@@ -92,3 +92,31 @@ jobs:
             git diff
             exit 1
           fi
+
+  gocyclo:
+    name: Cyclomatic Complexity Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+          cache: true
+
+      - name: Install gocyclo
+        run: go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+
+      - name: Check cyclomatic complexity
+        run: |
+          # Keep this aligned with Go Report Card, which also checks _test.go files.
+          RESULT=$(gocyclo -over 15 . 2>&1 || true)
+          if [ -n "$RESULT" ]; then
+            echo "The following functions have cyclomatic complexity > 15:"
+            echo "$RESULT"
+            exit 1
+          fi
+          echo "All functions have acceptable cyclomatic complexity"
