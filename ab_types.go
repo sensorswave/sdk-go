@@ -14,9 +14,10 @@ type ABResult struct {
 	ID                int            `json:"id,omitempty"`
 	Key               string         `json:"key,omitempty"`
 	Typ               int            `json:"typ,omitempty"`
-	VariantID         *string        `json:"vid,omitempty"`             // Variant ID: "pass/fail" for gate, variant id for config/exp, "holdout", or nil
-	VariantParamValue map[string]any `json:"value,omitempty"`           // Variant parameter values (read-only)
-	DisableImpress    bool           `json:"disable_impress,omitempty"` // Disable Impress
+	VariantID         *string        `json:"vid,omitempty"`              // Variant ID: "pass/fail" for gate, variant id for config/exp, "holdout", or nil
+	VariantParamValue map[string]any `json:"value,omitempty"`            // Variant parameter values (read-only)
+	DisableImpress    bool           `json:"disable_impress,omitempty"`  // Disable Impress
+	DecisionRuleID    *string        `json:"decision_rule_id,omitempty"` // Decision rule ID
 }
 
 // CheckFeatureGate returns true if the AB result indicates a "pass" for a gate.

@@ -46,6 +46,12 @@ type ABCore struct {
 	h             *httpClient
 }
 
+// ruleEvalResult is the result of evaluating a rule.
+type ruleEvalResult struct {
+	Matched bool // whether the rule matched the conditions
+	Pass    bool // whether the rule passed the conditions and rollout
+}
+
 // loadRemoteMeta fetches the AB metadata from the remote server.
 func (abc *ABCore) loadRemoteMeta() {
 	if abc.abCfg.MetaLoader == nil {
@@ -363,14 +369,17 @@ func (abc *ABCore) evalABOverrides(user User, spec *ABSpec, evalID string, index
 	if rules, ok := spec.Rules[RuleOverride]; ok {
 		for i := range rules {
 			rule := &rules[i]
-			pass, err := abc.evalRule(&user, rule, evalID, index)
+			decision, err := abc.evalRule(&user, rule, evalID, index)
 			if err != nil {
 				return false, err
 			}
-			if pass && rule.Override != nil {
+			if decision.Pass && rule.Override != nil {
 				result.VariantID = rule.Override
 				if spec.VariantValues != nil {
 					result.VariantParamValue = spec.VariantValues[*rule.Override]
+				}
+				if rule.ID != "" {
+					result.DecisionRuleID = &rule.ID
 				}
 				return true, nil
 			}
@@ -383,13 +392,16 @@ func (abc *ABCore) evalABTraffic(user User, spec *ABSpec, evalID string, index i
 	if rules, ok := spec.Rules[RuleTraffic]; ok {
 		for i := range rules {
 			rule := &rules[i]
-			pass, err := abc.evalRule(&user, rule, evalID, index)
+			decision, err := abc.evalRule(&user, rule, evalID, index)
 			if err != nil {
 				return false, err
 			}
-			if !pass {
+			if !decision.Pass {
 				if rule.Override != nil {
 					result.VariantID = rule.Override
+				}
+				if rule.ID != "" {
+					result.DecisionRuleID = &rule.ID
 				}
 				return true, nil
 			}
@@ -402,11 +414,14 @@ func (abc *ABCore) evalABGates(user User, spec *ABSpec, evalID string, index int
 	if rules, ok := spec.Rules[RuleGate]; ok {
 		for i := range rules {
 			rule := &rules[i]
-			pass, err := abc.evalRule(&user, rule, evalID, index)
+			decision, err := abc.evalRule(&user, rule, evalID, index)
 			if err != nil {
 				return false, err
 			}
-			if pass {
+			if decision.Matched && rule.ID != "" {
+				result.DecisionRuleID = &rule.ID
+			}
+			if decision.Pass {
 				if rule.Override != nil {
 					result.VariantID = rule.Override
 					result.VariantParamValue = spec.VariantValues[*rule.Override]
@@ -462,14 +477,17 @@ func (abc *ABCore) evalABExperiments(user User, spec *ABSpec, evalID string, ind
 	if rules, ok := spec.Rules[RuleGroup]; ok {
 		for i := range rules {
 			rule := &rules[i]
-			pass, err := abc.evalRule(&user, rule, evalID, index)
+			decision, err := abc.evalRule(&user, rule, evalID, index)
 			if err != nil {
 				return err
 			}
-			if pass {
+			if decision.Pass {
 				if rule.Override != nil {
 					result.VariantID = rule.Override
 					result.VariantParamValue = spec.VariantValues[*rule.Override]
+				}
+				if rule.ID != "" {
+					result.DecisionRuleID = &rule.ID
 				}
 				break
 			}
@@ -479,32 +497,31 @@ func (abc *ABCore) evalABExperiments(user User, spec *ABSpec, evalID string, ind
 }
 
 // evalRule evaluates all conditions within a rule and applies rollout logic.
-func (abc *ABCore) evalRule(user *User, rule *Rule, evalID string, index int) (pass bool, err error) {
-	if rule.Rollout == 0.0 {
-		return false, nil
-	}
+// The zero value means the rule did not match any decision path.
+func (abc *ABCore) evalRule(user *User, rule *Rule, evalID string, index int) (ruleEvalResult, error) {
 	for i := range rule.Conditions {
-		pass, err = abc.evalCond(user, &rule.Conditions[i], evalID, index)
+		condMatched, err := abc.evalCond(user, &rule.Conditions[i], evalID, index)
 		if err != nil {
-			return false, err
+			return ruleEvalResult{}, err
 		}
-		if !pass {
-			return false, nil
+		if !condMatched {
+			return ruleEvalResult{}, nil
 		}
 	}
 
-	// check rollout if all conditions pass
-	if rule.Rollout == 100.0 {
-		return true, nil
-	} else {
-		h64 := hashUint64(evalID, rule.Salt)
-		pass = h64%10000 < uint64(rule.Rollout*100)
+	switch rule.Rollout {
+	case 100:
+		return ruleEvalResult{Matched: true, Pass: true}, nil
+	case 0:
+		return ruleEvalResult{Matched: true, Pass: false}, nil
+	default:
+		pass := hashUint64(evalID, rule.Salt)%10000 < uint64(rule.Rollout*100)
+		return ruleEvalResult{Matched: true, Pass: pass}, nil
 	}
-	return
 }
 
 // evalCond evaluates a single condition.
-func (abc *ABCore) evalCond(user *User, cond *Condition, evalID string, index int) (pass bool, err error) {
+func (abc *ABCore) evalCond(user *User, cond *Condition, evalID string, index int) (matched bool, err error) {
 	// Preprocess left value
 	var left, right any
 	ok := false
@@ -536,7 +553,7 @@ func (abc *ABCore) evalCond(user *User, cond *Condition, evalID string, index in
 	}
 
 	right = cond.Value
-	pass, err = abc.evalCondMatch(user, cond, left, right, evalID, index)
+	matched, err = abc.evalCondMatch(user, cond, left, right, evalID, index)
 	return
 }
 
