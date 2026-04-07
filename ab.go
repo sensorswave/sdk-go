@@ -361,8 +361,9 @@ func (abc *ABCore) evalABRules(user User, spec *ABSpec, evalID string, index int
 
 func (abc *ABCore) evalABOverrides(user User, spec *ABSpec, evalID string, index int, result *ABResult) (bool, error) {
 	if rules, ok := spec.Rules[RuleOverride]; ok {
-		for _, rule := range rules {
-			pass, err := abc.evalRule(&user, &rule, evalID, index)
+		for i := range rules {
+			rule := &rules[i]
+			pass, err := abc.evalRule(&user, rule, evalID, index)
 			if err != nil {
 				return false, err
 			}
@@ -380,8 +381,9 @@ func (abc *ABCore) evalABOverrides(user User, spec *ABSpec, evalID string, index
 
 func (abc *ABCore) evalABTraffic(user User, spec *ABSpec, evalID string, index int, result *ABResult) (bool, error) {
 	if rules, ok := spec.Rules[RuleTraffic]; ok {
-		for _, rule := range rules {
-			pass, err := abc.evalRule(&user, &rule, evalID, index)
+		for i := range rules {
+			rule := &rules[i]
+			pass, err := abc.evalRule(&user, rule, evalID, index)
 			if err != nil {
 				return false, err
 			}
@@ -398,8 +400,9 @@ func (abc *ABCore) evalABTraffic(user User, spec *ABSpec, evalID string, index i
 
 func (abc *ABCore) evalABGates(user User, spec *ABSpec, evalID string, index int, result *ABResult) (bool, error) {
 	if rules, ok := spec.Rules[RuleGate]; ok {
-		for _, rule := range rules {
-			pass, err := abc.evalRule(&user, &rule, evalID, index)
+		for i := range rules {
+			rule := &rules[i]
+			pass, err := abc.evalRule(&user, rule, evalID, index)
 			if err != nil {
 				return false, err
 			}
@@ -457,8 +460,9 @@ func (abc *ABCore) evalABSticky(spec *ABSpec, evalID string, result *ABResult) (
 
 func (abc *ABCore) evalABExperiments(user User, spec *ABSpec, evalID string, index int, result *ABResult) error {
 	if rules, ok := spec.Rules[RuleGroup]; ok {
-		for _, rule := range rules {
-			pass, err := abc.evalRule(&user, &rule, evalID, index)
+		for i := range rules {
+			rule := &rules[i]
+			pass, err := abc.evalRule(&user, rule, evalID, index)
 			if err != nil {
 				return err
 			}
@@ -479,8 +483,8 @@ func (abc *ABCore) evalRule(user *User, rule *Rule, evalID string, index int) (p
 	if rule.Rollout == 0.0 {
 		return false, nil
 	}
-	for _, cond := range rule.Conditions {
-		pass, err = abc.evalCond(user, &cond, evalID, index)
+	for i := range rule.Conditions {
+		pass, err = abc.evalCond(user, &rule.Conditions[i], evalID, index)
 		if err != nil {
 			return false, err
 		}
