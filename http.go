@@ -120,7 +120,11 @@ func (h *httpClient) Do(ctx context.Context, opts *requestOpts) (respBody []byte
 		if httpCode == http.StatusOK {
 			return
 		}
-		// continue
+		// 4xx Not Retry
+		if httpCode >= 400 && httpCode < 500 {
+			return
+		}
+		// Others Retry
 	}
 
 	return

@@ -22,7 +22,7 @@ type Config struct {
 	// FlushInterval is the interval for flushing buffered events. Default: 10s
 	FlushInterval time.Duration
 
-	// HTTPConcurrency is the maximum number of concurrent HTTP requests. Default: 10
+	// HTTPConcurrency is the maximum number of concurrent HTTP requests. Default: 1
 	HTTPConcurrency int
 
 	// HTTPTimeout is the timeout for each HTTP request. Default: 3s
@@ -51,7 +51,8 @@ type ABConfig struct {
 	// MetaURIPath is the URI path for A/B test metadata. Default: "/ab/all4eval"
 	MetaURIPath string
 
-	// MetaLoadInterval is the interval for refreshing A/B test metadata. Default: 10s
+	// MetaLoadInterval is the interval for refreshing A/B test metadata.
+	// Default: 1 minute, with a minimum effective interval of 30 seconds.
 	MetaLoadInterval time.Duration
 
 	// StickyHandler is a custom handler for sticky session persistence.

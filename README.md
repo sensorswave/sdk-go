@@ -519,7 +519,7 @@ default:
 | `ProjectSecret` | Project secret for authentication | Required |
 | `MetaEndpoint` | A/B metadata server URL | Uses main endpoint |
 | `MetaURIPath` | A/B metadata path | `/ab/all4eval` |
-| `MetaLoadInterval` | Metadata polling interval | 30 seconds (minimum) |
+| `MetaLoadInterval` | Metadata polling interval | 1 minute (minimum effective interval: 30 seconds) |
 | `LoadABSpecs` | Cached A/B specs from `GetABSpecs()` for fast startup | nil |
 | `StickyHandler` | Custom sticky session handler | nil |
 | `MetaLoader` | Custom metadata loader | nil |
