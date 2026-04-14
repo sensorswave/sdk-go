@@ -18,9 +18,10 @@ jobs:
           fetch-depth: 0  # Fetch all history for changelog generation
       
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version: '1.25.x'
+          check-latest: true
       
       - name: Generate Changelog
         uses: orhun/git-cliff-action@v4
