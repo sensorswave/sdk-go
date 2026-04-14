@@ -102,7 +102,6 @@ func (abc *ABCore) loadRemoteMeta() {
 				spec.VariantValues[vid] = value
 			}
 		}
-		spec.VariantPayloads = nil // Free memory
 		s.ABSpecs[spec.Key] = *spec
 	}
 
