@@ -1341,3 +1341,56 @@ func TestABCoreEvalAllMultipleGatesPartialHit(t *testing.T) {
 		})
 	}
 }
+
+func TestABCoreEvalGateFirstMatchWins(t *testing.T) {
+	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "first_match_wins.json"))
+	core := newTestAbCoreWithStorage(t, store)
+
+	spec := core.getABSpec("gate_first_match")
+	require.NotNil(t, spec)
+
+	t.Run("vip-user-passes-via-first-rule", func(t *testing.T) {
+		result, err := core.evalAB(User{LoginID: "vip-user-1"}, spec, 0)
+		require.NoError(t, err)
+		require.True(t, result.CheckFeatureGate())
+		require.NotNil(t, result.DecisionRuleID)
+		require.Equal(t, "gate-vip-rule", *result.DecisionRuleID)
+	})
+
+	t.Run("vip-plus-member-still-matches-first-rule", func(t *testing.T) {
+		result, err := core.evalAB(User{LoginID: "vip-user-2", ABUserProperties: Properties{"is_member": true}}, spec, 0)
+		require.NoError(t, err)
+		require.True(t, result.CheckFeatureGate())
+		require.NotNil(t, result.DecisionRuleID)
+		require.Equal(t, "gate-vip-rule", *result.DecisionRuleID)
+	})
+
+	t.Run("member-skips-first-rule-passes-via-second", func(t *testing.T) {
+		result, err := core.evalAB(User{LoginID: "regular-member", ABUserProperties: Properties{"is_member": true}}, spec, 0)
+		require.NoError(t, err)
+		require.True(t, result.CheckFeatureGate())
+		require.NotNil(t, result.DecisionRuleID)
+		require.Equal(t, "gate-member-rule", *result.DecisionRuleID)
+	})
+
+	t.Run("plain-user-matches-third-rule-zero-rollout-fails", func(t *testing.T) {
+		// Rule 1 (VIP): login_id not in list → skip
+		// Rule 2 (Member): is_member not set → skip
+		// Rule 3 (Public): IS_TRUE matches → rollout=0 → fail
+		// First-match-wins: stops at Rule 3, gate fails
+		result, err := core.evalAB(User{LoginID: "plain-user"}, spec, 0)
+		require.NoError(t, err)
+		require.False(t, result.CheckFeatureGate())
+		require.NotNil(t, result.DecisionRuleID)
+		require.Equal(t, "gate-zero-rollout-rule", *result.DecisionRuleID)
+	})
+
+	t.Run("non-member-matches-third-rule-zero-rollout-fails", func(t *testing.T) {
+		// is_member=false → Rule 2 skipped → Rule 3 matches → rollout=0 → fail
+		result, err := core.evalAB(User{LoginID: "non-member", ABUserProperties: Properties{"is_member": false}}, spec, 0)
+		require.NoError(t, err)
+		require.False(t, result.CheckFeatureGate())
+		require.NotNil(t, result.DecisionRuleID)
+		require.Equal(t, "gate-zero-rollout-rule", *result.DecisionRuleID)
+	})
+}

@@ -418,15 +418,15 @@ func (abc *ABCore) evalABGates(user User, spec *ABSpec, evalID string, index int
 			if err != nil {
 				return false, err
 			}
-			if decision.Matched && rule.ID != "" {
-				result.DecisionRuleID = &rule.ID
-			}
-			if decision.Pass {
-				if rule.Override != nil {
+			if decision.Matched {
+				if rule.ID != "" {
+					result.DecisionRuleID = &rule.ID
+				}
+				if decision.Pass && rule.Override != nil {
 					result.VariantID = rule.Override
 					result.VariantParamValue = spec.VariantValues[*rule.Override]
 				}
-				return true, nil
+				return decision.Pass, nil
 			}
 		}
 	}

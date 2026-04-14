@@ -1,0 +1,75 @@
+{
+    "code": 0,
+    "msg": "success",
+    "data": {
+        "update": true,
+        "updated_at": 1764658761824,
+        "ab_specs": [
+            {
+                "id": 41,
+                "key": "gate_first_match",
+                "name": "Gate First Match Wins",
+                "typ": 1,
+                "traffic": "",
+                "subject_id": "LOGIN_ID",
+                "enabled": true,
+                "sticky": false,
+                "salt": "first-match-gate-salt",
+                "version": 1,
+                "rules": {
+                    "GATE": [
+                        {
+                            "id": "gate-vip-rule",
+                            "name": "VIP Only",
+                            "salt": "gate-vip-rule-salt",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "FFUSER",
+                                    "field_typ": "STRING",
+                                    "field": "login_id",
+                                    "opt": "ANY_OF_CASE_INSENSITIVE",
+                                    "value": ["vip-user-1", "vip-user-2"]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "gate-member-rule",
+                            "name": "Member Only",
+                            "salt": "gate-member-rule-salt",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "PROPS",
+                                    "field_typ": "BOOLEAN",
+                                    "field": "is_member",
+                                    "opt": "IS_TRUE",
+                                    "value": null
+                                }
+                            ]
+                        },
+                        {
+                            "id": "gate-zero-rollout-rule",
+                            "name": "Zero Rollout Public",
+                            "salt": "gate-zero-rollout-salt",
+                            "rollout": 0,
+                            "conditions": [
+                                {
+                                    "field_class": "COMMON",
+                                    "field_typ": "BOOLEAN",
+                                    "field": "public",
+                                    "opt": "IS_TRUE",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    ],
+                    "OVERRIDE": [],
+                    "TRAFFIC": []
+                },
+                "variant_payloads": {}
+            }
+        ]
+    },
+    "trace": "0:1025:3763272381"
+}

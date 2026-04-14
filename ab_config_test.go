@@ -30,55 +30,28 @@ func TestABCoreEvalConfigOverride(t *testing.T) {
 		require.Nil(t, result.VariantID)
 	})
 
-	t.Run("variant-distribution", func(t *testing.T) {
-		testLoginIDs := []string{
-			"user0", "user1", "user2", "user3", "user4", "user5",
-			"user6", "user7", "user8", "user9", "user10",
-			"alice", "bob", "charlie", "david", "eve",
-			"frank", "grace", "henry", "iris", "jack",
-		}
+	t.Run("first-match-wins-distribution", func(t *testing.T) {
+		// First-match-wins: all version>10.0 users match rule 1, only ~10% pass rollout → get v1.
+		totalUsers := 200
+		v1Count := 0
+		nilCount := 0
 
-		var v1User, v2User, v3User string
-		for _, uid := range testLoginIDs {
+		for i := 0; i < totalUsers; i++ {
+			uid := fmt.Sprintf("override-dist-user-%d", i)
 			result, err := core.evalAB(User{LoginID: uid, ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
 			require.NoError(t, err)
-			if result.VariantID == nil {
-				continue
-			}
-			switch *result.VariantID {
-			case "v1":
-				if v1User == "" {
-					v1User = uid
-				}
-			case "v2":
-				if v2User == "" {
-					v2User = uid
-				}
-			case "v3":
-				if v3User == "" {
-					v3User = uid
-				}
-			}
-			if v1User != "" && v2User != "" && v3User != "" {
-				break
+
+			if result.VariantID != nil {
+				require.Equal(t, "v1", *result.VariantID)
+				require.Equal(t, "blue", result.GetString("color", ""))
+				v1Count++
+			} else {
+				nilCount++
 			}
 		}
 
-		require.NotEmpty(t, v1User, "Could not find user for variant 1")
-		require.NotEmpty(t, v2User, "Could not find user for variant 2")
-		require.NotEmpty(t, v3User, "Could not find user for variant 3")
-
-		r1, err := core.evalAB(User{LoginID: v1User, ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
-		require.NoError(t, err)
-		require.Equal(t, "blue", r1.GetString("color", ""))
-
-		r2, err := core.evalAB(User{LoginID: v2User, ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
-		require.NoError(t, err)
-		require.Equal(t, "red", r2.GetString("color", ""))
-
-		r3, err := core.evalAB(User{LoginID: v3User, ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
-		require.NoError(t, err)
-		require.Equal(t, "orange", r3.GetString("color", ""))
+		v1Rate := float64(v1Count) / float64(totalUsers)
+		require.InDelta(t, 0.10, v1Rate, 0.07, "Only first gate rule's rollout (10%%) should pass")
 	})
 }
 
@@ -89,46 +62,29 @@ func TestABCoreEvalConfigPublic(t *testing.T) {
 	spec := core.getABSpec("bMHsfOAUKx")
 	require.NotNil(t, spec)
 
+	// First-match-wins: all users match rule 1 (IS_TRUE), only ~10% pass rollout → get v1.
+	// The remaining ~90% match but fail rollout → gate returns false → no variant.
 	totalUsers := 1000
-	counts := map[string]int{}
-	samples := map[string]string{}
+	v1Count := 0
+	nilCount := 0
 
 	for i := 0; i < totalUsers; i++ {
 		uid := fmt.Sprintf("config-public-user-%d", i)
 		result, err := core.evalAB(User{LoginID: uid}, spec, 0)
 		require.NoError(t, err)
-		require.NotNil(t, result.VariantID)
 
-		vid := *result.VariantID
-		counts[vid]++
-		if _, ok := samples[vid]; !ok {
-			samples[vid] = uid
+		if result.VariantID != nil {
+			require.Equal(t, "v1", *result.VariantID)
+			require.Equal(t, "blue", result.GetString("color", ""))
+			v1Count++
+		} else {
+			nilCount++
 		}
 	}
 
-	require.Contains(t, counts, "v1")
-	require.Contains(t, counts, "v2")
-	require.Contains(t, counts, "v3")
-
-	// Rollout chain: ~10% -> variant1, ~30% -> variant2, remaining -> variant3
-	v1Rate := float64(counts["v1"]) / float64(totalUsers)
-	v2Rate := float64(counts["v2"]) / float64(totalUsers)
-	v3Rate := float64(counts["v3"]) / float64(totalUsers)
-	require.InDelta(t, 0.10, v1Rate, 0.05)
-	require.InDelta(t, 0.30, v2Rate, 0.05)
-	require.InDelta(t, 0.60, v3Rate, 0.05)
-
-	r1, err := core.evalAB(User{LoginID: samples["v1"]}, spec, 0)
-	require.NoError(t, err)
-	require.Equal(t, "blue", r1.GetString("color", ""))
-
-	r2, err := core.evalAB(User{LoginID: samples["v2"]}, spec, 0)
-	require.NoError(t, err)
-	require.Equal(t, "red", r2.GetString("color", ""))
-
-	r3, err := core.evalAB(User{LoginID: samples["v3"]}, spec, 0)
-	require.NoError(t, err)
-	require.Equal(t, "orange", r3.GetString("color", ""))
+	v1Rate := float64(v1Count) / float64(totalUsers)
+	require.InDelta(t, 0.10, v1Rate, 0.05, "Only first gate rule's rollout (10%%) should pass")
+	require.Equal(t, totalUsers, v1Count+nilCount)
 }
 
 func TestABCoreEvalConfigTarget(t *testing.T) {
@@ -144,46 +100,30 @@ func TestABCoreEvalConfigTarget(t *testing.T) {
 		require.Nil(t, result.VariantID)
 	})
 
-	totalUsers := 1000
-	counts := map[string]int{}
-	samples := map[string]string{}
+	t.Run("first-match-wins", func(t *testing.T) {
+		// First-match-wins: all version>10.0 users match rule 1, only ~10% pass rollout → get v1.
+		totalUsers := 1000
+		v1Count := 0
+		nilCount := 0
 
-	for i := 0; i < totalUsers; i++ {
-		uid := fmt.Sprintf("config-target-user-%d", i)
-		result, err := core.evalAB(User{LoginID: uid, ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
-		require.NoError(t, err)
-		require.NotNil(t, result.VariantID)
+		for i := 0; i < totalUsers; i++ {
+			uid := fmt.Sprintf("config-target-user-%d", i)
+			result, err := core.evalAB(User{LoginID: uid, ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
+			require.NoError(t, err)
 
-		vid := *result.VariantID
-		counts[vid]++
-		if _, ok := samples[vid]; !ok {
-			samples[vid] = uid
+			if result.VariantID != nil {
+				require.Equal(t, "v1", *result.VariantID)
+				require.Equal(t, "blue", result.GetString("color", ""))
+				v1Count++
+			} else {
+				nilCount++
+			}
 		}
-	}
 
-	require.Contains(t, counts, "v1")
-	require.Contains(t, counts, "v2")
-	require.Contains(t, counts, "v3")
-
-	// Rollout chain on same salt: ~10% -> variant1, ~30% -> variant2, rest -> variant3
-	v1Rate := float64(counts["v1"]) / float64(totalUsers)
-	v2Rate := float64(counts["v2"]) / float64(totalUsers)
-	v3Rate := float64(counts["v3"]) / float64(totalUsers)
-	require.InDelta(t, 0.10, v1Rate, 0.05)
-	require.InDelta(t, 0.30, v2Rate, 0.05)
-	require.InDelta(t, 0.60, v3Rate, 0.05)
-
-	r1, err := core.evalAB(User{LoginID: samples["v1"], ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
-	require.NoError(t, err)
-	require.Equal(t, "blue", r1.GetString("color", ""))
-
-	r2, err := core.evalAB(User{LoginID: samples["v2"], ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
-	require.NoError(t, err)
-	require.Equal(t, "red", r2.GetString("color", ""))
-
-	r3, err := core.evalAB(User{LoginID: samples["v3"], ABUserProperties: Properties{"$app_version": "10.1"}}, spec, 0)
-	require.NoError(t, err)
-	require.Equal(t, "orange", r3.GetString("color", ""))
+		v1Rate := float64(v1Count) / float64(totalUsers)
+		require.InDelta(t, 0.10, v1Rate, 0.05, "Only first gate rule's rollout (10%%) should pass")
+		require.Equal(t, totalUsers, v1Count+nilCount)
+	})
 }
 
 func TestABCoreEvalConfigHoldout(t *testing.T) {
@@ -193,49 +133,39 @@ func TestABCoreEvalConfigHoldout(t *testing.T) {
 	spec := core.getABSpec("bMHsfOAUKx")
 	require.NotNil(t, spec)
 
+	// Traffic rule: rollout 90 → ~10% get holdout.
+	// First-match-wins gate: all non-holdout users match rule 1 (IS_TRUE), only ~10% pass rollout → v1.
 	totalUsers := 1000
 	holdoutCount := 0
-	variantCount := map[string]int{}
-	samples := map[string]string{}
+	v1Count := 0
+	nilCount := 0
 
 	for i := 0; i < totalUsers; i++ {
 		uid := fmt.Sprintf("config-holdout-user-%d", i)
 		result, err := core.evalAB(User{LoginID: uid}, spec, 0)
 		require.NoError(t, err)
-		require.NotNil(t, result.VariantID)
 
+		if result.VariantID == nil {
+			nilCount++
+			continue
+		}
 		vid := *result.VariantID
 		if vid == "holdout" {
 			holdoutCount++
-			continue
-		}
-		variantCount[vid]++
-		if _, ok := samples[vid]; !ok {
-			samples[vid] = uid
+		} else {
+			require.Equal(t, "v1", vid)
+			require.Equal(t, "blue", result.GetString("color", ""))
+			v1Count++
 		}
 	}
-
-	require.Equal(t, totalUsers-holdoutCount, variantCount["v1"]+variantCount["v2"]+variantCount["v3"])
 
 	holdoutRate := float64(holdoutCount) / float64(totalUsers)
 	require.InDelta(t, 0.10, holdoutRate, 0.03, "Holdout rate should be around 10%%")
 
-	nonHoldout := float64(totalUsers - holdoutCount)
-	require.InDelta(t, 0.10, float64(variantCount["v1"])/nonHoldout, 0.05)
-	require.InDelta(t, 0.30, float64(variantCount["v2"])/nonHoldout, 0.05)
-	require.InDelta(t, 0.60, float64(variantCount["v3"])/nonHoldout, 0.05)
-
-	r1, err := core.evalAB(User{LoginID: samples["v1"]}, spec, 0)
-	require.NoError(t, err)
-	require.Equal(t, "blue", r1.GetString("color", ""))
-
-	r2, err := core.evalAB(User{LoginID: samples["v2"]}, spec, 0)
-	require.NoError(t, err)
-	require.Equal(t, "red", r2.GetString("color", ""))
-
-	r3, err := core.evalAB(User{LoginID: samples["v3"]}, spec, 0)
-	require.NoError(t, err)
-	require.Equal(t, "orange", r3.GetString("color", ""))
+	nonHoldout := totalUsers - holdoutCount
+	v1Rate := float64(v1Count) / float64(nonHoldout)
+	require.InDelta(t, 0.10, v1Rate, 0.05, "Only first gate rule's rollout (10%%) should pass among non-holdout users")
+	require.Equal(t, totalUsers, holdoutCount+v1Count+nilCount)
 }
 
 func TestABCoreEvalConfigSticky(t *testing.T) {
@@ -275,5 +205,54 @@ func TestABCoreEvalConfigSticky(t *testing.T) {
 		require.NoError(t, json.Unmarshal([]byte(cache), &cacheResult))
 		require.NotNil(t, cacheResult.VariantID)
 		require.Equal(t, *result.VariantID, *cacheResult.VariantID)
+	})
+}
+
+func TestABCoreEvalConfigFirstMatchWins(t *testing.T) {
+	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "config", "first_match_wins.json"))
+	core := newTestAbCoreWithStorage(t, store)
+
+	spec := core.getABSpec("config_first_match")
+	require.NotNil(t, spec)
+
+	t.Run("vip-user-gets-v1", func(t *testing.T) {
+		result, err := core.evalAB(User{LoginID: "vip-user-1"}, spec, 0)
+		require.NoError(t, err)
+		require.NotNil(t, result.VariantID)
+		require.Equal(t, "v1", *result.VariantID)
+		require.Equal(t, "vip", result.GetString("tier", ""))
+	})
+
+	t.Run("vip-user-matches-first-rule-not-second", func(t *testing.T) {
+		// VIP user who is also a member should still get v1 (first match wins)
+		result, err := core.evalAB(User{LoginID: "vip-user-2", ABUserProperties: Properties{"is_member": true}}, spec, 0)
+		require.NoError(t, err)
+		require.NotNil(t, result.VariantID)
+		require.Equal(t, "v1", *result.VariantID)
+		require.Equal(t, "vip", result.GetString("tier", ""))
+	})
+
+	t.Run("member-user-gets-v2", func(t *testing.T) {
+		result, err := core.evalAB(User{LoginID: "regular-member", ABUserProperties: Properties{"is_member": true}}, spec, 0)
+		require.NoError(t, err)
+		require.NotNil(t, result.VariantID)
+		require.Equal(t, "v2", *result.VariantID)
+		require.Equal(t, "member", result.GetString("tier", ""))
+	})
+
+	t.Run("public-user-gets-v3", func(t *testing.T) {
+		result, err := core.evalAB(User{LoginID: "anonymous-user"}, spec, 0)
+		require.NoError(t, err)
+		require.NotNil(t, result.VariantID)
+		require.Equal(t, "v3", *result.VariantID)
+		require.Equal(t, "public", result.GetString("tier", ""))
+	})
+
+	t.Run("non-member-non-vip-still-gets-v3-via-public", func(t *testing.T) {
+		result, err := core.evalAB(User{LoginID: "plain-user", ABUserProperties: Properties{"is_member": false}}, spec, 0)
+		require.NoError(t, err)
+		require.NotNil(t, result.VariantID)
+		require.Equal(t, "v3", *result.VariantID)
+		require.Equal(t, "public", result.GetString("tier", ""))
 	})
 }

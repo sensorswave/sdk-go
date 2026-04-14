@@ -73,7 +73,7 @@ func TestABCoreEvaluateDecisionRuleID(t *testing.T) {
 		require.Nil(t, result.DecisionRuleID)
 	})
 
-	t.Run("later matched gate rule still wins after earlier zero rollout rule", func(t *testing.T) {
+	t.Run("first matched gate rule wins even if rollout is zero", func(t *testing.T) {
 		spec := ABSpec{
 			ID:             42,
 			Key:            "trace_gate_chain",
@@ -114,12 +114,12 @@ func TestABCoreEvaluateDecisionRuleID(t *testing.T) {
 
 		result, err := core.Evaluate(User{LoginID: "chain-user"}, spec.Key)
 		require.NoError(t, err)
-		require.True(t, result.CheckFeatureGate())
+		require.False(t, result.CheckFeatureGate())
 		require.NotNil(t, result.DecisionRuleID)
-		require.Equal(t, "rule-pass", *result.DecisionRuleID)
+		require.Equal(t, "rule-zero", *result.DecisionRuleID)
 	})
 
-	t.Run("later matched gate rule still wins after earlier matched gate rollout rejection", func(t *testing.T) {
+	t.Run("first matched gate rule wins even if rollout rejects", func(t *testing.T) {
 		spec := ABSpec{
 			ID:             53,
 			Key:            "trace_gate_rollout_then_pass",
@@ -161,9 +161,55 @@ func TestABCoreEvaluateDecisionRuleID(t *testing.T) {
 
 		result, err := core.Evaluate(user, spec.Key)
 		require.NoError(t, err)
+		require.False(t, result.CheckFeatureGate())
+		require.NotNil(t, result.DecisionRuleID)
+		require.Equal(t, "rule-fail", *result.DecisionRuleID)
+	})
+
+	t.Run("unmatched first gate rule skips to second rule", func(t *testing.T) {
+		spec := ABSpec{
+			ID:             54,
+			Key:            "trace_gate_skip_unmatched",
+			Name:           "trace_gate_skip_unmatched",
+			Typ:            int(ABTypGate),
+			Traffic:        "SERVER",
+			SubjectID:      "login_id",
+			Enabled:        true,
+			Sticky:         false,
+			Salt:           "trace-gate-skip-salt",
+			Version:        1,
+			DisableImpress: false,
+			Rules: map[RuleTypEnum][]Rule{
+				RuleGate: {
+					{
+						ID:      "rule-vip-only",
+						Name:    "Rule VIP Only",
+						Salt:    "rule-vip",
+						Rollout: 100,
+						Conditions: []Condition{
+							{FieldClass: "FFUSER", Field: "login_id", Opt: "EQ", Value: "vip-user"},
+						},
+					},
+					{
+						ID:      "rule-public",
+						Name:    "Rule Public",
+						Salt:    "rule-public",
+						Rollout: 100,
+						Conditions: []Condition{
+							{FieldClass: "COMMON", Field: "public", Opt: "IS_TRUE", Value: nil},
+						},
+					},
+				},
+			},
+			VariantPayloads: map[string]json.RawMessage{},
+		}
+		core := newTestAbCoreWithStorage(t, newTraceTestStorage(spec))
+
+		result, err := core.Evaluate(User{LoginID: "plain-user"}, spec.Key)
+		require.NoError(t, err)
 		require.True(t, result.CheckFeatureGate())
 		require.NotNil(t, result.DecisionRuleID)
-		require.Equal(t, "rule-pass", *result.DecisionRuleID)
+		require.Equal(t, "rule-public", *result.DecisionRuleID)
 	})
 
 	t.Run("traffic rejection reports decision rule because it is the final decision", func(t *testing.T) {
