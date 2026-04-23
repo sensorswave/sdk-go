@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+const iso8601UTCLayout = "2006-01-02T15:04:05.000Z"
+
 // Event represents an analytics event.
 //
 // Example JSON representation:
@@ -116,6 +118,16 @@ func (e *Event) Normalize() error {
 		e.Properties[PspLibVersion] = version
 	}
 
+	for k, v := range e.Properties {
+		e.Properties[k] = normalizePropertyValue(v)
+	}
+	if e.UserProperties != nil {
+		for k, v := range e.UserProperties {
+			e.UserProperties[k] = normalizePropertyValue(v)
+		}
+		e.UserProperties.DedupeUnion()
+	}
+
 	return nil
 }
 
@@ -200,12 +212,10 @@ func (up UserPropertyOpts) Append(key string, val any) UserPropertyOpts {
 	if !ok { // Return if not a slice type
 		return up
 	}
-	// Handle different input types
-	switch v := val.(type) {
-	case []any:
-		existingValues = append(existingValues, v...)
-	default:
-		existingValues = append(existingValues, v)
+	if vs, ok := val.([]any); ok {
+		existingValues = append(existingValues, vs...)
+	} else {
+		existingValues = append(existingValues, val)
 	}
 
 	up["$append"].(map[string]any)[key] = existingValues
@@ -227,22 +237,38 @@ func (up UserPropertyOpts) Union(key string, val any) UserPropertyOpts {
 		return up
 	}
 
-	// Handle different input types and perform deduplication
-	switch v := val.(type) {
-	case []any:
-		for _, item := range v {
-			if !containsItem(existingValues, item) {
-				existingValues = append(existingValues, item)
-			}
-		}
-	default:
-		if !containsItem(existingValues, v) {
-			existingValues = append(existingValues, v)
-		}
+	// Setter is append-only; dedupe happens in DedupeUnion based on final
+	// ISO8601 UTC string equality.
+	if vs, ok := val.([]any); ok {
+		existingValues = append(existingValues, vs...)
+	} else {
+		existingValues = append(existingValues, val)
 	}
 
 	up["$union"].(map[string]any)[key] = existingValues
 	return up
+}
+
+// DedupeUnion is called from Event.Normalize after property values have been
+// normalized to strings. It dedupes each $union list by first-occurrence order.
+func (up UserPropertyOpts) DedupeUnion() {
+	union, ok := up["$union"].(map[string]any)
+	if !ok {
+		return
+	}
+	for key, values := range union {
+		list, ok := values.([]any)
+		if !ok {
+			continue
+		}
+		deduped := make([]any, 0, len(list))
+		for _, item := range list {
+			if !containsItem(deduped, item) {
+				deduped = append(deduped, item)
+			}
+		}
+		union[key] = deduped
+	}
 }
 
 // containsItem checks if a slice contains a specific item.
@@ -308,6 +334,38 @@ func (p Properties) Merge(properties Properties) Properties {
 	}
 
 	return p
+}
+
+func normalizePropertyValue(value any) any {
+	switch v := value.(type) {
+	case time.Time:
+		return v.UTC().Format(iso8601UTCLayout)
+	case *time.Time:
+		if v == nil {
+			return nil
+		}
+		return v.UTC().Format(iso8601UTCLayout)
+	case []any:
+		normalized := make([]any, 0, len(v))
+		for _, item := range v {
+			normalized = append(normalized, normalizePropertyValue(item))
+		}
+		return normalized
+	case map[string]any:
+		normalized := make(map[string]any, len(v))
+		for key, item := range v {
+			normalized[key] = normalizePropertyValue(item)
+		}
+		return normalized
+	case Properties:
+		normalized := NewProperties()
+		for key, item := range v {
+			normalized[key] = normalizePropertyValue(item)
+		}
+		return normalized
+	default:
+		return value
+	}
 }
 
 // SetIP sets the $ip property.
