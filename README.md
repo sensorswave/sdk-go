@@ -497,6 +497,32 @@ default:
 
 ---
 
+## Complex Property Input Conventions
+
+The SDK accepts `Object` (map) and `Object Array` (list of maps) values as
+event properties and `profile_set` / `profile_set_once` profile properties.
+**The SDK is pass-through and does not validate property values**; the
+server may silently truncate, drop, or otherwise sanitize values that
+exceed the limits below. Callers are responsible for staying within these
+limits to avoid silent data loss.
+
+| Limit | Value | Scope |
+|-------|-------|-------|
+| String value byte length | ≤ 1024 (UTF-8 bytes) | Any string property value |
+| Properties per event | ≤ 256 | Caller-supplied keys in the event `properties` map |
+| OBJECT_ARRAY element count | ≤ 100 | List of maps used as a property value |
+
+Exceeding any of these may be silently truncated/dropped by the server.
+
+### Profile list operations
+
+`ProfileAppend` and `ProfileUnion` are list operations and **do not accept
+`Object` (map) or `Object Array` (list of maps) values**. Pass scalars
+only. The SDK does not reject complex values here, but the server will
+treat them as `OBJECT_ARRAY`, conflicting with list semantics.
+
+---
+
 ## Configuration Options
 
 ### Client Config

@@ -296,16 +296,32 @@ func (up UserPropertyOpts) Delete() UserPropertyOpts {
 
 type EventMsg []Event
 
-// Properties is a map for event and user properties.
-// Properties is a map of key-value pairs representing event or user profile attributes.
+// Properties is a map of key-value pairs representing event or user
+// profile attributes. Values may be scalars (string, number, bool,
+// time.Time), Object (nested map), or Object Array (slice of maps).
+//
+// Complex property input conventions (server-side limits; the SDK does
+// not validate, exceeding any of these may be silently truncated/dropped
+// by the server):
+//   - any string value: at most 1024 UTF-8 bytes
+//   - OBJECT_ARRAY (list whose elements are maps): at most 100 elements
+//
+// See README "Complex Property Input Conventions" for details.
 type Properties map[string]any
 
+// NewProperties returns an empty Properties map.
+//
+// See Properties for input conventions.
 func NewProperties() Properties {
 	return make(Properties, 10)
 }
 
-// ListProperties is used for operations that require list values (Append, Union).
-// Each value must be a slice to ensure type safety for list-based user profile updates.
+// ListProperties is used for operations that require list values
+// (ProfileAppend, ProfileUnion). Each value must be a slice of scalars.
+//
+// Object (map) and Object Array (list of maps) values are NOT accepted in
+// these operations; the SDK does not reject them, but the server will
+// treat them as OBJECT_ARRAY which conflicts with list semantics.
 type ListProperties map[string][]any
 
 // NewListProperties creates a new ListProperties map.

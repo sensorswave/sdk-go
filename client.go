@@ -167,6 +167,16 @@ func (c *client) Identify(user User) error {
 
 // ========== Event Tracking ==========
 
+// TrackEvent records a custom event with the given properties.
+//
+// Complex property input conventions (server-side limits; the SDK does
+// not validate, exceeding any of these may be silently truncated/dropped
+// by the server):
+//   - properties map: at most 256 caller-supplied keys per event
+//   - any string value: at most 1024 UTF-8 bytes
+//   - OBJECT_ARRAY (list whose elements are maps): at most 100 elements
+//
+// See README "Complex Property Input Conventions" for details.
 func (c *client) TrackEvent(user User, eventName string, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
@@ -176,6 +186,9 @@ func (c *client) TrackEvent(user User, eventName string, properties Properties) 
 	return c.Track(event)
 }
 
+// Track sends a fully constructed Event. The Event's Properties and
+// UserProperties are subject to the same conventions as TrackEvent
+// (see TrackEvent doc for details).
 func (c *client) Track(event Event) error {
 	if event.AnonID == "" && event.LoginID == "" {
 		return ErrEmptyUserIDs
@@ -204,6 +217,15 @@ func (c *client) Track(event Event) error {
 
 // ========== User Profile Operations ==========
 
+// ProfileSet sets user profile properties. Object and Object Array values
+// are accepted and passed through to the server.
+//
+// Complex property input conventions (server-side limits; the SDK does
+// not validate):
+//   - any string value: at most 1024 UTF-8 bytes
+//   - OBJECT_ARRAY (list whose elements are maps): at most 100 elements
+//
+// See README "Complex Property Input Conventions" for details.
 func (c *client) ProfileSet(user User, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
@@ -220,6 +242,16 @@ func (c *client) ProfileSet(user User, properties Properties) error {
 	return c.Track(event)
 }
 
+// ProfileSetOnce sets user profile properties only if not already set.
+// Object and Object Array values are accepted and passed through to the
+// server.
+//
+// Complex property input conventions (server-side limits; the SDK does
+// not validate):
+//   - any string value: at most 1024 UTF-8 bytes
+//   - OBJECT_ARRAY (list whose elements are maps): at most 100 elements
+//
+// See README "Complex Property Input Conventions" for details.
 func (c *client) ProfileSetOnce(user User, properties Properties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
@@ -252,6 +284,18 @@ func (c *client) ProfileIncrement(user User, properties Properties) error {
 	return c.Track(event)
 }
 
+// ProfileAppend appends values to user profile list properties (allows
+// duplicates). Values must be lists of scalars only.
+//
+// Object (map) and Object Array (list of maps) values are NOT accepted.
+// The SDK does not reject them, but the server will treat them as
+// OBJECT_ARRAY which conflicts with list semantics. Pass scalars only.
+//
+// Complex property input conventions (server-side limits; the SDK does
+// not validate):
+//   - any string value: at most 1024 UTF-8 bytes
+//
+// See README "Complex Property Input Conventions" for details.
 func (c *client) ProfileAppend(user User, properties ListProperties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
@@ -268,6 +312,18 @@ func (c *client) ProfileAppend(user User, properties ListProperties) error {
 	return c.Track(event)
 }
 
+// ProfileUnion adds unique values to user profile list properties
+// (deduplicates). Values must be lists of scalars only.
+//
+// Object (map) and Object Array (list of maps) values are NOT accepted.
+// The SDK does not reject them, but the server will treat them as
+// OBJECT_ARRAY which conflicts with list semantics. Pass scalars only.
+//
+// Complex property input conventions (server-side limits; the SDK does
+// not validate):
+//   - any string value: at most 1024 UTF-8 bytes
+//
+// See README "Complex Property Input Conventions" for details.
 func (c *client) ProfileUnion(user User, properties ListProperties) error {
 	if err := c.validateUser(user); err != nil {
 		return err
