@@ -7,6 +7,8 @@
 [![Lint](https://github.com/sensorswave/sdk-go/actions/workflows/lint.yml/badge.svg)](https://github.com/sensorswave/sdk-go/actions/workflows/lint.yml)
 [![License](https://img.shields.io/github/license/sensorswave/sdk-go.svg)](https://github.com/sensorswave/sdk-go/blob/main/LICENSE)
 
+**English** | [中文](README.zh-CN.md)
+
 A lightweight Go SDK for event tracking and A/B testing.
 
 ## Features
