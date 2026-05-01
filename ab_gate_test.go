@@ -104,6 +104,49 @@ func TestABCoreEvalGateAnyOfSensitiveProps(t *testing.T) {
 	}
 }
 
+func TestABCoreEvalGateAnyOfInsensitiveProps(t *testing.T) {
+	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "anyof_insensitive.json"))
+	core := newTestAbCoreWithStorage(t, store)
+
+	spec := core.getABSpec("TestSpec")
+	require.NotNil(t, spec)
+
+	testCases := []struct {
+		name string
+		user User
+		want bool
+	}{
+		{
+			name: "missing-prop",
+			user: User{LoginID: "user-pass"},
+			want: false,
+		},
+		{
+			name: "wrong-prop",
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "Safari"}},
+			want: false,
+		},
+		{
+			name: "case-mismatch-passes",
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "chrome"}},
+			want: true,
+		},
+		{
+			name: "exact-match",
+			user: User{LoginID: "user-pass", ABUserProperties: Properties{"$browser_name": "Chrome"}},
+			want: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			result, err := core.evalAB(tc.user, spec, 0)
+			require.NoError(t, err)
+			require.Equal(t, tc.want, result.CheckFeatureGate())
+		})
+	}
+}
+
 func TestABCoreEvalGateNoneOfSensitiveProps(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "noneof_sensitive.json"))
 	core := newTestAbCoreWithStorage(t, store)
