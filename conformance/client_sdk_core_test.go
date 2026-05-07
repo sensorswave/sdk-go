@@ -27,9 +27,8 @@ type clientSDKCoreCapturedRequest struct {
 //
 // client-sdk-core 在 conformance 中用 in-process httptest echo server 提供一个目标
 // HTTP 端点（不模拟错误 / 不控制时序）；输入 events → 输出 mock server 捕获的请求形态
-// 是确定性映射，仍属 A 类。派生测试照搬 conformance/adapters/go/client_sdk_core_adapter.go
-// 的执行逻辑，与 conformance runner 各持一份是派生模式 DRY 局限的另一实例
-// （参 docs/specs/testing-derivation-pilot.md 第 11.3 节）。
+// 是确定性映射，仍属 A 类。派生测试与
+// conformance/adapters/go/client_sdk_core_adapter.go 保持同义。
 func TestClientSDKCoreConformance(t *testing.T) {
 	cases, expectedByID := loadConformance(t, "client-sdk-core")
 	require.NotEmpty(t, cases, "fixture must have at least one case")

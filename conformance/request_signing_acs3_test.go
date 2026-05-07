@@ -12,10 +12,7 @@ import (
 // TestRequestSigningACS3Conformance — A 类完全派生测试。
 //
 // 输入与期望值都来自 conformance/{fixtures,golden}/request-signing-acs3.json
-// （由 backend-sdk-harness 通过 scripts/sync_ab_testdata.py --conformance-data 同步到本地）。
 // 不在本测试代码里硬编码任何 spec 字面量或 expected 值。
-//
-// 详见 docs/specs/testing-strategy.md 第 4.1 / 5 节。
 func TestRequestSigningACS3Conformance(t *testing.T) {
 	cases, expectedByID := loadConformance(t, "request-signing-acs3")
 	require.NotEmpty(t, cases, "fixture must have at least one case")

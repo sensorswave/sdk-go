@@ -13,7 +13,6 @@ import (
 // TestPropertyDatetimeISO8601UTCConformance — A 类完全派生测试。
 //
 // 输入与期望值都来自 conformance/{fixtures,golden}/property-datetime-iso8601-utc.json
-// （由 backend-sdk-harness 通过 scripts/sync_ab_testdata.py --conformance-data 同步）。
 // 不在本测试代码里硬编码任何 spec 字面量或 expected 值。
 //
 // fixture 字符串语义为 UTC 墙上时间；测试代码（与 conformance adapter 一致）把
@@ -23,8 +22,6 @@ import (
 // 与 conformance/runners/go/property_datetime_iso8601_utc.py 一致：`injected` 模式
 // 下从两边比较前删除 `$lib_version`，因该字段由 SDK 运行时注入（version.go），不应
 // 锁在 golden 中。
-//
-// 详见 docs/specs/testing-strategy.md 第 4.1 / 5 节。
 func TestPropertyDatetimeISO8601UTCConformance(t *testing.T) {
 	cases, expectedByID := loadConformance(t, "property-datetime-iso8601-utc")
 	require.NotEmpty(t, cases, "fixture must have at least one case")

@@ -10,15 +10,12 @@ import (
 // TestABMetaSnapshotBootstrapConformance — A 类完全派生测试。
 //
 // 输入与期望值都来自 conformance/{fixtures,golden}/ab-meta-snapshot-bootstrap.json
-// + spec_file 间接引用 testdata/{config,gate}/ 下的 spec JSON
-// （同 ab-core-evaluation 路径 A：派生测试在 SubTest 内通过 LoadABSpecs 公开 API
-// 构造 ABCore，调 GetStorageSnapshot 导出快照与 golden 比较）。
+// + spec_file 间接引用 testdata/{config,gate}/ 下的 spec JSON。
+// 派生测试在 SubTest 内通过 LoadABSpecs 公开 API 构造 ABCore，
+// 调 GetStorageSnapshot 导出快照与 golden 比较。
 //
 // 执行逻辑照搬 conformance/adapters/go/ab_meta_snapshot_bootstrap_adapter.go，
-// 与 conformance runner 各持一份是派生模式 DRY 局限的实例
-// （参 docs/specs/testing-derivation-pilot.md 第 11.3 节）。
-//
-// 详见 docs/specs/testing-strategy.md 第 4.1 / 5 节。
+// 与 conformance runner 保持同义。
 func TestABMetaSnapshotBootstrapConformance(t *testing.T) {
 	cases, expectedByID := loadConformance(t, "ab-meta-snapshot-bootstrap")
 	require.NotEmpty(t, cases, "fixture must have at least one case")

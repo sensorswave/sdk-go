@@ -12,7 +12,6 @@ import (
 // TestComplexPropertyInputConventionsConformance — A 类完全派生测试。
 //
 // 输入与期望值都来自 conformance/{fixtures,golden}/complex-property-input-conventions.json
-// （由 backend-sdk-harness 通过 scripts/sync_ab_testdata.py --conformance-data 同步）。
 // 不在本测试代码里硬编码任何 spec 字面量或 expected 值。
 //
 // case 覆盖 5 种 operation（track_event / profile_set / profile_set_once /
@@ -21,8 +20,6 @@ import (
 //
 // 与 conformance runner 一致：`injected` 模式下从两边比较前删除 `$lib_version`，
 // 因该字段由 SDK 运行时注入（version.go），不应锁在 golden 中。
-//
-// 详见 docs/specs/testing-strategy.md 第 4.1 / 5 节。
 func TestComplexPropertyInputConventionsConformance(t *testing.T) {
 	cases, expectedByID := loadConformance(t, "complex-property-input-conventions")
 	require.NotEmpty(t, cases, "fixture must have at least one case")

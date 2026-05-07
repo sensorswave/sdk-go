@@ -12,7 +12,6 @@ import (
 // TestUserProfileOpsConformance — A 类完全派生测试。
 //
 // 输入与期望值都来自 conformance/{fixtures,golden}/user-profile-ops.json
-// （由 backend-sdk-harness 通过 scripts/sync_ab_testdata.py --conformance-data 同步）。
 // 不在本测试代码里硬编码任何 spec 字面量或 expected 值。
 //
 // case 覆盖 5 种 profile 操作（profile_append / profile_union / profile_increment /
@@ -22,8 +21,6 @@ import (
 // 与 conformance/runners/go/user_profile_ops.py 的 user_profile_comparator 对齐：
 // `injected` 模式下从两边比较前删除 `$lib_version`，因该字段由 SDK 运行时注入
 // （version.go），不应锁在 golden 中。
-//
-// 详见 docs/specs/testing-strategy.md 第 4.1 / 5 节。
 func TestUserProfileOpsConformance(t *testing.T) {
 	cases, expectedByID := loadConformance(t, "user-profile-ops")
 	require.NotEmpty(t, cases, "fixture must have at least one case")

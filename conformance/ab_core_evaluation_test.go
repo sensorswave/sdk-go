@@ -21,17 +21,14 @@ var (
 	specStorageCacheMu sync.Mutex
 )
 
-// TestABCoreEvaluationConformance — A 类完全派生测试（spike）。
+// TestABCoreEvaluationConformance — A 类完全派生测试。
 //
 // 输入与期望值都来自 conformance/{fixtures,golden}/ab-core-evaluation.json
-// + spec_file 间接引用 test-specs/testdata/{config,gate,exp}/ 下的 spec JSON
-// （sdk-go 端通过 scripts/sync_ab_testdata.py 同步进 testdata/{config,gate,exp}/）。
+// + spec_file 间接引用 testdata/{config,gate,exp}/ 下的 spec JSON。
 //
-// 路径 A：派生测试在 SubTest 内手动 `loadABCoreFromSpecFile` 加载 spec，
-// 经 `LoadABSpecs` 公开 API 构造 ABCore，调 `core.Evaluate` 拿评估结果。
+// 派生测试在 SubTest 内加载 spec，经 `LoadABSpecs` 公开 API 构造 ABCore，
+// 调 `core.Evaluate` 拿评估结果。
 // loader（loadConformance）保持 capability-agnostic 不变。
-//
-// 详见 docs/specs/test-derivation-rollout/04-plans/sdk-go.md T6 spec_file spike。
 func TestABCoreEvaluationConformance(t *testing.T) {
 	cases, expectedByID := loadConformance(t, "ab-core-evaluation")
 	require.NotEmpty(t, cases, "fixture must have at least one case")

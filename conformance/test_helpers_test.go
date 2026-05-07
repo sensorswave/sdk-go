@@ -36,10 +36,7 @@ type ConformanceCase struct {
 // loadConformance 加载指定 capability 的 fixture 与 golden，
 // 返回 cases 顺序切片（保留 fixture 内顺序）与按 case ID 索引的 expected JSON。
 //
-// 路径硬编码为 testdata/conformance/{fixtures,golden}/<capability>.json；
-// 副本由 backend-sdk-harness 的 scripts/sync_ab_testdata.py --conformance-data 同步。
-//
-// 详见 docs/specs/testing-strategy.md（A 类完全派生）和 testing-derivation-pilot.md。
+// 路径硬编码为 testdata/conformance/{fixtures,golden}/<capability>.json。
 func loadConformance(t *testing.T, capability string) ([]ConformanceCase, map[string]json.RawMessage) {
 	t.Helper()
 

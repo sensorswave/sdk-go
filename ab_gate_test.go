@@ -39,7 +39,7 @@ func (f *failStickyHandler) SetStickyResult(key string, result string) error {
 // 公开 API 触不到的内部行为或错误路径），不在派生测试覆盖范围。
 // gate-001 ~ gate-018 / gate-020 / gate-023 ~ gate-025 / gate-029 ~ gate-037 /
 // gate-039 ~ gate-042 等 conformance 类原 method 已迁移到
-// TestABCoreEvaluationConformance（参 ab_core_evaluation_conformance_test.go）。
+// TestABCoreEvaluationConformance（参 conformance/ab_core_evaluation_test.go）。
 
 // gate-027: Sticky Handler 失败时返回错误。
 func TestABCoreStickyWriteErrorPropagation(t *testing.T) {
@@ -91,4 +91,3 @@ func TestABCoreEvalCondEdgeCases(t *testing.T) {
 		require.Error(t, err)
 	})
 }
-
