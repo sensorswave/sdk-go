@@ -2656,6 +2656,17 @@
         "variant_params": null
       },
       "id": "gate-complicate-all-fail"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "error": {
+          "message": "unknown common field: unknown"
+        },
+        "variant_id": null,
+        "variant_params": null
+      },
+      "id": "gate-invalid-common-condition"
     }
   ]
 }

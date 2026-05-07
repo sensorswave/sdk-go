@@ -1718,6 +1718,19 @@
         "anon_id": "any",
         "login_id": "other"
       }
+    },
+    {
+      "eval_type": "gate",
+      "expected_error": true,
+      "id": "gate-invalid-common-condition",
+      "key": "Invalid_Common_Field_Gate",
+      "spec_file": "gate/invalid_common_field.json",
+      "test_id": "gate-026",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "u"
+      }
     }
   ],
   "description": "AB 核心评估一致性验证。spec_file 引用 sdk-go/testdata/ 下的 fixture。覆盖全部确定性 case。"

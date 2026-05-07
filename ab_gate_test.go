@@ -41,28 +41,6 @@ func (f *failStickyHandler) SetStickyResult(key string, result string) error {
 // gate-039 ~ gate-042 等 conformance 类原 method 已迁移到
 // TestABCoreEvaluationConformance（参 ab_core_evaluation_conformance_test.go）。
 
-// gate-019: 不存在的 Gate Key 查询返回 nil。
-// gate-026: 错误传播——注入非法规则触发 evalCond 错误。
-func TestABCoreEvalRuleErrorPropagation(t *testing.T) {
-	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "is_true.json"))
-	core := newTestAbCoreWithStorage(t, store)
-
-	spec := core.getABSpec("Is_True_Gate")
-	require.NotNil(t, spec)
-
-	spec.Rules = map[RuleTypEnum][]Rule{
-		RuleGate: {
-			{
-				Conditions: []Condition{{FieldClass: "COMMON", Field: "unknown", Opt: "IS_TRUE"}},
-				Rollout:    100,
-			},
-		},
-	}
-
-	_, err := core.evalAB(User{LoginID: "u"}, spec, 0)
-	require.Error(t, err)
-}
-
 // gate-027: Sticky Handler 失败时返回错误。
 func TestABCoreStickyWriteErrorPropagation(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "sticky.json"))
