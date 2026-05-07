@@ -5,7 +5,9 @@
       "expected": {
         "check_gate": false,
         "variant_id": "v1",
-        "variant_params": null
+        "variant_params": {
+          "tier": "vip"
+        }
       },
       "id": "config-first-match-wins-vip"
     },
@@ -13,7 +15,9 @@
       "expected": {
         "check_gate": false,
         "variant_id": "v1",
-        "variant_params": null
+        "variant_params": {
+          "color": "blue"
+        }
       },
       "id": "config-override"
     },
@@ -29,7 +33,9 @@
       "expected": {
         "check_gate": false,
         "variant_id": "v1",
-        "variant_params": null
+        "variant_params": {
+          "color": "blue"
+        }
       },
       "id": "config-sticky-use-cache"
     },
@@ -1673,7 +1679,9 @@
       "expected": {
         "check_gate": false,
         "variant_id": "v1",
-        "variant_params": null
+        "variant_params": {
+          "test": 1
+        }
       },
       "id": "exp-gate-target-fail-deps-fail"
     },
@@ -1681,7 +1689,9 @@
       "expected": {
         "check_gate": false,
         "variant_id": "v2",
-        "variant_params": null
+        "variant_params": {
+          "test": 2
+        }
       },
       "id": "exp-layer-user1"
     },
@@ -1689,7 +1699,9 @@
       "expected": {
         "check_gate": false,
         "variant_id": "v1",
-        "variant_params": null
+        "variant_params": {
+          "test": 1
+        }
       },
       "id": "exp-layer-with-holdout-user1"
     },
@@ -1697,7 +1709,9 @@
       "expected": {
         "check_gate": false,
         "variant_id": "v2",
-        "variant_params": null
+        "variant_params": {
+          "test": 1
+        }
       },
       "id": "exp-release-alice"
     },
@@ -1705,7 +1719,9 @@
       "expected": {
         "check_gate": false,
         "variant_id": "v2",
-        "variant_params": null
+        "variant_params": {
+          "test": 1
+        }
       },
       "id": "exp-release-user1"
     },
@@ -1713,7 +1729,9 @@
       "expected": {
         "check_gate": false,
         "variant_id": "v2",
-        "variant_params": null
+        "variant_params": {
+          "color": "red"
+        }
       },
       "id": "exp-sticky-use-cache"
     },
@@ -1729,7 +1747,9 @@
       "expected": {
         "check_gate": false,
         "variant_id": "v2",
-        "variant_params": null
+        "variant_params": {
+          "test": 1
+        }
       },
       "id": "exp-target-version-match"
     },
@@ -2636,22 +2656,6 @@
         "variant_params": null
       },
       "id": "gate-complicate-all-fail"
-    },
-    {
-      "expected": {
-        "check_gate": false,
-        "variant_id": "v1",
-        "variant_params": null
-      },
-      "id": "exp-public-variant-1-payload"
-    },
-    {
-      "expected": {
-        "check_gate": false,
-        "variant_id": "v2",
-        "variant_params": null
-      },
-      "id": "exp-public-variant-2-payload"
     }
   ]
 }

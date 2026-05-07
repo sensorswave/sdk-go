@@ -81,27 +81,15 @@ func (abc *ABCore) loadRemoteMeta() {
 		return
 	}
 
+	// VariantPayloads → VariantValues 的派生由 ABSpec.UnmarshalJSON 在 LoadMeta 解析
+	// 阶段已完成（参 ab_types.go），此处只把已解析好的 spec 装进 storage。
 	s := storage{
 		UpdateTime: abData.UpdateTime,
 		ABEnv:      abData.ABEnv,
-		ABSpecs:    make(map[string]ABSpec),
+		ABSpecs:    make(map[string]ABSpec, len(abData.ABSpecs)),
 	}
 	for i := range abData.ABSpecs {
 		spec := &abData.ABSpecs[i]
-		// Parse variant payload []byte into variant value map[string]any
-		for vid, payload := range spec.VariantPayloads {
-			if len(payload) > 0 {
-				value := make(map[string]any)
-				if err = json.Unmarshal(payload, &value); err != nil {
-					abc.logger.Errorf("[%s] ab core json.Unmarshal VariantPayload error: %v, payload:%s", abc.sourceToken, err, payload)
-					return
-				}
-				if spec.VariantValues == nil {
-					spec.VariantValues = make(map[string]map[string]any)
-				}
-				spec.VariantValues[vid] = value
-			}
-		}
 		s.ABSpecs[spec.Key] = *spec
 	}
 

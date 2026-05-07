@@ -1,6 +1,9 @@
 package sensorswave
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // ABUser identifies a user for A/B testing evaluation.
 type ABUser struct {
@@ -165,4 +168,34 @@ type Condition struct {
 	Field      string `json:"field"`
 	Opt        string `json:"opt"`   // "ANY_OF" "NONE_OF" "ANY_OF_CASE_SENSITIVE" "NONE_OF_CASE_SENSITIVE" "IS_TRUE" "IS_FALSE"...
 	Value      any    `json:"value"` // Target value
+}
+
+// UnmarshalJSON 反序列化 ABSpec 后立即从 VariantPayloads (raw bytes) 派生 VariantValues
+// (parsed map)。VariantValues 字段标 json:"-" 故不进 wire——任何 unmarshal 路径
+// (server meta response、GetStorageSnapshot 输出等) 都通过本方法自动重建缓存，避免
+// 各调用方各自手动解析 + 漏派生。
+//
+// 用 type alias `abSpecRaw` 截断 UnmarshalJSON 接口避免无限递归。
+func (s *ABSpec) UnmarshalJSON(data []byte) error {
+	type abSpecRaw ABSpec
+	var raw abSpecRaw
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	*s = ABSpec(raw)
+	if len(s.VariantPayloads) == 0 {
+		return nil
+	}
+	s.VariantValues = make(map[string]map[string]any, len(s.VariantPayloads))
+	for vid, payload := range s.VariantPayloads {
+		if len(payload) == 0 {
+			continue
+		}
+		var m map[string]any
+		if err := json.Unmarshal(payload, &m); err != nil {
+			return fmt.Errorf("ABSpec.UnmarshalJSON: variant_payloads[%s]: %w", vid, err)
+		}
+		s.VariantValues[vid] = m
+	}
+	return nil
 }
