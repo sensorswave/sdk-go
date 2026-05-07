@@ -76,7 +76,7 @@
       "key": "bMHsfOAUKx",
       "spec_file": "config/holdout.json",
       "test_id": "config-004",
-      "user_count": 1000,
+      "user_count": 100,
       "user_prefix": "config-holdout-user"
     },
     {
@@ -86,7 +86,7 @@
       "key": "bMHsfOAUKx",
       "spec_file": "config/public.json",
       "test_id": "config-002",
-      "user_count": 1000,
+      "user_count": 100,
       "user_prefix": "config-public-user"
     },
     {
@@ -95,7 +95,8 @@
       "id": "dist-exp-holdout",
       "key": "BKduZnxYPD",
       "spec_file": "exp/holdout.json",
-      "user_count": 1000,
+      "test_id": "exp-004",
+      "user_count": 100,
       "user_prefix": "holdout-user"
     },
     {
@@ -104,7 +105,8 @@
       "id": "dist-exp-traffic",
       "key": "New_Experiment",
       "spec_file": "exp/public.json",
-      "user_count": 1000,
+      "test_id": "exp-002",
+      "user_count": 100,
       "user_prefix": "exp-traffic-user"
     },
     {
