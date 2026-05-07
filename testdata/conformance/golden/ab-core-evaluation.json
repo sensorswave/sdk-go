@@ -16948,6 +16948,94 @@
         "variant_params": null
       },
       "id": "exp-target-blocked-no-version"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": "fail",
+        "variant_params": null
+      },
+      "id": "gate-filter-dependency-fails-rollout-0"
+    },
+    {
+      "expected": {
+        "check_gate": true,
+        "variant_id": "pass",
+        "variant_params": null
+      },
+      "id": "gate-filter-dependency-passes"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": "fail",
+        "variant_params": null
+      },
+      "id": "gate-filter-dependency-fails-condition"
+    },
+    {
+      "expected": {
+        "check_gate": true,
+        "variant_id": "pass",
+        "variant_params": null
+      },
+      "id": "gate-complicate-rule1-pass"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": "fail",
+        "variant_params": null
+      },
+      "id": "gate-complicate-rule1-fail-version"
+    },
+    {
+      "expected": {
+        "check_gate": true,
+        "variant_id": "pass",
+        "variant_params": null
+      },
+      "id": "gate-complicate-rule2-pass"
+    },
+    {
+      "expected": {
+        "check_gate": true,
+        "variant_id": "pass",
+        "variant_params": null
+      },
+      "id": "gate-complicate-rule3-pass"
+    },
+    {
+      "expected": {
+        "check_gate": true,
+        "variant_id": "pass",
+        "variant_params": null
+      },
+      "id": "gate-complicate-rule4-pass"
+    },
+    {
+      "expected": {
+        "check_gate": true,
+        "variant_id": "pass",
+        "variant_params": null
+      },
+      "id": "gate-complicate-rule5-pass"
+    },
+    {
+      "expected": {
+        "check_gate": true,
+        "variant_id": "pass",
+        "variant_params": null
+      },
+      "id": "gate-complicate-rule6-pass"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": "fail",
+        "variant_params": null
+      },
+      "id": "gate-complicate-all-fail"
     }
   ]
 }

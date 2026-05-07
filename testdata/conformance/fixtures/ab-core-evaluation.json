@@ -1546,6 +1546,176 @@
         "anon_id": "",
         "login_id": "blocked-user"
       }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-filter-dependency-fails-rollout-0",
+      "key": "FilterGate",
+      "spec_file": "gate/gate_filter.json",
+      "test_id": "gate-021",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.1"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-filter-dependency-passes",
+      "key": "FilterGate",
+      "spec_file": "gate/gate_filter_easy_pass.json",
+      "test_id": "gate-021",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.1"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-filter-dependency-fails-condition",
+      "key": "FilterGate",
+      "spec_file": "gate/gate_filter.json",
+      "test_id": "gate-021",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.9"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-complicate-rule1-pass",
+      "key": "AnonIdTest",
+      "spec_file": "gate/complicate_anon_rollout100.json",
+      "test_id": "gate-022",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.1",
+          "$ip_address": "127.0.0.1"
+        },
+        "anon_id": "any",
+        "login_id": ""
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-complicate-rule1-fail-version",
+      "key": "AnonIdTest",
+      "spec_file": "gate/complicate_anon_rollout100.json",
+      "test_id": "gate-022",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.0",
+          "$device_model": "Pixel",
+          "$ip_address": "127.0.0.1"
+        },
+        "anon_id": "any",
+        "login_id": ""
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-complicate-rule2-pass",
+      "key": "AnonIdTest",
+      "spec_file": "gate/complicate_anon_rollout100.json",
+      "test_id": "gate-022",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.0",
+          "$browser_name": "Chrome"
+        },
+        "anon_id": "any",
+        "login_id": ""
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-complicate-rule3-pass",
+      "key": "AnonIdTest",
+      "spec_file": "gate/complicate_anon_rollout100.json",
+      "test_id": "gate-022",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.0",
+          "$browser_name": "Firefox"
+        },
+        "anon_id": "any",
+        "login_id": "login-id-example-2"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-complicate-rule4-pass",
+      "key": "AnonIdTest",
+      "spec_file": "gate/complicate_anon_rollout100.json",
+      "test_id": "gate-022",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.0",
+          "$browser_name": "Firefox",
+          "age": 11
+        },
+        "anon_id": "any",
+        "login_id": "other"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-complicate-rule5-pass",
+      "key": "AnonIdTest",
+      "spec_file": "gate/complicate_anon_rollout100.json",
+      "test_id": "gate-022",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.0",
+          "$browser_name": "Firefox",
+          "age": 5
+        },
+        "anon_id": "any",
+        "login_id": "other"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-complicate-rule6-pass",
+      "key": "AnonIdTest",
+      "spec_file": "gate/complicate_anon_rollout100.json",
+      "test_id": "gate-022",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.0",
+          "$browser_name": "Firefox",
+          "$country": "US",
+          "$device_model": "Pixel",
+          "age": 5
+        },
+        "anon_id": "any",
+        "login_id": "other"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-complicate-all-fail",
+      "key": "AnonIdTest",
+      "spec_file": "gate/complicate_anon_rollout100.json",
+      "test_id": "gate-022",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.0",
+          "$browser_name": "Firefox",
+          "$device_model": "Pixel",
+          "age": 5
+        },
+        "anon_id": "any",
+        "login_id": "other"
+      }
     }
   ],
   "description": "AB 核心评估一致性验证。spec_file 引用 sdk-go/testdata/ 下的 fixture。覆盖全部确定性 case。"
