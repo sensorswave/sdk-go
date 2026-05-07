@@ -1,0 +1,265 @@
+{
+  "capability_id": "ab-meta-snapshot-bootstrap",
+  "cases": [
+    {
+      "expected": {
+        "ABEnv": {
+          "always_track": false
+        },
+        "ABSpecs": {
+          "TestSpec": {
+            "disable_impress": false,
+            "enabled": true,
+            "id": 1,
+            "key": "TestSpec",
+            "name": "TestSpec",
+            "rules": {
+              "GATE": [
+                {
+                  "conditions": [
+                    {
+                      "field": "public",
+                      "field_class": "COMMON",
+                      "opt": "IS_TRUE",
+                      "value": null
+                    }
+                  ],
+                  "id": "18dFropJdqiF93UVkNJ82",
+                  "name": "Rule 1",
+                  "rollout": 60,
+                  "salt": "18dFropJdqiF93UVkNJ82"
+                }
+              ],
+              "OVERRIDE": null,
+              "TRAFFIC": []
+            },
+            "salt": "fCwc_nlLX90_TuWSyFz_U",
+            "sticky": false,
+            "subject_id": "LOGIN_ID",
+            "traffic": "",
+            "typ": 1,
+            "variant_payloads": {},
+            "version": 4
+          }
+        },
+        "UpdateTime": 1763391230637
+      },
+      "id": "single-gate-snapshot"
+    },
+    {
+      "expected": {
+        "ABEnv": {
+          "always_track": false
+        },
+        "ABSpecs": {
+          "bMHsfOAUKx": {
+            "disable_impress": false,
+            "enabled": true,
+            "id": 21,
+            "key": "bMHsfOAUKx",
+            "name": "Example Config",
+            "rules": {
+              "GATE": [
+                {
+                  "conditions": [
+                    {
+                      "field": "public",
+                      "field_class": "COMMON",
+                      "opt": "IS_TRUE",
+                      "value": null
+                    }
+                  ],
+                  "id": "vxhpP8GPVO385TPe0Zgfd:1",
+                  "name": "gate:vxhpP8GPVO385TPe0Zgfd:variant:1",
+                  "override": "v1",
+                  "rollout": 10,
+                  "salt": "vxhpP8GPVO385TPe0Zgfd"
+                },
+                {
+                  "conditions": [
+                    {
+                      "field": "public",
+                      "field_class": "COMMON",
+                      "opt": "IS_TRUE",
+                      "value": null
+                    }
+                  ],
+                  "id": "vxhpP8GPVO385TPe0Zgfd:2",
+                  "name": "gate:vxhpP8GPVO385TPe0Zgfd:variant:2",
+                  "override": "v2",
+                  "rollout": 40,
+                  "salt": "vxhpP8GPVO385TPe0Zgfd"
+                },
+                {
+                  "conditions": [
+                    {
+                      "field": "public",
+                      "field_class": "COMMON",
+                      "opt": "IS_TRUE",
+                      "value": null
+                    }
+                  ],
+                  "id": "vxhpP8GPVO385TPe0Zgfd:3",
+                  "name": "gate:vxhpP8GPVO385TPe0Zgfd:variant:3",
+                  "override": "v3",
+                  "rollout": 100,
+                  "salt": "vxhpP8GPVO385TPe0Zgfd"
+                }
+              ],
+              "OVERRIDE": [],
+              "TRAFFIC": []
+            },
+            "salt": "fxf2TzEgZvidLNjG9tZEA",
+            "sticky": false,
+            "subject_id": "LOGIN_ID",
+            "traffic": "",
+            "typ": 2,
+            "variant_payloads": {
+              "v1": {
+                "color": "blue"
+              },
+              "v2": {
+                "color": "red"
+              },
+              "v3": {
+                "color": "orange"
+              }
+            },
+            "version": 2
+          }
+        },
+        "UpdateTime": 1764658761824
+      },
+      "id": "config-with-payloads"
+    },
+    {
+      "expected": {
+        "ABEnv": {
+          "always_track": false
+        },
+        "ABSpecs": {
+          "AnonIdTest": {
+            "disable_impress": false,
+            "enabled": true,
+            "id": 3,
+            "key": "AnonIdTest",
+            "name": "AnonIdTest",
+            "rules": {
+              "GATE": [
+                {
+                  "conditions": [
+                    {
+                      "field": "$app_version",
+                      "field_class": "PROPS",
+                      "opt": "VERSION_GT",
+                      "value": "10.0"
+                    },
+                    {
+                      "field": "$ip_address",
+                      "field_class": "PROPS",
+                      "opt": "ANY_OF_CASE_SENSITIVE",
+                      "value": [
+                        "127.0.0.1"
+                      ]
+                    }
+                  ],
+                  "id": "EhMbrhUYmrIUOQnkUXIVW",
+                  "name": "Rule 1",
+                  "rollout": 100,
+                  "salt": "EhMbrhUYmrIUOQnkUXIVW"
+                },
+                {
+                  "conditions": [
+                    {
+                      "field": "$browser_name",
+                      "field_class": "PROPS",
+                      "opt": "ANY_OF_CASE_INSENSITIVE",
+                      "value": [
+                        "Chrome",
+                        "Safari"
+                      ]
+                    }
+                  ],
+                  "id": "LgWd4YknKe4bMwzpX5uaD",
+                  "name": "Rule 2",
+                  "rollout": 100,
+                  "salt": "LgWd4YknKe4bMwzpX5uaD"
+                },
+                {
+                  "conditions": [
+                    {
+                      "field": "login_id",
+                      "field_class": "FFUSER",
+                      "opt": "ANY_OF_CASE_SENSITIVE",
+                      "value": [
+                        "login-id-example-2",
+                        "login-id-example-3"
+                      ]
+                    }
+                  ],
+                  "id": "L1ejG3A5wA3p1c8A1g7po",
+                  "name": "Rule 3",
+                  "rollout": 50,
+                  "salt": "L1ejG3A5wA3p1c8A1g7po"
+                },
+                {
+                  "conditions": [
+                    {
+                      "field": "age",
+                      "field_class": "PROPS",
+                      "opt": "GT",
+                      "value": 10
+                    }
+                  ],
+                  "id": "E66PPNn1liVzP56elwoXp",
+                  "name": "Rule 4",
+                  "rollout": 30,
+                  "salt": "E66PPNn1liVzP56elwoXp"
+                },
+                {
+                  "conditions": [
+                    {
+                      "field": "$device_model",
+                      "field_class": "PROPS",
+                      "opt": "IS_NULL",
+                      "value": null
+                    }
+                  ],
+                  "id": "NRZaN9HBbC7B0ZXHDluRo",
+                  "name": "Rule 5",
+                  "rollout": 100,
+                  "salt": "NRZaN9HBbC7B0ZXHDluRo"
+                },
+                {
+                  "conditions": [
+                    {
+                      "field": "$country",
+                      "field_class": "PROPS",
+                      "opt": "IS_NOT_NULL",
+                      "value": null
+                    }
+                  ],
+                  "id": "4Asxw2eWPDXL4n1V4X8wi",
+                  "name": "Rule 6",
+                  "rollout": 100,
+                  "salt": "4Asxw2eWPDXL4n1V4X8wi"
+                }
+              ],
+              "OVERRIDE": null,
+              "TRAFFIC": []
+            },
+            "salt": "XYuEro6iIYfO4okkFNVMZ",
+            "sticky": false,
+            "subject_id": "ANON_ID",
+            "traffic": "",
+            "typ": 1,
+            "variant_payloads": {},
+            "version": 6
+          }
+        },
+        "UpdateTime": 1763580232512
+      },
+      "id": "multi-gate-specs"
+    }
+  ]
+}

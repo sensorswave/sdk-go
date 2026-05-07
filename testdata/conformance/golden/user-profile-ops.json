@@ -1,0 +1,107 @@
+{
+  "capability_id": "user-profile-ops",
+  "cases": [
+    {
+      "expected": {
+        "event": "$UserSet",
+        "login_id": "user-456",
+        "properties": {
+          "$lib": "go",
+          "$lib_version": "0.1.3",
+          "$user_set_type": "user_append"
+        },
+        "time": 1736668800000,
+        "trace_id": "fixed-trace-up-001",
+        "user_properties": {
+          "$append": {
+            "tags": [
+              "a",
+              "b",
+              "a"
+            ]
+          }
+        }
+      },
+      "id": "append-preserves-duplicates"
+    },
+    {
+      "expected": {
+        "event": "$UserSet",
+        "login_id": "user-456",
+        "properties": {
+          "$lib": "go",
+          "$lib_version": "0.1.3",
+          "$user_set_type": "user_union"
+        },
+        "time": 1736668800000,
+        "trace_id": "fixed-trace-up-002",
+        "user_properties": {
+          "$union": {
+            "tags": [
+              "a",
+              "b"
+            ]
+          }
+        }
+      },
+      "id": "union-deduplicates"
+    },
+    {
+      "expected": {
+        "event": "$UserSet",
+        "login_id": "user-456",
+        "properties": {
+          "$lib": "go",
+          "$lib_version": "0.1.3",
+          "$user_set_type": "user_increment"
+        },
+        "time": 1736668800000,
+        "trace_id": "fixed-trace-up-003",
+        "user_properties": {
+          "$increment": {
+            "count": 5,
+            "score": 1.5
+          }
+        }
+      },
+      "id": "increment-numeric"
+    },
+    {
+      "expected": {
+        "event": "$UserSet",
+        "login_id": "user-456",
+        "properties": {
+          "$lib": "go",
+          "$lib_version": "0.1.3",
+          "$user_set_type": "user_unset"
+        },
+        "time": 1736668800000,
+        "trace_id": "fixed-trace-up-004",
+        "user_properties": {
+          "$unset": {
+            "field_a": null,
+            "field_b": null
+          }
+        }
+      },
+      "id": "unset-encodes-null"
+    },
+    {
+      "expected": {
+        "event": "$UserSet",
+        "login_id": "user-456",
+        "properties": {
+          "$lib": "go",
+          "$lib_version": "0.1.3",
+          "$user_set_type": "user_delete"
+        },
+        "time": 1736668800000,
+        "trace_id": "fixed-trace-up-005",
+        "user_properties": {
+          "$delete": true
+        }
+      },
+      "id": "delete-encodes-flag"
+    }
+  ]
+}

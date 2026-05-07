@@ -1,0 +1,72 @@
+{
+  "capability_id": "user-profile-ops",
+  "cases": [
+    {
+      "anon_id": "",
+      "id": "append-preserves-duplicates",
+      "lib_metadata_mode": "injected",
+      "list_properties": {
+        "tags": [
+          "a",
+          "b",
+          "a"
+        ]
+      },
+      "login_id": "user-456",
+      "operation": "profile_append",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-up-001"
+    },
+    {
+      "anon_id": "",
+      "id": "union-deduplicates",
+      "lib_metadata_mode": "injected",
+      "list_properties": {
+        "tags": [
+          "a",
+          "b",
+          "a"
+        ]
+      },
+      "login_id": "user-456",
+      "operation": "profile_union",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-up-002"
+    },
+    {
+      "anon_id": "",
+      "id": "increment-numeric",
+      "lib_metadata_mode": "injected",
+      "login_id": "user-456",
+      "operation": "profile_increment",
+      "properties": {
+        "count": 5,
+        "score": 1.5
+      },
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-up-003"
+    },
+    {
+      "anon_id": "",
+      "id": "unset-encodes-null",
+      "lib_metadata_mode": "injected",
+      "login_id": "user-456",
+      "operation": "profile_unset",
+      "property_keys": [
+        "field_a",
+        "field_b"
+      ],
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-up-004"
+    },
+    {
+      "anon_id": "",
+      "id": "delete-encodes-flag",
+      "lib_metadata_mode": "injected",
+      "login_id": "user-456",
+      "operation": "profile_delete",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-up-005"
+    }
+  ]
+}

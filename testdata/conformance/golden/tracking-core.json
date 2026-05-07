@@ -1,0 +1,103 @@
+{
+  "capability_id": "tracking-core",
+  "cases": [
+    {
+      "expected": {
+        "anon_id": "anon-123",
+        "event": "PageView",
+        "login_id": "user-456",
+        "properties": {
+          "$lib": "go",
+          "$lib_version": "0.1.3",
+          "page_name": "/home"
+        },
+        "time": 1736668800000,
+        "trace_id": "fixed-trace-001"
+      },
+      "id": "basic-track-event"
+    },
+    {
+      "expected": {
+        "anon_id": "anon-123",
+        "event": "$Identify",
+        "login_id": "user-456",
+        "properties": {
+          "$lib": "go",
+          "$lib_version": "0.1.3"
+        },
+        "time": 1736668800000,
+        "trace_id": "fixed-trace-002"
+      },
+      "id": "identify-event"
+    },
+    {
+      "expected": {
+        "anon_id": "anon-123",
+        "event": "Click",
+        "properties": {
+          "$lib": "go",
+          "$lib_version": "0.1.3",
+          "button": "submit"
+        },
+        "time": 1736668800000,
+        "trace_id": "fixed-trace-003"
+      },
+      "id": "default-props-injection"
+    },
+    {
+      "expected": {
+        "anon_id": "anon-123",
+        "event": "CustomEvent",
+        "login_id": "user-456",
+        "properties": {
+          "$lib": "custom-lib",
+          "$lib_version": "custom-ver",
+          "key1": "val1"
+        },
+        "time": 1736668800000,
+        "trace_id": "fixed-trace-004"
+      },
+      "id": "existing-lib-not-overwritten"
+    },
+    {
+      "expected": {
+        "anon_id": "anon-123",
+        "event": "$UserSet",
+        "login_id": "user-456",
+        "properties": {
+          "$lib": "go",
+          "$lib_version": "0.1.3",
+          "$user_set_type": "user_set"
+        },
+        "time": 1736668800000,
+        "trace_id": "fixed-trace-005",
+        "user_properties": {
+          "$set": {
+            "plan": "pro",
+            "tier": 3
+          }
+        }
+      },
+      "id": "profile-set"
+    },
+    {
+      "expected": {
+        "event": "$UserSet",
+        "login_id": "user-456",
+        "properties": {
+          "$lib": "go",
+          "$lib_version": "0.1.3",
+          "$user_set_type": "user_set_once"
+        },
+        "time": 1736668800000,
+        "trace_id": "fixed-trace-006",
+        "user_properties": {
+          "$set_once": {
+            "first_login": "2025-01-01"
+          }
+        }
+      },
+      "id": "profile-set-once"
+    }
+  ]
+}

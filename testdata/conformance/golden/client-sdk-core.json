@@ -1,0 +1,60 @@
+{
+  "capability_id": "client-sdk-core",
+  "cases": [
+    {
+      "expected": {
+        "pre_close_request_count": 0,
+        "request_count": 1,
+        "requests": [
+          {
+            "batch_size": 1,
+            "event_names": [
+              "NormalizeDefault"
+            ],
+            "method": "POST",
+            "path": "/in/track",
+            "source_token": "test-token"
+          }
+        ]
+      },
+      "id": "default-track-path-strips-endpoint-path"
+    },
+    {
+      "expected": {
+        "pre_close_request_count": 0,
+        "request_count": 1,
+        "requests": [
+          {
+            "batch_size": 1,
+            "event_names": [
+              "NormalizeCustom"
+            ],
+            "method": "POST",
+            "path": "/custom/track",
+            "source_token": "test-token"
+          }
+        ]
+      },
+      "id": "custom-track-path-strips-endpoint-path"
+    },
+    {
+      "expected": {
+        "pre_close_request_count": 0,
+        "request_count": 1,
+        "requests": [
+          {
+            "batch_size": 2,
+            "event_names": [
+              "BufferedOne",
+              "BufferedTwo"
+            ],
+            "method": "POST",
+            "path": "/in/track",
+            "source_token": "test-token"
+          }
+        ]
+      },
+      "id": "close-flushes-buffered-batch"
+    }
+  ]
+}

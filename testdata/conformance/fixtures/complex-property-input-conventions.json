@@ -1,0 +1,133 @@
+{
+  "capability_id": "complex-property-input-conventions",
+  "cases": [
+    {
+      "id": "track-object-property",
+      "test_id": "cpic-001",
+      "operation": "track_event",
+      "anon_id": "anon-cpic-001",
+      "login_id": "user-cpic-001",
+      "event": "PurchaseEvent",
+      "properties": {
+        "user_profile": {
+          "name": "Alice",
+          "age": 30,
+          "is_active": true
+        },
+        "scalar_prop": "hello"
+      },
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-cpic-001",
+      "lib_metadata_mode": "injected"
+    },
+    {
+      "id": "track-object-array-property",
+      "test_id": "cpic-002",
+      "operation": "track_event",
+      "anon_id": "anon-cpic-002",
+      "login_id": "user-cpic-002",
+      "event": "OrdersEvent",
+      "properties": {
+        "orders": [
+          {
+            "id": "o1",
+            "amount": 99.5
+          },
+          {
+            "id": "o2",
+            "amount": 199.5
+          }
+        ]
+      },
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-cpic-002",
+      "lib_metadata_mode": "injected"
+    },
+    {
+      "id": "profile-set-object-array",
+      "test_id": "cpic-003",
+      "operation": "profile_set",
+      "anon_id": "",
+      "login_id": "user-cpic-003",
+      "properties": {
+        "first_orders": [
+          {
+            "id": "first-1",
+            "qty": 5
+          },
+          {
+            "id": "first-2",
+            "qty": 10
+          }
+        ]
+      },
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-cpic-003",
+      "lib_metadata_mode": "injected"
+    },
+    {
+      "id": "profile-set-once-object",
+      "test_id": "cpic-004",
+      "operation": "profile_set_once",
+      "anon_id": "",
+      "login_id": "user-cpic-004",
+      "properties": {
+        "profile_info": {
+          "city": "Beijing",
+          "tier": "vip"
+        }
+      },
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-cpic-004",
+      "lib_metadata_mode": "injected"
+    },
+    {
+      "id": "profile-append-scalars",
+      "test_id": "cpic-005",
+      "operation": "profile_append",
+      "anon_id": "",
+      "login_id": "user-cpic-005",
+      "list_properties": {
+        "tags": [
+          "vip",
+          "early-adopter"
+        ]
+      },
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-cpic-005",
+      "lib_metadata_mode": "injected"
+    },
+    {
+      "id": "profile-append-list-with-map",
+      "test_id": "cpic-006",
+      "operation": "profile_append",
+      "anon_id": "",
+      "login_id": "user-cpic-006",
+      "list_properties": {
+        "tags_with_complex": [
+          "tag1",
+          {
+            "x": 1
+          }
+        ]
+      },
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-cpic-006",
+      "lib_metadata_mode": "injected"
+    },
+    {
+      "id": "empty-array-property",
+      "test_id": "cpic-007",
+      "operation": "track_event",
+      "anon_id": "anon-cpic-007",
+      "login_id": "user-cpic-007",
+      "event": "EmptyArrayEvent",
+      "properties": {
+        "empty_list": []
+      },
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-cpic-007",
+      "lib_metadata_mode": "injected"
+    }
+  ]
+}

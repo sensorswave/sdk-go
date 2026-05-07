@@ -1,0 +1,33 @@
+{
+  "capability_id": "request-signing-acs3",
+  "cases": [
+    {
+      "body": "",
+      "headers": {
+        "x-auth-nonce": "test-nonce-12345",
+        "x-auth-timestamp": "1736668800000"
+      },
+      "id": "get-empty-body",
+      "method": "GET",
+      "project_secret": "test-secret-key",
+      "query_string": "",
+      "source_token": "test-project-token",
+      "test_id": "sign-001",
+      "uri": "/ab/all4eval"
+    },
+    {
+      "body": "{\"key\":\"value\",\"number\":123}",
+      "headers": {
+        "x-auth-nonce": "nonce-abc123",
+        "x-auth-timestamp": "1736668800000"
+      },
+      "id": "post-json-body",
+      "method": "POST",
+      "project_secret": "secret-xyz",
+      "query_string": "param1=value1&param2=value2",
+      "source_token": "project-abc",
+      "test_id": "sign-002",
+      "uri": "/ab/data"
+    }
+  ]
+}

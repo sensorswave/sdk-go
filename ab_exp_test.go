@@ -557,3 +557,11 @@ func TestABCoreEvalExperimentGateTargetFail(t *testing.T) {
 		require.Contains(t, []string{"v1", "v2"}, *result.VariantID)
 	})
 }
+
+func TestABCoreEvalExperimentNonExistentKey(t *testing.T) {
+	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "exp", "public.json"))
+	core := newTestAbCoreWithStorage(t, store)
+
+	spec := core.getABSpec("Non_Existent_Experiment")
+	require.Nil(t, spec)
+}

@@ -1,0 +1,46 @@
+{
+  "capability_id": "client-sdk-core",
+  "cases": [
+    {
+      "id": "default-track-path-strips-endpoint-path",
+      "endpoint_suffix": "/sdk/path?foo=bar#frag",
+      "track_uri_path": "",
+      "events": [
+        {
+          "anon_id": "anon-101",
+          "login_id": "user-101",
+          "event": "NormalizeDefault"
+        }
+      ]
+    },
+    {
+      "id": "custom-track-path-strips-endpoint-path",
+      "endpoint_suffix": "/nested/path?from=fixture",
+      "track_uri_path": "/custom/track",
+      "events": [
+        {
+          "anon_id": "anon-201",
+          "login_id": "user-201",
+          "event": "NormalizeCustom"
+        }
+      ]
+    },
+    {
+      "id": "close-flushes-buffered-batch",
+      "endpoint_suffix": "/buffered/path",
+      "track_uri_path": "",
+      "events": [
+        {
+          "anon_id": "anon-301",
+          "login_id": "user-301",
+          "event": "BufferedOne"
+        },
+        {
+          "anon_id": "anon-302",
+          "login_id": "user-302",
+          "event": "BufferedTwo"
+        }
+      ]
+    }
+  ]
+}

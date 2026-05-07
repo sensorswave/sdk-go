@@ -1,0 +1,84 @@
+{
+  "capability_id": "tracking-core",
+  "cases": [
+    {
+      "anon_id": "anon-123",
+      "event": "PageView",
+      "id": "basic-track-event",
+      "lib_metadata_mode": "injected",
+      "login_id": "user-456",
+      "operation": "track_event",
+      "properties": {
+        "page_name": "/home"
+      },
+      "test_id": "track-001",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-001"
+    },
+    {
+      "anon_id": "anon-123",
+      "id": "identify-event",
+      "lib_metadata_mode": "injected",
+      "login_id": "user-456",
+      "operation": "identify",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-002"
+    },
+    {
+      "anon_id": "anon-123",
+      "event": "Click",
+      "id": "default-props-injection",
+      "lib_metadata_mode": "injected",
+      "login_id": "",
+      "operation": "track_event",
+      "properties": {
+        "button": "submit"
+      },
+      "test_id": "track-002",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-003"
+    },
+    {
+      "anon_id": "anon-123",
+      "event": "CustomEvent",
+      "id": "existing-lib-not-overwritten",
+      "lib_metadata_mode": "explicit",
+      "login_id": "user-456",
+      "operation": "track_event",
+      "properties": {
+        "$lib": "custom-lib",
+        "$lib_version": "custom-ver",
+        "key1": "val1"
+      },
+      "test_id": "track-003",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-004"
+    },
+    {
+      "anon_id": "anon-123",
+      "id": "profile-set",
+      "lib_metadata_mode": "injected",
+      "login_id": "user-456",
+      "operation": "profile_set",
+      "properties": {
+        "plan": "pro",
+        "tier": 3
+      },
+      "test_id": "track-004",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-005"
+    },
+    {
+      "anon_id": "",
+      "id": "profile-set-once",
+      "lib_metadata_mode": "injected",
+      "login_id": "user-456",
+      "operation": "profile_set_once",
+      "properties": {
+        "first_login": "2025-01-01"
+      },
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-006"
+    }
+  ]
+}

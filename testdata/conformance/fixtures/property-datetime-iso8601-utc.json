@@ -1,0 +1,95 @@
+{
+  "capability_id": "property-datetime-iso8601-utc",
+  "cases": [
+    {
+      "anon_id": "anon-123",
+      "event": "TimePropertyEvent",
+      "id": "track-event-native-property-time",
+      "lib_metadata_mode": "injected",
+      "login_id": "user-456",
+      "native_time_properties": [
+        "occurred_at"
+      ],
+      "operation": "track_event",
+      "properties": {
+        "note": "track-native-time",
+        "occurred_at": "2026-04-23 08:15:30.123",
+        "occurred_at_literal": "2026-04-23 08:15:30.123"
+      },
+      "test_id": "track-006",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-dt-001"
+    },
+    {
+      "anon_id": "",
+      "id": "profile-set-native-property-time",
+      "lib_metadata_mode": "injected",
+      "login_id": "user-456",
+      "native_time_properties": [
+        "registered_at"
+      ],
+      "operation": "profile_set",
+      "properties": {
+        "plan": "pro",
+        "registered_at": "2026-04-23 08:15:30.123"
+      },
+      "test_id": "track-007",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-dt-002"
+    },
+    {
+      "anon_id": "",
+      "id": "profile-set-once-native-property-time",
+      "lib_metadata_mode": "injected",
+      "login_id": "user-456",
+      "native_time_properties": [
+        "first_seen_at"
+      ],
+      "operation": "profile_set_once",
+      "properties": {
+        "first_seen_at": "2026-04-23 08:15:30.123"
+      },
+      "test_id": "track-008",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-dt-003"
+    },
+    {
+      "anon_id": "",
+      "id": "profile-append-native-time-list",
+      "lib_metadata_mode": "injected",
+      "list_properties": {
+        "milestones": [
+          "2026-04-23 08:15:30.123",
+          "2026-04-23 08:15:30.123"
+        ]
+      },
+      "login_id": "user-456",
+      "native_time_list_properties": [
+        "milestones"
+      ],
+      "operation": "profile_append",
+      "test_id": "track-009",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-dt-004"
+    },
+    {
+      "anon_id": "",
+      "id": "profile-union-native-time-list",
+      "lib_metadata_mode": "injected",
+      "list_properties": {
+        "milestones": [
+          "2026-04-23 08:15:30.123",
+          "2026-04-23 08:15:30.123"
+        ]
+      },
+      "login_id": "user-456",
+      "native_time_list_properties": [
+        "milestones"
+      ],
+      "operation": "profile_union",
+      "test_id": "track-010",
+      "time": 1736668800000,
+      "trace_id": "fixed-trace-dt-005"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "capability_id": "ab-meta-snapshot-bootstrap",
+  "description": "验证 AB metadata snapshot 导出格式一致性。",
+  "cases": [
+    {
+      "id": "single-gate-snapshot",
+      "spec_file": "gate/public.json"
+    },
+    {
+      "id": "config-with-payloads",
+      "spec_file": "config/public.json"
+    },
+    {
+      "id": "multi-gate-specs",
+      "spec_file": "gate/complicate.json"
+    }
+  ]
+}

@@ -1,0 +1,1500 @@
+{
+  "capability_id": "ab-core-evaluation",
+  "cases": [
+    {
+      "eval_type": "config",
+      "id": "config-first-match-wins-vip",
+      "key": "config_first_match",
+      "spec_file": "config/first_match_wins.json",
+      "test_id": "config-006",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "vip-user-1"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-override",
+      "key": "bMHsfOAUKx",
+      "spec_file": "config/override.json",
+      "test_id": "config-001",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "login-id-example-1"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-override-blocked",
+      "key": "bMHsfOAUKx",
+      "spec_file": "config/override.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0"
+        },
+        "anon_id": "",
+        "login_id": "user-low"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-sticky-use-cache",
+      "key": "Sticky_Config",
+      "spec_file": "config/sticky.json",
+      "sticky_cache": {
+        "27-sticky-config-cache": "{\"v\":\"v1\"}"
+      },
+      "test_id": "config-005",
+      "user": {
+        "ab_user_props": {
+          "is_member": false
+        },
+        "anon_id": "",
+        "login_id": "sticky-config-cache"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-target-blocked",
+      "key": "bMHsfOAUKx",
+      "spec_file": "config/target.json",
+      "test_id": "config-003",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0"
+        },
+        "anon_id": "",
+        "login_id": "blocked"
+      }
+    },
+    {
+      "eval_mode": "distribution",
+      "eval_type": "config",
+      "id": "dist-config-holdout",
+      "key": "bMHsfOAUKx",
+      "spec_file": "config/holdout.json",
+      "test_id": "config-004",
+      "user_count": 1000,
+      "user_prefix": "config-holdout-user"
+    },
+    {
+      "eval_mode": "distribution",
+      "eval_type": "config",
+      "id": "dist-config-public",
+      "key": "bMHsfOAUKx",
+      "spec_file": "config/public.json",
+      "test_id": "config-002",
+      "user_count": 1000,
+      "user_prefix": "config-public-user"
+    },
+    {
+      "eval_mode": "distribution",
+      "eval_type": "experiment",
+      "id": "dist-exp-holdout",
+      "key": "BKduZnxYPD",
+      "spec_file": "exp/holdout.json",
+      "user_count": 1000,
+      "user_prefix": "holdout-user"
+    },
+    {
+      "eval_mode": "distribution",
+      "eval_type": "experiment",
+      "id": "dist-exp-traffic",
+      "key": "New_Experiment",
+      "spec_file": "exp/public.json",
+      "user_count": 1000,
+      "user_prefix": "exp-traffic-user"
+    },
+    {
+      "eval_type": "experiment",
+      "id": "exp-gate-dep-version-fail",
+      "key": "ArlrvEnebz",
+      "spec_file": "exp/gate_target_pass.json",
+      "test_id": "exp-013",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.9"
+        },
+        "anon_id": "",
+        "login_id": "user0"
+      }
+    },
+    {
+      "eval_type": "experiment",
+      "id": "exp-gate-target-fail-deps-fail",
+      "key": "Failed_Gate",
+      "spec_file": "exp/gate_target_fail.json",
+      "test_id": "exp-014",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.9"
+        },
+        "anon_id": "",
+        "login_id": "user0"
+      }
+    },
+    {
+      "eval_type": "experiment",
+      "id": "exp-layer-user1",
+      "key": "exp3",
+      "spec_file": "exp/layer.json",
+      "test_id": "exp-015",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user1"
+      }
+    },
+    {
+      "eval_type": "experiment",
+      "id": "exp-layer-with-holdout-user1",
+      "key": "ARQjYcfVPI",
+      "spec_file": "exp/layer_with_holdout.json",
+      "test_id": "exp-016",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user1"
+      }
+    },
+    {
+      "eval_type": "experiment",
+      "id": "exp-release-alice",
+      "key": "TargetExperiment",
+      "spec_file": "exp/release.json",
+      "test_id": "exp-012",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "alice"
+      }
+    },
+    {
+      "eval_type": "experiment",
+      "id": "exp-release-user1",
+      "key": "TargetExperiment",
+      "spec_file": "exp/release.json",
+      "test_id": "exp-011",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user1"
+      }
+    },
+    {
+      "eval_type": "experiment",
+      "id": "exp-sticky-use-cache",
+      "key": "Sticky_Experiment",
+      "spec_file": "exp/sticky.json",
+      "sticky_cache": {
+        "26-sticky-user-cache": "{\"v\":\"v2\"}"
+      },
+      "user": {
+        "ab_user_props": {
+          "is_member": false
+        },
+        "anon_id": "",
+        "login_id": "sticky-user-cache"
+      }
+    },
+    {
+      "eval_type": "experiment",
+      "id": "exp-target-missing-version",
+      "key": "TargetExperiment",
+      "spec_file": "exp/target.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user1"
+      }
+    },
+    {
+      "eval_type": "experiment",
+      "id": "exp-target-version-match",
+      "key": "TargetExperiment",
+      "spec_file": "exp/target.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0"
+        },
+        "anon_id": "",
+        "login_id": "user1"
+      }
+    },
+    {
+      "eval_type": "experiment",
+      "id": "exp-target-version-mismatch",
+      "key": "TargetExperiment",
+      "spec_file": "exp/target.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.0"
+        },
+        "anon_id": "",
+        "login_id": "user1"
+      }
+    },
+    {
+      "eval_type": "experiment",
+      "id": "exp-target-wrong-version",
+      "key": "TargetExperiment",
+      "spec_file": "exp/target.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.1"
+        },
+        "anon_id": "",
+        "login_id": "user1"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-after-before-boundary",
+      "key": "After_Time_Gate",
+      "spec_file": "gate/after.json",
+      "user": {
+        "ab_user_props": {
+          "registration_date": "2023-01-01T00:00:00Z"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-after-missing",
+      "key": "After_Time_Gate",
+      "spec_file": "gate/after.json",
+      "test_id": "gate-037",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-after-much-before",
+      "key": "After_Time_Gate",
+      "spec_file": "gate/after.json",
+      "user": {
+        "ab_user_props": {
+          "registration_date": "2022-06-01T00:00:00Z"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-after-past",
+      "key": "After_Time_Gate",
+      "spec_file": "gate/after.json",
+      "test_id": "gate-037",
+      "user": {
+        "ab_user_props": {
+          "registration_date": "2023-06-01T00:00:00Z"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-anonid-subject-loginid-only",
+      "key": "AnonIdTest",
+      "spec_file": "gate/anon_id.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-anonid-subject-pass",
+      "key": "AnonIdTest",
+      "spec_file": "gate/anon_id.json",
+      "test_id": "gate-017",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "anon-pass",
+        "login_id": ""
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-anyof-insensitive-case-mismatch",
+      "key": "TestSpec",
+      "spec_file": "gate/anyof_insensitive.json",
+      "test_id": "gate-040",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": "chrome"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-anyof-sensitive-case-mismatch",
+      "key": "TestSpec",
+      "spec_file": "gate/anyof_sensitive.json",
+      "test_id": "gate-003",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": "chrome"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-anyof-sensitive-match",
+      "key": "TestSpec",
+      "spec_file": "gate/anyof_sensitive.json",
+      "test_id": "gate-003",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": "Chrome"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-anyof-sensitive-no-prop",
+      "key": "TestSpec",
+      "spec_file": "gate/anyof_sensitive.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-anyof-sensitive-wrong-value",
+      "key": "TestSpec",
+      "spec_file": "gate/anyof_sensitive.json",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": "Safari"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-before-after",
+      "key": "Before_Time_Gate",
+      "spec_file": "gate/before.json",
+      "user": {
+        "ab_user_props": {
+          "user_created_at": "2024-06-01T00:00:00Z"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-before-at-boundary",
+      "key": "Before_Time_Gate",
+      "spec_file": "gate/before.json",
+      "user": {
+        "ab_user_props": {
+          "user_created_at": "2024-01-01T00:00:00Z"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-before-early",
+      "key": "Before_Time_Gate",
+      "spec_file": "gate/before.json",
+      "test_id": "gate-036",
+      "user": {
+        "ab_user_props": {
+          "user_created_at": "2023-06-01T00:00:00Z"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-before-missing",
+      "key": "Before_Time_Gate",
+      "spec_file": "gate/before.json",
+      "test_id": "gate-036",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-circular-deadlock",
+      "key": "Gate_A",
+      "spec_file": "gate/gate_circular.json",
+      "test_id": "gate-042",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-1"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-custom-field-age-fail",
+      "key": "TestSpec",
+      "spec_file": "gate/custom_field.json",
+      "user": {
+        "ab_user_props": {
+          "age": 10
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-custom-field-age-pass",
+      "key": "TestSpec",
+      "spec_file": "gate/custom_field.json",
+      "test_id": "gate-014",
+      "user": {
+        "ab_user_props": {
+          "age": 11
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-custom-field-no-prop",
+      "key": "TestSpec",
+      "spec_file": "gate/custom_field.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-disabled",
+      "key": "TestSpec",
+      "spec_file": "gate/disable.json",
+      "test_id": "gate-018",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-empty-rules",
+      "key": "TestSpec",
+      "spec_file": "gate/missing_gate_rules.json",
+      "test_id": "gate-020",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-any"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-eq-case-sensitive",
+      "key": "EQ_Gate",
+      "spec_file": "gate/eq.json",
+      "user": {
+        "ab_user_props": {
+          "country": "us"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-eq-match",
+      "key": "EQ_Gate",
+      "spec_file": "gate/eq.json",
+      "test_id": "gate-034",
+      "user": {
+        "ab_user_props": {
+          "country": "US"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-eq-mismatch",
+      "key": "EQ_Gate",
+      "spec_file": "gate/eq.json",
+      "user": {
+        "ab_user_props": {
+          "country": "CN"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-eq-missing",
+      "key": "EQ_Gate",
+      "spec_file": "gate/eq.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-first-match-wins-vip",
+      "key": "gate_first_match",
+      "spec_file": "gate/first_match_wins.json",
+      "test_id": "gate-041",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "vip-user-1"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-gte-number-above",
+      "key": "GTE_Number_Gate",
+      "spec_file": "gate/gte_number.json",
+      "user": {
+        "ab_user_props": {
+          "user_age": 25
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-gte-number-below",
+      "key": "GTE_Number_Gate",
+      "spec_file": "gate/gte_number.json",
+      "user": {
+        "ab_user_props": {
+          "user_age": 17
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-gte-number-equal",
+      "key": "GTE_Number_Gate",
+      "spec_file": "gate/gte_number.json",
+      "test_id": "gate-029",
+      "user": {
+        "ab_user_props": {
+          "user_age": 18
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-holdout-fail",
+      "key": "holdout_gate",
+      "spec_file": "gate/holdout.json",
+      "test_id": "gate-023",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.1"
+        },
+        "anon_id": "",
+        "login_id": "user0"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-holdout-no-prop",
+      "key": "holdout_gate",
+      "spec_file": "gate/holdout.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user3"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-holdout-version-match",
+      "key": "holdout_gate",
+      "spec_file": "gate/holdout.json",
+      "test_id": "gate-023",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0"
+        },
+        "anon_id": "",
+        "login_id": "user1"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-holdout-version-mismatch",
+      "key": "holdout_gate",
+      "spec_file": "gate/holdout.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.1"
+        },
+        "anon_id": "",
+        "login_id": "user2"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-is-false-fail",
+      "key": "Is_False_Gate",
+      "spec_file": "gate/is_false.json",
+      "user": {
+        "ab_user_props": {
+          "is_banned": true
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-is-false-missing",
+      "key": "Is_False_Gate",
+      "spec_file": "gate/is_false.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-is-false-pass",
+      "key": "Is_False_Gate",
+      "spec_file": "gate/is_false.json",
+      "test_id": "gate-033",
+      "user": {
+        "ab_user_props": {
+          "is_banned": false
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-is-true-fail",
+      "key": "Is_True_Gate",
+      "spec_file": "gate/is_true.json",
+      "user": {
+        "ab_user_props": {
+          "is_premium": false
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-is-true-missing",
+      "key": "Is_True_Gate",
+      "spec_file": "gate/is_true.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-is-true-pass",
+      "key": "Is_True_Gate",
+      "spec_file": "gate/is_true.json",
+      "test_id": "gate-032",
+      "user": {
+        "ab_user_props": {
+          "is_premium": true
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-isnotnull-empty-string",
+      "key": "TestSpec",
+      "spec_file": "gate/isnotnull.json",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": ""
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-isnotnull-missing-prop",
+      "key": "TestSpec",
+      "spec_file": "gate/isnotnull.json",
+      "test_id": "gate-007",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-isnotnull-with-value",
+      "key": "TestSpec",
+      "spec_file": "gate/isnotnull.json",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": "Chrome"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-isnull-empty-string",
+      "key": "TestSpec",
+      "spec_file": "gate/isnull.json",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": ""
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-isnull-missing-prop",
+      "key": "TestSpec",
+      "spec_file": "gate/isnull.json",
+      "test_id": "gate-006",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-isnull-with-value",
+      "key": "TestSpec",
+      "spec_file": "gate/isnull.json",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": "Chrome"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-lt-number-above",
+      "key": "LT_Number_Gate",
+      "spec_file": "gate/lt_number.json",
+      "user": {
+        "ab_user_props": {
+          "user_age": 70
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-lt-number-below",
+      "key": "LT_Number_Gate",
+      "spec_file": "gate/lt_number.json",
+      "test_id": "gate-030",
+      "user": {
+        "ab_user_props": {
+          "user_age": 30
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-lt-number-equal",
+      "key": "LT_Number_Gate",
+      "spec_file": "gate/lt_number.json",
+      "user": {
+        "ab_user_props": {
+          "user_age": 65
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-lte-number-above",
+      "key": "LTE_Number_Gate",
+      "spec_file": "gate/lte_number.json",
+      "user": {
+        "ab_user_props": {
+          "user_score": 105
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-lte-number-below",
+      "key": "LTE_Number_Gate",
+      "spec_file": "gate/lte_number.json",
+      "user": {
+        "ab_user_props": {
+          "user_score": 85
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-lte-number-equal",
+      "key": "LTE_Number_Gate",
+      "spec_file": "gate/lte_number.json",
+      "test_id": "gate-031",
+      "user": {
+        "ab_user_props": {
+          "user_score": 100
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-multi-gates-user1-A",
+      "key": "Gate_A",
+      "spec_file": "gate/multi_gates.json",
+      "test_id": "gate-039",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0",
+          "$country": "CN",
+          "is_premium": true
+        },
+        "anon_id": "",
+        "login_id": "user1"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-multi-gates-user1-B",
+      "key": "Gate_B",
+      "spec_file": "gate/multi_gates.json",
+      "test_id": "gate-039",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0",
+          "$country": "CN",
+          "is_premium": true
+        },
+        "anon_id": "",
+        "login_id": "user1"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-multi-gates-user2-A",
+      "key": "Gate_A",
+      "spec_file": "gate/multi_gates.json",
+      "test_id": "gate-039",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0",
+          "$country": "KR",
+          "is_premium": false
+        },
+        "anon_id": "",
+        "login_id": "user2"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-multi-gates-user2-B",
+      "key": "Gate_B",
+      "spec_file": "gate/multi_gates.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0",
+          "$country": "KR",
+          "is_premium": false
+        },
+        "anon_id": "",
+        "login_id": "user2"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-neq-number-different",
+      "key": "NEQ_Number_Gate",
+      "spec_file": "gate/neq_number.json",
+      "test_id": "gate-035",
+      "user": {
+        "ab_user_props": {
+          "level": 5
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-neq-number-missing",
+      "key": "NEQ_Number_Gate",
+      "spec_file": "gate/neq_number.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-neq-number-negative",
+      "key": "NEQ_Number_Gate",
+      "spec_file": "gate/neq_number.json",
+      "user": {
+        "ab_user_props": {
+          "level": -1
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-neq-number-zero",
+      "key": "NEQ_Number_Gate",
+      "spec_file": "gate/neq_number.json",
+      "user": {
+        "ab_user_props": {
+          "level": 0
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-noneof-insensitive-allowed",
+      "key": "TestSpec",
+      "spec_file": "gate/noneof_insentive.json",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": "Edge"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-noneof-insensitive-blocked-lower",
+      "key": "TestSpec",
+      "spec_file": "gate/noneof_insentive.json",
+      "test_id": "gate-005",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": "chrome"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-noneof-sensitive-allowed",
+      "key": "TestSpec",
+      "spec_file": "gate/noneof_sensitive.json",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": "Edge"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-noneof-sensitive-blocked",
+      "key": "TestSpec",
+      "spec_file": "gate/noneof_sensitive.json",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": "Chrome"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-noneof-sensitive-case-mismatch",
+      "key": "TestSpec",
+      "spec_file": "gate/noneof_sensitive.json",
+      "user": {
+        "ab_user_props": {
+          "$browser_name": "chrome"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-noneof-sensitive-no-prop",
+      "key": "TestSpec",
+      "spec_file": "gate/noneof_sensitive.json",
+      "test_id": "gate-004",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-override-cond-id-pass",
+      "key": "TestSpec",
+      "spec_file": "gate/override_condition.json",
+      "test_id": "gate-016",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "login-id-example-2"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-override-cond-prop-fail",
+      "key": "TestSpec",
+      "spec_file": "gate/override_condition.json",
+      "user": {
+        "ab_user_props": {
+          "$country": "Japan"
+        },
+        "anon_id": "",
+        "login_id": "other"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-override-cond-prop-pass",
+      "key": "TestSpec",
+      "spec_file": "gate/override_condition.json",
+      "user": {
+        "ab_user_props": {
+          "$country": "China"
+        },
+        "anon_id": "",
+        "login_id": "other"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-override-id-fail",
+      "key": "TestSpec",
+      "spec_file": "gate/override_id.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "login-id-example-3"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-override-id-pass",
+      "key": "TestSpec",
+      "spec_file": "gate/override_id.json",
+      "test_id": "gate-015",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "login-id-example-2"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-override-id-unknown",
+      "key": "TestSpec",
+      "spec_file": "gate/override_id.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "unknown"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-public-fail",
+      "key": "TestSpec",
+      "spec_file": "gate/public.json",
+      "test_id": "gate-002",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-fail"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-public-pass",
+      "key": "TestSpec",
+      "spec_file": "gate/public.json",
+      "test_id": "gate-001",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-release-other",
+      "key": "ReleaseGate",
+      "spec_file": "gate/release.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-other"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-release-pass",
+      "key": "ReleaseGate",
+      "spec_file": "gate/release.json",
+      "test_id": "gate-024",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-sticky-use-cache",
+      "key": "Sticky_Is_True_Gate",
+      "spec_file": "gate/sticky.json",
+      "sticky_cache": {
+        "25-user-cache": "{\"v\":\"pass\"}"
+      },
+      "test_id": "gate-025",
+      "user": {
+        "ab_user_props": {
+          "is_premium": false
+        },
+        "anon_id": "",
+        "login_id": "user-cache"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-sticky-write-new",
+      "key": "Sticky_Is_True_Gate",
+      "spec_file": "gate/sticky.json",
+      "user": {
+        "ab_user_props": {
+          "is_premium": true
+        },
+        "anon_id": "",
+        "login_id": "user-new"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-eq-match",
+      "key": "TestSpec",
+      "spec_file": "gate/equal_version.json",
+      "test_id": "gate-012",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-eq-mismatch",
+      "key": "TestSpec",
+      "spec_file": "gate/equal_version.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.9"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-eq-patch-match",
+      "key": "TestSpec",
+      "spec_file": "gate/equal_version.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0.0"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-gt-above",
+      "key": "TestSpec",
+      "spec_file": "gate/greater_version.json",
+      "test_id": "gate-008",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.1"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-gt-below",
+      "key": "TestSpec",
+      "spec_file": "gate/greater_version.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.9"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-gt-equal",
+      "key": "TestSpec",
+      "spec_file": "gate/greater_version.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-gt-missing",
+      "key": "TestSpec",
+      "spec_file": "gate/greater_version.json",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-gt-patch",
+      "key": "TestSpec",
+      "spec_file": "gate/greater_version.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0.1"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-gte-above",
+      "key": "TestSpec",
+      "spec_file": "gate/greater_equal_version.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.1"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-gte-below",
+      "key": "TestSpec",
+      "spec_file": "gate/greater_equal_version.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.9"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-gte-equal",
+      "key": "TestSpec",
+      "spec_file": "gate/greater_equal_version.json",
+      "test_id": "gate-009",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-lt-above",
+      "key": "TestSpec",
+      "spec_file": "gate/less_version.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.1"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-lt-below",
+      "key": "TestSpec",
+      "spec_file": "gate/less_version.json",
+      "test_id": "gate-010",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.9"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-lt-equal",
+      "key": "TestSpec",
+      "spec_file": "gate/less_version.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-lte-above",
+      "key": "TestSpec",
+      "spec_file": "gate/less_equal_version.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.1"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-lte-below",
+      "key": "TestSpec",
+      "spec_file": "gate/less_equal_version.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "9.5"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-lte-equal",
+      "key": "TestSpec",
+      "spec_file": "gate/less_equal_version.json",
+      "test_id": "gate-011",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-neq-different",
+      "key": "TestSpec",
+      "spec_file": "gate/not_equal.json",
+      "test_id": "gate-013",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "11.0"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-version-neq-equal",
+      "key": "TestSpec",
+      "spec_file": "gate/not_equal.json",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "10.0"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    }
+  ],
+  "description": "AB 核心评估一致性验证。spec_file 引用 sdk-go/testdata/ 下的 fixture。覆盖全部确定性 case。"
+}
