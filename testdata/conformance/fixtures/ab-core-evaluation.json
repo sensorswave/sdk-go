@@ -1494,6 +1494,58 @@
         "anon_id": "",
         "login_id": "user-pass"
       }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-non-existent-key",
+      "key": "Non_Existent_Key",
+      "spec_file": "gate/public.json",
+      "test_id": "gate-019",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-dependency-fail-cn",
+      "key": "Gate_Fail_Dependent",
+      "spec_file": "gate/gate_fail.json",
+      "test_id": "gate-038",
+      "user": {
+        "ab_user_props": {
+          "country": "CN"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "gate",
+      "id": "gate-dependency-fail-us",
+      "key": "Gate_Fail_Dependent",
+      "spec_file": "gate/gate_fail.json",
+      "test_id": "gate-038",
+      "user": {
+        "ab_user_props": {
+          "country": "US"
+        },
+        "anon_id": "",
+        "login_id": "user-pass"
+      }
+    },
+    {
+      "eval_type": "experiment",
+      "id": "exp-target-blocked-no-version",
+      "key": "TargetExperiment",
+      "spec_file": "exp/target.json",
+      "test_id": "exp-006",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "blocked-user"
+      }
     }
   ],
   "description": "AB 核心评估一致性验证。spec_file 引用 sdk-go/testdata/ 下的 fixture。覆盖全部确定性 case。"

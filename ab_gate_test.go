@@ -42,14 +42,6 @@ func (f *failStickyHandler) SetStickyResult(key string, result string) error {
 // TestABCoreEvaluationConformance（参 ab_core_evaluation_conformance_test.go）。
 
 // gate-019: 不存在的 Gate Key 查询返回 nil。
-func TestABCoreEvalGateMissingKey(t *testing.T) {
-	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "public.json"))
-	core := newTestAbCoreWithStorage(t, store)
-
-	spec := core.getABSpec("Non_Existent_Key")
-	require.Nil(t, spec)
-}
-
 // gate-021: Gate 过滤器的依赖关系（FilterGate 依赖其他 gate 结果）。
 func TestABCoreEvalGateFilter(t *testing.T) {
 	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "gate_filter.json"))
@@ -245,36 +237,3 @@ func TestABCoreEvalCondEdgeCases(t *testing.T) {
 	})
 }
 
-// gate-038: Gate 依赖失败——被依赖的 gate 评估失败时，依赖方按规则也失败/通过。
-func TestABCoreEvalGateFail(t *testing.T) {
-	store := mustLoadABStorageFromJSON(t, filepath.Join("testdata", "gate", "gate_fail.json"))
-	core := newTestAbCoreWithStorage(t, store)
-
-	spec := core.getABSpec("Gate_Fail_Dependent")
-	require.NotNil(t, spec)
-
-	testCases := []struct {
-		name string
-		user User
-		want bool
-	}{
-		{
-			name: "base-gate-fails-rollout-0",
-			user: User{LoginID: "user-pass", ABUserProperties: Properties{"country": "CN"}},
-			want: true,
-		},
-		{
-			name: "base-gate-fails-condition",
-			user: User{LoginID: "user-pass", ABUserProperties: Properties{"country": "US"}},
-			want: true,
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			result, err := core.evalAB(tc.user, spec, 0)
-			require.NoError(t, err)
-			require.Equal(t, tc.want, result.CheckFeatureGate())
-		})
-	}
-}

@@ -16916,6 +16916,38 @@
         "variant_params": null
       },
       "id": "gate-version-neq-equal"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": null,
+        "variant_params": null
+      },
+      "id": "gate-non-existent-key"
+    },
+    {
+      "expected": {
+        "check_gate": true,
+        "variant_id": "pass",
+        "variant_params": null
+      },
+      "id": "gate-dependency-fail-cn"
+    },
+    {
+      "expected": {
+        "check_gate": true,
+        "variant_id": "pass",
+        "variant_params": null
+      },
+      "id": "gate-dependency-fail-us"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": null,
+        "variant_params": null
+      },
+      "id": "exp-target-blocked-no-version"
     }
   ]
 }
