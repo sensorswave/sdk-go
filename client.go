@@ -6,6 +6,14 @@ import (
 	"sync"
 )
 
+// Internal sizing for the in-process event pipeline (channel buffer + per-batch caps).
+// Tuning notes: maxBatchSize bounds POST body event count; maxHTTPBodySize bounds bytes.
+const (
+	maxEventChanSize = 50 * 10         // 500 events buffered in the dispatch channel
+	maxBatchSize     = 50              // up to 50 events flushed in one HTTP request
+	maxHTTPBodySize  = 5 * 1024 * 1024 // up to 5 MB request body
+)
+
 // Client is the main interface for interacting with the SDK.
 // It provides methods for event tracking and A/B test evaluation.
 type Client interface {
