@@ -39,14 +39,15 @@ func TestABCoreEvaluationConformance(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.ID, func(t *testing.T) {
 			var input struct {
-				EvalMode    string            `json:"eval_mode"`
-				EvalType    string            `json:"eval_type"`
-				SpecFile    string            `json:"spec_file"`
-				Key         string            `json:"key"`
-				User        *userInput        `json:"user"`
-				UserPrefix  string            `json:"user_prefix"`
-				UserCount   int               `json:"user_count"`
-				StickyCache map[string]string `json:"sticky_cache"`
+				EvalMode      string            `json:"eval_mode"`
+				EvalType      string            `json:"eval_type"`
+				SpecFile      string            `json:"spec_file"`
+				Key           string            `json:"key"`
+				User          *userInput        `json:"user"`
+				UserPrefix    string            `json:"user_prefix"`
+				UserCount     int               `json:"user_count"`
+				StickyCache   map[string]string `json:"sticky_cache"`
+				ExpectedError bool              `json:"expected_error"`
 			}
 			require.NoError(t, json.Unmarshal(c.Raw, &input), "unmarshal case input")
 
@@ -68,6 +69,14 @@ func TestABCoreEvaluationConformance(t *testing.T) {
 				ABUserProperties: input.User.ABUserProps,
 			}
 			result, err := core.Evaluate(user, input.Key, evalTyp)
+
+			// expected_error 模式：fixture 标记本 case 应抛错；只验"有 err"，不锁
+			// 错误消息（各 SDK 实现差异；与 runner result_comparator 对齐）。
+			if input.ExpectedError {
+				require.Error(t, err, "expected error, got result %v", result)
+				return
+			}
+
 			require.NoError(t, err, "Evaluate")
 
 			actual := singleResultToMap(&result)
