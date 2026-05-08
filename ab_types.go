@@ -96,7 +96,7 @@ type abResultCache struct {
 	VariantID *string `json:"v,omitempty"` // Cached variant ID
 }
 
-// ABTypEnum 标识 AB 项类型（gate / config / experiment / layer / holdout）。
+// ABTypEnum identifies the kind of an AB item (gate / config / experiment / layer / holdout).
 type ABTypEnum int
 
 const (
@@ -170,12 +170,14 @@ type Condition struct {
 	Value      any    `json:"value"` // Target value
 }
 
-// UnmarshalJSON 反序列化 ABSpec 后立即从 VariantPayloads (raw bytes) 派生 VariantValues
-// (parsed map)。VariantValues 字段标 json:"-" 故不进 wire——任何 unmarshal 路径
-// (server meta response、GetStorageSnapshot 输出等) 都通过本方法自动重建缓存，避免
-// 各调用方各自手动解析 + 漏派生。
+// UnmarshalJSON deserializes ABSpec and immediately derives VariantValues
+// (parsed map) from VariantPayloads (raw bytes). VariantValues is tagged
+// json:"-" and therefore never appears on the wire — every unmarshal path
+// (server meta responses, GetStorageSnapshot output, etc.) rebuilds the cache
+// here so callers don't each have to parse it themselves and miss it.
 //
-// 用 type alias `abSpecRaw` 截断 UnmarshalJSON 接口避免无限递归。
+// The local type alias `abSpecRaw` short-circuits the UnmarshalJSON interface
+// to avoid infinite recursion.
 func (s *ABSpec) UnmarshalJSON(data []byte) error {
 	type abSpecRaw ABSpec
 	var raw abSpecRaw
