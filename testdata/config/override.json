@@ -19,40 +19,8 @@
                 "rules": {
                     "GATE": [
                         {
-                            "id": "vxhpP8GPVO385TPe0Zgfd:1",
-                            "name": "gate:vxhpP8GPVO385TPe0Zgfd:variant:1",
-                            "salt": "vxhpP8GPVO385TPe0Zgfd",
-                            "rollout": 10,
-                            "conditions": [
-                                {
-                                    "field_class": "PROPS",
-                                    "field_typ": "VERSION_STRING",
-                                    "field": "$app_version",
-                                    "opt": "VERSION_GT",
-                                    "value": "10.0"
-                                }
-                            ],
-                            "override": "v1"
-                        },
-                        {
-                            "id": "vxhpP8GPVO385TPe0Zgfd:2",
-                            "name": "gate:vxhpP8GPVO385TPe0Zgfd:variant:2",
-                            "salt": "vxhpP8GPVO385TPe0Zgfd",
-                            "rollout": 40,
-                            "conditions": [
-                                {
-                                    "field_class": "PROPS",
-                                    "field_typ": "VERSION_STRING",
-                                    "field": "$app_version",
-                                    "opt": "VERSION_GT",
-                                    "value": "10.0"
-                                }
-                            ],
-                            "override": "v2"
-                        },
-                        {
-                            "id": "vxhpP8GPVO385TPe0Zgfd:3",
-                            "name": "gate:vxhpP8GPVO385TPe0Zgfd:variant:3",
+                            "id": "vxhpP8GPVO385TPe0Zgfd#v1",
+                            "name": "gate:vxhpP8GPVO385TPe0Zgfd.v1",
                             "salt": "vxhpP8GPVO385TPe0Zgfd",
                             "rollout": 100,
                             "conditions": [
@@ -62,8 +30,64 @@
                                     "field": "$app_version",
                                     "opt": "VERSION_GT",
                                     "value": "10.0"
+                                },
+                                {
+                                    "field_class": "BUCKET",
+                                    "field_typ": "NUMBER",
+                                    "field": "vxhpP8GPVO385TPe0Zgfd",
+                                    "opt": "LT",
+                                    "value": 1000
                                 }
                             ],
+                            "decision_rule_id": "vxhpP8GPVO385TPe0Zgfd",
+                            "override": "v1"
+                        },
+                        {
+                            "id": "vxhpP8GPVO385TPe0Zgfd#v2",
+                            "name": "gate:vxhpP8GPVO385TPe0Zgfd.v2",
+                            "salt": "vxhpP8GPVO385TPe0Zgfd",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "PROPS",
+                                    "field_typ": "VERSION_STRING",
+                                    "field": "$app_version",
+                                    "opt": "VERSION_GT",
+                                    "value": "10.0"
+                                },
+                                {
+                                    "field_class": "BUCKET",
+                                    "field_typ": "NUMBER",
+                                    "field": "vxhpP8GPVO385TPe0Zgfd",
+                                    "opt": "LT",
+                                    "value": 4000
+                                }
+                            ],
+                            "decision_rule_id": "vxhpP8GPVO385TPe0Zgfd",
+                            "override": "v2"
+                        },
+                        {
+                            "id": "vxhpP8GPVO385TPe0Zgfd#v3",
+                            "name": "gate:vxhpP8GPVO385TPe0Zgfd.v3",
+                            "salt": "vxhpP8GPVO385TPe0Zgfd",
+                            "rollout": 100,
+                            "conditions": [
+                                {
+                                    "field_class": "PROPS",
+                                    "field_typ": "VERSION_STRING",
+                                    "field": "$app_version",
+                                    "opt": "VERSION_GT",
+                                    "value": "10.0"
+                                },
+                                {
+                                    "field_class": "BUCKET",
+                                    "field_typ": "NUMBER",
+                                    "field": "vxhpP8GPVO385TPe0Zgfd",
+                                    "opt": "LT",
+                                    "value": 10000
+                                }
+                            ],
+                            "decision_rule_id": "vxhpP8GPVO385TPe0Zgfd",
                             "override": "v3"
                         }
                     ],

@@ -19,8 +19,8 @@
                 "rules": {
                     "GATE": [
                         {
-                            "id": "sticky_config_gate_1",
-                            "name": "gate:sticky-config-1",
+                            "id": "sticky_config_gate_1#v1",
+                            "name": "gate:sticky-config-1.v1",
                             "salt": "sticky_config_gate_1",
                             "rollout": 100,
                             "conditions": [
@@ -30,8 +30,16 @@
                                     "field": "is_member",
                                     "opt": "IS_TRUE",
                                     "value": null
+                                },
+                                {
+                                    "field_class": "BUCKET",
+                                    "field_typ": "NUMBER",
+                                    "field": "sticky_config_gate_1",
+                                    "opt": "LT",
+                                    "value": 10000
                                 }
                             ],
+                            "decision_rule_id": "sticky_config_gate_1",
                             "override": "v1"
                         }
                     ],

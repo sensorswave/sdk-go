@@ -67,12 +67,19 @@
                       "field_class": "COMMON",
                       "opt": "IS_TRUE",
                       "value": null
+                    },
+                    {
+                      "field": "vxhpP8GPVO385TPe0Zgfd",
+                      "field_class": "BUCKET",
+                      "opt": "LT",
+                      "value": 1000
                     }
                   ],
-                  "id": "vxhpP8GPVO385TPe0Zgfd:1",
-                  "name": "gate:vxhpP8GPVO385TPe0Zgfd:variant:1",
+                  "decision_rule_id": "vxhpP8GPVO385TPe0Zgfd",
+                  "id": "vxhpP8GPVO385TPe0Zgfd#v1",
+                  "name": "gate:vxhpP8GPVO385TPe0Zgfd.v1",
                   "override": "v1",
-                  "rollout": 10,
+                  "rollout": 100,
                   "salt": "vxhpP8GPVO385TPe0Zgfd"
                 },
                 {
@@ -82,12 +89,19 @@
                       "field_class": "COMMON",
                       "opt": "IS_TRUE",
                       "value": null
+                    },
+                    {
+                      "field": "vxhpP8GPVO385TPe0Zgfd",
+                      "field_class": "BUCKET",
+                      "opt": "LT",
+                      "value": 4000
                     }
                   ],
-                  "id": "vxhpP8GPVO385TPe0Zgfd:2",
-                  "name": "gate:vxhpP8GPVO385TPe0Zgfd:variant:2",
+                  "decision_rule_id": "vxhpP8GPVO385TPe0Zgfd",
+                  "id": "vxhpP8GPVO385TPe0Zgfd#v2",
+                  "name": "gate:vxhpP8GPVO385TPe0Zgfd.v2",
                   "override": "v2",
-                  "rollout": 40,
+                  "rollout": 100,
                   "salt": "vxhpP8GPVO385TPe0Zgfd"
                 },
                 {
@@ -97,10 +111,17 @@
                       "field_class": "COMMON",
                       "opt": "IS_TRUE",
                       "value": null
+                    },
+                    {
+                      "field": "vxhpP8GPVO385TPe0Zgfd",
+                      "field_class": "BUCKET",
+                      "opt": "LT",
+                      "value": 10000
                     }
                   ],
-                  "id": "vxhpP8GPVO385TPe0Zgfd:3",
-                  "name": "gate:vxhpP8GPVO385TPe0Zgfd:variant:3",
+                  "decision_rule_id": "vxhpP8GPVO385TPe0Zgfd",
+                  "id": "vxhpP8GPVO385TPe0Zgfd#v3",
+                  "name": "gate:vxhpP8GPVO385TPe0Zgfd.v3",
                   "override": "v3",
                   "rollout": 100,
                   "salt": "vxhpP8GPVO385TPe0Zgfd"

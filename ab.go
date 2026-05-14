@@ -365,9 +365,7 @@ func (abc *ABCore) evalABOverrides(user User, spec *ABSpec, evalID string, index
 				if spec.VariantValues != nil {
 					result.VariantParamValue = spec.VariantValues[*rule.Override]
 				}
-				if rule.ID != "" {
-					result.DecisionRuleID = &rule.ID
-				}
+				setDecisionRuleID(result, rule)
 				return true, nil
 			}
 		}
@@ -387,9 +385,7 @@ func (abc *ABCore) evalABTraffic(user User, spec *ABSpec, evalID string, index i
 				if rule.Override != nil {
 					result.VariantID = rule.Override
 				}
-				if rule.ID != "" {
-					result.DecisionRuleID = &rule.ID
-				}
+				setDecisionRuleID(result, rule)
 				return true, nil
 			}
 		}
@@ -406,9 +402,7 @@ func (abc *ABCore) evalABGates(user User, spec *ABSpec, evalID string, index int
 				return false, err
 			}
 			if decision.Matched {
-				if rule.ID != "" {
-					result.DecisionRuleID = &rule.ID
-				}
+				setDecisionRuleID(result, rule)
 				if decision.Pass && rule.Override != nil {
 					result.VariantID = rule.Override
 					result.VariantParamValue = spec.VariantValues[*rule.Override]
@@ -418,6 +412,16 @@ func (abc *ABCore) evalABGates(user User, spec *ABSpec, evalID string, index int
 		}
 	}
 	return false, nil
+}
+
+func setDecisionRuleID(result *ABResult, rule *Rule) {
+	if rule.DecisionRuleID != "" {
+		result.DecisionRuleID = &rule.DecisionRuleID
+		return
+	}
+	if rule.ID != "" {
+		result.DecisionRuleID = &rule.ID
+	}
 }
 
 func (abc *ABCore) getEvalID(user User, spec *ABSpec) string {
@@ -473,9 +477,7 @@ func (abc *ABCore) evalABExperiments(user User, spec *ABSpec, evalID string, ind
 					result.VariantID = rule.Override
 					result.VariantParamValue = spec.VariantValues[*rule.Override]
 				}
-				if rule.ID != "" {
-					result.DecisionRuleID = &rule.ID
-				}
+				setDecisionRuleID(result, rule)
 				break
 			}
 		}
@@ -535,6 +537,12 @@ func (abc *ABCore) evalCond(user *User, cond *Condition, evalID string, index in
 		}
 	case strings.EqualFold(cond.FieldClass, "target"):
 		left = abc.targetValue(evalID, cond.Field)
+	case strings.EqualFold(cond.FieldClass, "bucket"):
+		if strings.EqualFold(cond.Opt, "bucket_set") {
+			left = cond.Field
+		} else {
+			left = float64(hashUint64(evalID, cond.Field) % 10000)
+		}
 	default:
 		left = cond.Field
 	}

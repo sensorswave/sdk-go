@@ -55,7 +55,7 @@
         },
         {
           "user_id": "config-holdout-user-1",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-10",
@@ -63,31 +63,31 @@
         },
         {
           "user_id": "config-holdout-user-11",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-12",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-13",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-14",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-15",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-16",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-17",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-18",
@@ -103,43 +103,43 @@
         },
         {
           "user_id": "config-holdout-user-20",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-21",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-22",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-23",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-24",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-25",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-26",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-27",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-28",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-29",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-3",
@@ -151,35 +151,35 @@
         },
         {
           "user_id": "config-holdout-user-31",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-32",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-33",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-34",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-35",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-36",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-37",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-38",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-39",
@@ -187,43 +187,43 @@
         },
         {
           "user_id": "config-holdout-user-4",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-40",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-41",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-42",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-43",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-44",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-45",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-46",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-47",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-48",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-49",
@@ -231,7 +231,7 @@
         },
         {
           "user_id": "config-holdout-user-5",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-50",
@@ -239,19 +239,19 @@
         },
         {
           "user_id": "config-holdout-user-51",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-52",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-53",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-54",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-55",
@@ -259,11 +259,11 @@
         },
         {
           "user_id": "config-holdout-user-56",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-57",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-58",
@@ -275,35 +275,35 @@
         },
         {
           "user_id": "config-holdout-user-6",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-60",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-61",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-62",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-63",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-64",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-65",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-66",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-67",
@@ -311,7 +311,7 @@
         },
         {
           "user_id": "config-holdout-user-68",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-69",
@@ -319,15 +319,15 @@
         },
         {
           "user_id": "config-holdout-user-7",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-70",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-71",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-72",
@@ -339,7 +339,7 @@
         },
         {
           "user_id": "config-holdout-user-74",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-75",
@@ -347,15 +347,15 @@
         },
         {
           "user_id": "config-holdout-user-76",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-77",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-78",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-79",
@@ -363,23 +363,23 @@
         },
         {
           "user_id": "config-holdout-user-8",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-80",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-81",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-82",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-83",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-84",
@@ -387,7 +387,7 @@
         },
         {
           "user_id": "config-holdout-user-85",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-86",
@@ -395,11 +395,11 @@
         },
         {
           "user_id": "config-holdout-user-87",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-88",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-89",
@@ -407,11 +407,11 @@
         },
         {
           "user_id": "config-holdout-user-9",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-90",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-91",
@@ -419,15 +419,15 @@
         },
         {
           "user_id": "config-holdout-user-92",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-93",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-94",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-holdout-user-95",
@@ -439,15 +439,15 @@
         },
         {
           "user_id": "config-holdout-user-97",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-98",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-holdout-user-99",
-          "variant_id": null
+          "variant_id": "v2"
         }
       ],
       "id": "dist-config-holdout"
@@ -456,79 +456,79 @@
       "expected": [
         {
           "user_id": "config-public-user-0",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-1",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-10",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-11",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-12",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-13",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-14",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-15",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-16",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-17",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-18",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-19",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-2",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-20",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-21",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-22",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-23",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-24",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-25",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-26",
@@ -536,59 +536,59 @@
         },
         {
           "user_id": "config-public-user-27",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-28",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-29",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-3",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-30",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-31",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-32",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-33",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-34",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-35",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-36",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-37",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-38",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-39",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-4",
@@ -596,27 +596,27 @@
         },
         {
           "user_id": "config-public-user-40",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-41",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-42",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-43",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-44",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-45",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-46",
@@ -624,7 +624,7 @@
         },
         {
           "user_id": "config-public-user-47",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-48",
@@ -632,23 +632,23 @@
         },
         {
           "user_id": "config-public-user-49",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-5",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-50",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-51",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-52",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-53",
@@ -656,75 +656,75 @@
         },
         {
           "user_id": "config-public-user-54",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-55",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-56",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-57",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-58",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-59",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-6",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-60",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-61",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-62",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-63",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-64",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-65",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-66",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-67",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-68",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-69",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-7",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-70",
@@ -732,7 +732,7 @@
         },
         {
           "user_id": "config-public-user-71",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-72",
@@ -740,107 +740,107 @@
         },
         {
           "user_id": "config-public-user-73",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-74",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-75",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-76",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-77",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-78",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-79",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-8",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-80",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-81",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-82",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-83",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-84",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-85",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-86",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-87",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-88",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-89",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-9",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-90",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-91",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-92",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-93",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-94",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-95",
-          "variant_id": null
+          "variant_id": "v2"
         },
         {
           "user_id": "config-public-user-96",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-97",
@@ -848,11 +848,11 @@
         },
         {
           "user_id": "config-public-user-98",
-          "variant_id": null
+          "variant_id": "v3"
         },
         {
           "user_id": "config-public-user-99",
-          "variant_id": null
+          "variant_id": "v3"
         }
       ],
       "id": "dist-config-public"
