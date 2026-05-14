@@ -13,6 +13,26 @@
     {
       "id": "multi-gate-specs",
       "spec_file": "gate/complicate.json"
+    },
+    {
+      "id": "missing-project-secret-init-error",
+      "operation": "init_client_without_project_secret",
+      "languages": ["go", "python", "java"]
+    },
+    {
+      "id": "init-loads-meta-sync-once",
+      "operation": "init_client_loads_meta_once",
+      "spec_file": "gate/public.json",
+      "eval": {
+        "user": {
+          "login_id": "user-pass",
+          "properties": {
+            "public": true
+          }
+        },
+        "key": "TestSpec"
+      },
+      "languages": ["go", "python", "java"]
     }
   ]
 }

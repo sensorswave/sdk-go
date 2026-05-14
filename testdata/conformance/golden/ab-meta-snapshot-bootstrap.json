@@ -281,6 +281,21 @@
         "UpdateTime": 1763580232512
       },
       "id": "multi-gate-specs"
+    },
+    {
+      "expected": {
+        "error": "project_secret_required",
+        "ok": false
+      },
+      "id": "missing-project-secret-init-error"
+    },
+    {
+      "expected": {
+        "load_count": 1,
+        "ok": true,
+        "ready": true
+      },
+      "id": "init-loads-meta-sync-once"
     }
   ]
 }
