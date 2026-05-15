@@ -1,0 +1,54 @@
+{
+  "code": 0,
+  "data": {
+    "ab_specs": [
+      {
+        "disable_impress": true,
+        "enabled": true,
+        "id": 30,
+        "key": "qa_fc_20260515_debug_override",
+        "name": "QA FC debug override",
+        "rules": {
+          "OVERRIDE": [
+            {
+              "conditions": [
+                {
+                  "field": "login_id",
+                  "field_class": "FFUSER",
+                  "opt": "ANY_OF_CASE_INSENSITIVE",
+                  "value": [
+                    "qa_fc_20260515_debug_user"
+                  ]
+                }
+              ],
+              "decision_rule_id": "qa-debug-override",
+              "id": "qa-debug-override",
+              "name": "override:.1.debug override user",
+              "override": "debugOverride",
+              "rollout": 100,
+              "salt": "qa-debug-override"
+            }
+          ]
+        },
+        "salt": "favZSZUshO2FwFKDCTYs3",
+        "sticky": false,
+        "subject_id": "LOGIN_ID",
+        "traffic": "",
+        "typ": 2,
+        "variant_payloads": {
+          "debugDefault": {
+            "mode": "default"
+          },
+          "debugOverride": {
+            "mode": "debug-override"
+          }
+        },
+        "version": 2
+      }
+    ],
+    "update": true,
+    "updated_at": 0
+  },
+  "msg": "success",
+  "trace": "generated-from-standard-api"
+}

@@ -1,0 +1,111 @@
+{
+  "code": 0,
+  "data": {
+    "ab_specs": [
+      {
+        "disable_impress": false,
+        "enabled": true,
+        "id": 33,
+        "key": "qa_fc_20260515_multi_user_variants",
+        "name": "QA FC multi user variants",
+        "rules": {
+          "GATE": [
+            {
+              "conditions": [
+                {
+                  "field": "public",
+                  "field_class": "COMMON",
+                  "opt": "IS_TRUE",
+                  "value": null
+                },
+                {
+                  "field": "qa-multi-user-rule",
+                  "field_class": "BUCKET",
+                  "opt": "LT",
+                  "value": 2000
+                }
+              ],
+              "decision_rule_id": "qa-multi-user-rule",
+              "id": "qa-multi-user-rule#multiA",
+              "name": "gate:.1.all users split into variants.multiA",
+              "override": "multiA",
+              "rollout": 100,
+              "salt": "qa-multi-user-rule"
+            },
+            {
+              "conditions": [
+                {
+                  "field": "public",
+                  "field_class": "COMMON",
+                  "opt": "IS_TRUE",
+                  "value": null
+                },
+                {
+                  "field": "qa-multi-user-rule",
+                  "field_class": "BUCKET",
+                  "opt": "LT",
+                  "value": 5000
+                }
+              ],
+              "decision_rule_id": "qa-multi-user-rule",
+              "id": "qa-multi-user-rule#multiB",
+              "name": "gate:.1.all users split into variants.multiB",
+              "override": "multiB",
+              "rollout": 100,
+              "salt": "qa-multi-user-rule"
+            },
+            {
+              "conditions": [
+                {
+                  "field": "public",
+                  "field_class": "COMMON",
+                  "opt": "IS_TRUE",
+                  "value": null
+                },
+                {
+                  "field": "qa-multi-user-rule",
+                  "field_class": "BUCKET",
+                  "opt": "LT",
+                  "value": 10000
+                }
+              ],
+              "decision_rule_id": "qa-multi-user-rule",
+              "id": "qa-multi-user-rule#multiC",
+              "name": "gate:.1.all users split into variants.multiC",
+              "override": "multiC",
+              "rollout": 100,
+              "salt": "qa-multi-user-rule"
+            }
+          ]
+        },
+        "salt": "gs_81cRuPwc-7vOLmFbnj",
+        "sticky": false,
+        "subject_id": "LOGIN_ID",
+        "traffic": "",
+        "typ": 2,
+        "variant_payloads": {
+          "multiA": {
+            "bucket": "A",
+            "rank": 1
+          },
+          "multiB": {
+            "bucket": "B",
+            "rank": 2
+          },
+          "multiC": {
+            "bucket": "C",
+            "rank": 3
+          },
+          "multiDefault": {
+            "bucket": "default"
+          }
+        },
+        "version": 3
+      }
+    ],
+    "update": true,
+    "updated_at": 0
+  },
+  "msg": "success",
+  "trace": "generated-from-standard-api"
+}

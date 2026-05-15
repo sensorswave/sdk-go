@@ -1,0 +1,55 @@
+{
+  "code": 0,
+  "data": {
+    "ab_specs": [
+      {
+        "disable_impress": false,
+        "enabled": true,
+        "id": 31,
+        "key": "qa_fc_20260515_released_variant",
+        "name": "QA FC released variant",
+        "rules": {
+          "GATE": [
+            {
+              "conditions": [
+                {
+                  "field": "public",
+                  "field_class": "COMMON",
+                  "opt": "IS_TRUE",
+                  "value": null
+                }
+              ],
+              "decision_rule_id": "yIs2OdO__bQgo95j68lzY",
+              "id": "yIs2OdO__bQgo95j68lzY",
+              "name": "release:.1.",
+              "override": "releaseB",
+              "rollout": 100,
+              "salt": "yIs2OdO__bQgo95j68lzY"
+            }
+          ]
+        },
+        "salt": "5NmVcxW4NMu35SZbEqV3z",
+        "sticky": false,
+        "subject_id": "LOGIN_ID",
+        "traffic": "",
+        "typ": 2,
+        "variant_payloads": {
+          "releaseA": {
+            "mode": "A"
+          },
+          "releaseB": {
+            "mode": "B"
+          },
+          "releaseDefault": {
+            "mode": "default"
+          }
+        },
+        "version": 3
+      }
+    ],
+    "update": true,
+    "updated_at": 0
+  },
+  "msg": "success",
+  "trace": "generated-from-standard-api"
+}

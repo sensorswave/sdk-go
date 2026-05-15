@@ -90,6 +90,94 @@
       "user_prefix": "config-public-user"
     },
     {
+      "eval_type": "config",
+      "id": "config-qa-real-override",
+      "key": "qa_fc_20260515_complex_running",
+      "spec_file": "config/qa_complex_running.json",
+      "test_id": "config-007",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "qa_fc_20260515_override_user"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-qa-real-complex-match",
+      "key": "qa_fc_20260515_complex_running",
+      "spec_file": "config/qa_complex_running.json",
+      "test_id": "config-008",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "2.3.0"
+        },
+        "anon_id": "",
+        "login_id": "qa_fc_20260515_complex_user_a"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-qa-real-complex-blocked",
+      "key": "qa_fc_20260515_complex_running",
+      "spec_file": "config/qa_complex_running.json",
+      "test_id": "config-009",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "1.0.0"
+        },
+        "anon_id": "",
+        "login_id": "qa_fc_20260515_complex_user_a"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-qa-real-debug-override",
+      "key": "qa_fc_20260515_debug_override",
+      "spec_file": "config/qa_debug_override.json",
+      "test_id": "config-010",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "qa_fc_20260515_debug_user"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-qa-real-released",
+      "key": "qa_fc_20260515_released_variant",
+      "spec_file": "config/qa_released_variant.json",
+      "test_id": "config-011",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "qa_fc_20260515_any_released_user"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-qa-real-target-blocked",
+      "key": "qa_fc_20260515_target_blocked",
+      "spec_file": "config/qa_target_blocked.json",
+      "test_id": "config-012",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "1.0.0"
+        },
+        "anon_id": "",
+        "login_id": "qa_fc_20260515_target_blocked_user"
+      }
+    },
+    {
+      "eval_mode": "distribution",
+      "eval_type": "config",
+      "id": "dist-config-qa-real-multi-user-variants",
+      "key": "qa_fc_20260515_multi_user_variants",
+      "spec_file": "config/qa_multi_user_variants.json",
+      "test_id": "config-013",
+      "user_count": 100,
+      "user_prefix": "qa-fc-20260515-multi-user"
+    },
+    {
       "eval_mode": "distribution",
       "eval_type": "experiment",
       "id": "dist-exp-holdout",

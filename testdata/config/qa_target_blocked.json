@@ -1,0 +1,66 @@
+{
+  "code": 0,
+  "data": {
+    "ab_specs": [
+      {
+        "disable_impress": false,
+        "enabled": true,
+        "id": 32,
+        "key": "qa_fc_20260515_target_blocked",
+        "name": "QA FC target blocked",
+        "rules": {
+          "GATE": [
+            {
+              "conditions": [
+                {
+                  "field": "login_id",
+                  "field_class": "FFUSER",
+                  "opt": "ANY_OF_CASE_INSENSITIVE",
+                  "value": [
+                    "qa_fc_20260515_target_allowed"
+                  ]
+                },
+                {
+                  "field": "$app_version",
+                  "field_class": "PROPS",
+                  "opt": "VERSION_GTE",
+                  "value": "9.9.9"
+                },
+                {
+                  "field": "qa-target-rule",
+                  "field_class": "BUCKET",
+                  "opt": "LT",
+                  "value": 10000
+                }
+              ],
+              "decision_rule_id": "qa-target-rule",
+              "id": "qa-target-rule#blockedHit",
+              "name": "gate:.1.only exact target.blockedHit",
+              "override": "blockedHit",
+              "rollout": 100,
+              "salt": "qa-target-rule"
+            }
+          ]
+        },
+        "salt": "HSpp8T1bbql7-59K5TuSI",
+        "sticky": false,
+        "subject_id": "LOGIN_ID",
+        "traffic": "",
+        "typ": 2,
+        "variant_payloads": {
+          "blockedDefault": {
+            "mode": "default"
+          },
+          "blockedHit": {
+            "mode": "hit"
+          }
+        },
+        "version": 2
+      }
+    ],
+    "update": true,
+    "updated_at": 0
+  },
+  "msg": "success",
+  "trace": "generated-from-standard-api"
+}

@@ -858,6 +858,477 @@
       "id": "dist-config-public"
     },
     {
+      "expected": {
+        "check_gate": false,
+        "variant_id": "overrideGold",
+        "variant_params": {
+          "discount": 99,
+          "features": [
+            "all"
+          ],
+          "label": "override"
+        }
+      },
+      "id": "config-qa-real-override"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": "gamma",
+        "variant_params": {
+          "discount": 30,
+          "features": [
+            "new_nav",
+            "search",
+            "ai"
+          ],
+          "label": "gamma"
+        }
+      },
+      "id": "config-qa-real-complex-match"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": null,
+        "variant_params": null
+      },
+      "id": "config-qa-real-complex-blocked"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": "debugOverride",
+        "variant_params": {
+          "mode": "debug-override"
+        }
+      },
+      "id": "config-qa-real-debug-override"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": "releaseB",
+        "variant_params": {
+          "mode": "B"
+        }
+      },
+      "id": "config-qa-real-released"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": null,
+        "variant_params": null
+      },
+      "id": "config-qa-real-target-blocked"
+    },
+    {
+      "expected": [
+        {
+          "user_id": "qa-fc-20260515-multi-user-0",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-1",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-10",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-11",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-12",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-13",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-14",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-15",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-16",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-17",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-18",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-19",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-2",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-20",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-21",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-22",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-23",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-24",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-25",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-26",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-27",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-28",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-29",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-3",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-30",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-31",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-32",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-33",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-34",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-35",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-36",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-37",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-38",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-39",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-4",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-40",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-41",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-42",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-43",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-44",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-45",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-46",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-47",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-48",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-49",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-5",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-50",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-51",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-52",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-53",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-54",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-55",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-56",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-57",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-58",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-59",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-6",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-60",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-61",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-62",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-63",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-64",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-65",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-66",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-67",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-68",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-69",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-7",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-70",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-71",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-72",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-73",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-74",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-75",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-76",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-77",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-78",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-79",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-8",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-80",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-81",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-82",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-83",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-84",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-85",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-86",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-87",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-88",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-89",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-9",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-90",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-91",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-92",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-93",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-94",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-95",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-96",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-97",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-98",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa-fc-20260515-multi-user-99",
+          "variant_id": "multiB"
+        }
+      ],
+      "id": "dist-config-qa-real-multi-user-variants"
+    },
+    {
       "expected": [
         {
           "user_id": "holdout-user-0",

@@ -1,0 +1,182 @@
+{
+  "code": 0,
+  "data": {
+    "ab_specs": [
+      {
+        "disable_impress": false,
+        "enabled": true,
+        "id": 29,
+        "key": "qa_fc_20260515_complex_running",
+        "name": "QA FC complex running",
+        "rules": {
+          "GATE": [
+            {
+              "conditions": [
+                {
+                  "field": "login_id",
+                  "field_class": "FFUSER",
+                  "opt": "ANY_OF_CASE_INSENSITIVE",
+                  "value": [
+                    "qa_fc_20260515_complex_user_a",
+                    "qa_fc_20260515_complex_user_b",
+                    "qa_fc_20260515_dist_user_42"
+                  ]
+                },
+                {
+                  "field": "$app_version",
+                  "field_class": "PROPS",
+                  "opt": "VERSION_GTE",
+                  "value": "2.3.0"
+                },
+                {
+                  "field": "qa-rule-complex",
+                  "field_class": "BUCKET",
+                  "opt": "LT",
+                  "value": 2000
+                }
+              ],
+              "decision_rule_id": "qa-rule-complex",
+              "id": "qa-rule-complex#alpha",
+              "name": "gate:.1.complex paid users.alpha",
+              "override": "alpha",
+              "rollout": 100,
+              "salt": "qa-rule-complex"
+            },
+            {
+              "conditions": [
+                {
+                  "field": "login_id",
+                  "field_class": "FFUSER",
+                  "opt": "ANY_OF_CASE_INSENSITIVE",
+                  "value": [
+                    "qa_fc_20260515_complex_user_a",
+                    "qa_fc_20260515_complex_user_b",
+                    "qa_fc_20260515_dist_user_42"
+                  ]
+                },
+                {
+                  "field": "$app_version",
+                  "field_class": "PROPS",
+                  "opt": "VERSION_GTE",
+                  "value": "2.3.0"
+                },
+                {
+                  "field": "qa-rule-complex",
+                  "field_class": "BUCKET",
+                  "opt": "LT",
+                  "value": 5000
+                }
+              ],
+              "decision_rule_id": "qa-rule-complex",
+              "id": "qa-rule-complex#beta",
+              "name": "gate:.1.complex paid users.beta",
+              "override": "beta",
+              "rollout": 100,
+              "salt": "qa-rule-complex"
+            },
+            {
+              "conditions": [
+                {
+                  "field": "login_id",
+                  "field_class": "FFUSER",
+                  "opt": "ANY_OF_CASE_INSENSITIVE",
+                  "value": [
+                    "qa_fc_20260515_complex_user_a",
+                    "qa_fc_20260515_complex_user_b",
+                    "qa_fc_20260515_dist_user_42"
+                  ]
+                },
+                {
+                  "field": "$app_version",
+                  "field_class": "PROPS",
+                  "opt": "VERSION_GTE",
+                  "value": "2.3.0"
+                },
+                {
+                  "field": "qa-rule-complex",
+                  "field_class": "BUCKET",
+                  "opt": "LT",
+                  "value": 10000
+                }
+              ],
+              "decision_rule_id": "qa-rule-complex",
+              "id": "qa-rule-complex#gamma",
+              "name": "gate:.1.complex paid users.gamma",
+              "override": "gamma",
+              "rollout": 100,
+              "salt": "qa-rule-complex"
+            }
+          ],
+          "OVERRIDE": [
+            {
+              "conditions": [
+                {
+                  "field": "login_id",
+                  "field_class": "FFUSER",
+                  "opt": "ANY_OF_CASE_INSENSITIVE",
+                  "value": [
+                    "qa_fc_20260515_override_user"
+                  ]
+                }
+              ],
+              "decision_rule_id": "qa-override-gold",
+              "id": "qa-override-gold",
+              "name": "override:.1.override gold user",
+              "override": "overrideGold",
+              "rollout": 100,
+              "salt": "qa-override-gold"
+            }
+          ]
+        },
+        "salt": "B2YCF4JK3lqjIF4b-Z3kD",
+        "sticky": false,
+        "subject_id": "LOGIN_ID",
+        "traffic": "",
+        "typ": 2,
+        "variant_payloads": {
+          "Default": {
+            "discount": 0,
+            "features": [],
+            "label": "default"
+          },
+          "alpha": {
+            "discount": 10,
+            "features": [
+              "new_nav"
+            ],
+            "label": "alpha"
+          },
+          "beta": {
+            "discount": 20,
+            "features": [
+              "new_nav",
+              "search"
+            ],
+            "label": "beta"
+          },
+          "gamma": {
+            "discount": 30,
+            "features": [
+              "new_nav",
+              "search",
+              "ai"
+            ],
+            "label": "gamma"
+          },
+          "overrideGold": {
+            "discount": 99,
+            "features": [
+              "all"
+            ],
+            "label": "override"
+          }
+        },
+        "version": 2
+      }
+    ],
+    "update": true,
+    "updated_at": 0
+  },
+  "msg": "success",
+  "trace": "generated-from-standard-api"
+}
