@@ -382,6 +382,7 @@ func (abc *ABCore) evalABTraffic(user User, spec *ABSpec, evalID string, index i
 				return false, err
 			}
 			if !decision.Pass {
+				//for holdout
 				if rule.Override != nil {
 					result.VariantID = rule.Override
 				}
@@ -458,6 +459,7 @@ func (abc *ABCore) evalABSticky(spec *ABSpec, evalID string, result *ABResult) (
 				result.VariantParamValue = spec.VariantValues[*cache.VariantID]
 			}
 			return true, stickyDataKey, nil
+
 		}
 	}
 

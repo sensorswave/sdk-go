@@ -145,19 +145,28 @@ type client struct {
 	wg          sync.WaitGroup
 	abCore      *ABCore
 	sem         chan struct{}
+	closeOnce   sync.Once
+	stateMu     sync.RWMutex
+	closed      bool
 }
 
 func (c *client) Close() error {
 	if c == nil {
 		return nil
 	}
-	close(c.quit)
-	if c.abCore != nil {
-		c.abCore.Stop()
-	}
+	c.closeOnce.Do(func() {
+		c.stateMu.Lock()
+		c.closed = true
+		c.stateMu.Unlock()
 
-	c.wg.Wait()
-	c.cfg.Logger.Debugf("sdk client closed")
+		close(c.quit)
+		if c.abCore != nil {
+			c.abCore.Stop()
+		}
+
+		c.wg.Wait()
+		c.cfg.Logger.Debugf("sdk client closed")
+	})
 	return nil
 }
 
@@ -213,13 +222,16 @@ func (c *client) Track(event Event) error {
 		return err
 	}
 
-	defer func() {
-		if r := recover(); r != nil {
-			err = fmt.Errorf("cannot track event with closed client")
-		}
-	}()
-
-	c.msgchan <- msg
+	c.stateMu.RLock()
+	defer c.stateMu.RUnlock()
+	if c.closed {
+		return fmt.Errorf("cannot track event with closed client")
+	}
+	select {
+	case c.msgchan <- msg:
+	default:
+		c.cfg.Logger.Warnf("event queue full, dropping event: %s", event.Event)
+	}
 	return nil
 }
 

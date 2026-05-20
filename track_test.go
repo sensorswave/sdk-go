@@ -2,6 +2,7 @@ package sensorswave
 
 import (
 	"encoding/json"
+	"sync"
 	"testing"
 	"time"
 )
@@ -33,6 +34,68 @@ func TestEventJSONSerialization(t *testing.T) {
 	}
 	if decoded.Properties[PspLibVersion] != version {
 		t.Errorf("expected $lib_version in decoded event to be '%s', got '%v'", version, decoded.Properties[PspLibVersion])
+	}
+}
+
+func TestTrackDropsWhenMessageChannelIsFull(t *testing.T) {
+	c := &client{
+		cfg:     &Config{Logger: &noopLogger{}},
+		msgchan: make(chan []byte, 1),
+	}
+	c.msgchan <- []byte(`{"event":"already-queued"}`)
+
+	done := make(chan error, 1)
+	go func() {
+		done <- c.Track(NewEvent("", "user-1", "DroppedWhenFull"))
+	}()
+
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Fatalf("Track should drop full-queue events without surfacing an error, got %v", err)
+		}
+	case <-time.After(100 * time.Millisecond):
+		t.Fatal("Track blocked waiting for message channel capacity")
+	}
+}
+
+func TestTrackAndCloseConcurrentDoesNotPanic(t *testing.T) {
+	c, err := NewWithConfig(
+		Endpoint("https://collector.example.com"),
+		SourceToken("token"),
+		Config{Logger: &noopLogger{}, FlushInterval: time.Hour},
+	)
+	if err != nil {
+		t.Fatalf("NewWithConfig error: %v", err)
+	}
+
+	var wg sync.WaitGroup
+	panicCh := make(chan any, 2)
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		defer func() {
+			if r := recover(); r != nil {
+				panicCh <- r
+			}
+		}()
+		_ = c.Track(NewEvent("", "user-1", "ConcurrentClose"))
+	}()
+	go func() {
+		defer wg.Done()
+		defer func() {
+			if r := recover(); r != nil {
+				panicCh <- r
+			}
+		}()
+		_ = c.Close()
+	}()
+	wg.Wait()
+
+	select {
+	case r := <-panicCh:
+		t.Fatalf("Track/Close concurrency must not panic: %v", r)
+	default:
 	}
 }
 
