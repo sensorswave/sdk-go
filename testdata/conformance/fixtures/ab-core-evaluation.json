@@ -178,6 +178,42 @@
       "user_prefix": "qa-fc-20260515-multi-user"
     },
     {
+      "eval_type": "config",
+      "id": "config-variant-group-decimal-first",
+      "key": "config_variant_group_decimal",
+      "spec_file": "config/variant_group_decimal.json",
+      "test_id": "config-014",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "decimal-first-5"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-variant-group-decimal-middle",
+      "key": "config_variant_group_decimal",
+      "spec_file": "config/variant_group_decimal.json",
+      "test_id": "config-015",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "decimal-middle-0"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-variant-group-decimal-last",
+      "key": "config_variant_group_decimal",
+      "spec_file": "config/variant_group_decimal.json",
+      "test_id": "config-016",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "decimal-last-2"
+      }
+    },
+    {
       "eval_mode": "distribution",
       "eval_type": "experiment",
       "id": "dist-exp-holdout",

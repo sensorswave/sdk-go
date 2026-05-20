@@ -25,20 +25,19 @@
                   "field_class": "PROPS",
                   "opt": "VERSION_GTE",
                   "value": "9.9.9"
-                },
-                {
-                  "field": "qa-target-rule",
-                  "field_class": "BUCKET",
-                  "opt": "LT",
-                  "value": 10000
                 }
               ],
               "decision_rule_id": "qa-target-rule",
-              "id": "qa-target-rule#blockedHit",
-              "name": "gate:.1.only exact target.blockedHit",
-              "override": "blockedHit",
+              "id": "qa-target-rule",
+              "name": "gate:.1.only exact target",
               "rollout": 100,
-              "salt": "qa-target-rule"
+              "salt": "qa-target-rule",
+              "variant_group": [
+                {
+                  "variant_id": "blockedHit",
+                  "rollout": 100
+                }
+              ]
             }
           ]
         },

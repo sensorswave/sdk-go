@@ -1,112 +1,70 @@
 {
-    "code": 0,
-    "msg": "success",
-    "data": {
-        "update": true,
-        "updated_at": 1764658761824,
-        "ab_specs": [
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "update": true,
+    "updated_at": 1764658761824,
+    "ab_specs": [
+      {
+        "id": 21,
+        "key": "bMHsfOAUKx",
+        "name": "Example Config",
+        "typ": 2,
+        "traffic": "",
+        "subject_id": "LOGIN_ID",
+        "enabled": true,
+        "sticky": false,
+        "salt": "fxf2TzEgZvidLNjG9tZEA",
+        "version": 2,
+        "rules": {
+          "GATE": [
             {
-                "id": 21,
-                "key": "bMHsfOAUKx",
-                "name": "Example Config",
-                "typ": 2,
-                "traffic": "",
-                "subject_id": "LOGIN_ID",
-                "enabled": true,
-                "sticky": false,
-                "salt": "fxf2TzEgZvidLNjG9tZEA",
-                "version": 2,
-                "rules": {
-                    "GATE": [
-                        {
-                            "id": "vxhpP8GPVO385TPe0Zgfd#v1",
-                            "name": "gate:vxhpP8GPVO385TPe0Zgfd.v1",
-                            "salt": "vxhpP8GPVO385TPe0Zgfd",
-                            "rollout": 100,
-                            "conditions": [
-                                {
-                                    "field_class": "PROPS",
-                                    "field_typ": "VERSION_STRING",
-                                    "field": "$app_version",
-                                    "opt": "VERSION_GT",
-                                    "value": "10.0"
-                                },
-                                {
-                                    "field_class": "BUCKET",
-                                    "field_typ": "NUMBER",
-                                    "field": "vxhpP8GPVO385TPe0Zgfd",
-                                    "opt": "LT",
-                                    "value": 1000
-                                }
-                            ],
-                            "decision_rule_id": "vxhpP8GPVO385TPe0Zgfd",
-                            "override": "v1"
-                        },
-                        {
-                            "id": "vxhpP8GPVO385TPe0Zgfd#v2",
-                            "name": "gate:vxhpP8GPVO385TPe0Zgfd.v2",
-                            "salt": "vxhpP8GPVO385TPe0Zgfd",
-                            "rollout": 100,
-                            "conditions": [
-                                {
-                                    "field_class": "PROPS",
-                                    "field_typ": "VERSION_STRING",
-                                    "field": "$app_version",
-                                    "opt": "VERSION_GT",
-                                    "value": "10.0"
-                                },
-                                {
-                                    "field_class": "BUCKET",
-                                    "field_typ": "NUMBER",
-                                    "field": "vxhpP8GPVO385TPe0Zgfd",
-                                    "opt": "LT",
-                                    "value": 4000
-                                }
-                            ],
-                            "decision_rule_id": "vxhpP8GPVO385TPe0Zgfd",
-                            "override": "v2"
-                        },
-                        {
-                            "id": "vxhpP8GPVO385TPe0Zgfd#v3",
-                            "name": "gate:vxhpP8GPVO385TPe0Zgfd.v3",
-                            "salt": "vxhpP8GPVO385TPe0Zgfd",
-                            "rollout": 100,
-                            "conditions": [
-                                {
-                                    "field_class": "PROPS",
-                                    "field_typ": "VERSION_STRING",
-                                    "field": "$app_version",
-                                    "opt": "VERSION_GT",
-                                    "value": "10.0"
-                                },
-                                {
-                                    "field_class": "BUCKET",
-                                    "field_typ": "NUMBER",
-                                    "field": "vxhpP8GPVO385TPe0Zgfd",
-                                    "opt": "LT",
-                                    "value": 10000
-                                }
-                            ],
-                            "decision_rule_id": "vxhpP8GPVO385TPe0Zgfd",
-                            "override": "v3"
-                        }
-                    ],
-                    "OVERRIDE": [],
-                    "TRAFFIC": []
-                },
-                "variant_payloads": {
-                    "v1": {
-                        "color": "blue"
-                    },
-                    "v2": {
-                        "color": "red"
-                    },
-                    "v3": {
-                        "color": "orange"
-                    }
+              "id": "vxhpP8GPVO385TPe0Zgfd",
+              "name": "gate:vxhpP8GPVO385TPe0Zgfd",
+              "salt": "vxhpP8GPVO385TPe0Zgfd",
+              "rollout": 100,
+              "conditions": [
+                {
+                  "field_class": "PROPS",
+                  "field_typ": "VERSION_STRING",
+                  "field": "$app_version",
+                  "opt": "VERSION_GT",
+                  "value": "10.0"
                 }
+              ],
+              "decision_rule_id": "vxhpP8GPVO385TPe0Zgfd",
+              "variant_group": [
+                {
+                  "variant_id": "v1",
+                  "rollout": 10
+                },
+                {
+                  "variant_id": "v2",
+                  "rollout": 40
+                },
+                {
+                  "variant_id": "v3",
+                  "rollout": 100
+                }
+              ]
             }
-        ]
-    },
-    "trace": "0:1025:3763272381"
+          ],
+          "OVERRIDE": [],
+          "TRAFFIC": []
+        },
+        "variant_payloads": {
+          "v1": {
+            "color": "blue"
+          },
+          "v2": {
+            "color": "red"
+          },
+          "v3": {
+            "color": "orange"
+          }
+        }
+      }
+    ]
+  },
+  "trace": "0:1025:3763272381"
 }

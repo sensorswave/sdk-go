@@ -1329,6 +1329,39 @@
       "id": "dist-config-qa-real-multi-user-variants"
     },
     {
+      "expected": {
+        "check_gate": false,
+        "decision_rule_id": "decimal-rule",
+        "variant_id": "decimalA",
+        "variant_params": {
+          "tier": "A"
+        }
+      },
+      "id": "config-variant-group-decimal-first"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "decision_rule_id": "decimal-rule",
+        "variant_id": "decimalB",
+        "variant_params": {
+          "tier": "B"
+        }
+      },
+      "id": "config-variant-group-decimal-middle"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "decision_rule_id": "decimal-rule",
+        "variant_id": "decimalC",
+        "variant_params": {
+          "tier": "C"
+        }
+      },
+      "id": "config-variant-group-decimal-last"
+    },
+    {
       "expected": [
         {
           "user_id": "holdout-user-0",

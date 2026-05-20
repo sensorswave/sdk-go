@@ -1,0 +1,68 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "update": true,
+    "updated_at": 0,
+    "ab_specs": [
+      {
+        "disable_impress": false,
+        "enabled": true,
+        "id": 34,
+        "key": "config_variant_group_decimal",
+        "name": "Config variant group decimal",
+        "rules": {
+          "GATE": [
+            {
+              "conditions": [
+                {
+                  "field": "public",
+                  "field_class": "COMMON",
+                  "opt": "IS_TRUE",
+                  "value": null
+                }
+              ],
+              "decision_rule_id": "decimal-rule",
+              "id": "decimal-rule",
+              "name": "gate:.1.decimal split",
+              "rollout": 100,
+              "salt": "decimal-rule-salt",
+              "variant_group": [
+                {
+                  "variant_id": "decimalA",
+                  "rollout": 20.5
+                },
+                {
+                  "variant_id": "decimalB",
+                  "rollout": 50.25
+                },
+                {
+                  "variant_id": "decimalC",
+                  "rollout": 100
+                }
+              ]
+            }
+          ]
+        },
+        "salt": "decimal-config-salt",
+        "sticky": false,
+        "subject_id": "LOGIN_ID",
+        "traffic": "",
+        "typ": 2,
+        "variant_payloads": {
+          "decimalA": {
+            "tier": "A"
+          },
+          "decimalB": {
+            "tier": "B"
+          },
+          "decimalC": {
+            "tier": "C"
+          }
+        },
+        "version": 1
+      }
+    ]
+  },
+  "trace": "generated-from-standard-api"
+}

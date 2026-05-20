@@ -17,64 +17,27 @@
                   "field_class": "COMMON",
                   "opt": "IS_TRUE",
                   "value": null
-                },
-                {
-                  "field": "qa-multi-user-rule",
-                  "field_class": "BUCKET",
-                  "opt": "LT",
-                  "value": 2000
                 }
               ],
               "decision_rule_id": "qa-multi-user-rule",
-              "id": "qa-multi-user-rule#multiA",
-              "name": "gate:.1.all users split into variants.multiA",
-              "override": "multiA",
+              "id": "qa-multi-user-rule",
+              "name": "gate:.1.all users split into variants",
               "rollout": 100,
-              "salt": "qa-multi-user-rule"
-            },
-            {
-              "conditions": [
+              "salt": "qa-multi-user-rule",
+              "variant_group": [
                 {
-                  "field": "public",
-                  "field_class": "COMMON",
-                  "opt": "IS_TRUE",
-                  "value": null
+                  "variant_id": "multiA",
+                  "rollout": 20
                 },
                 {
-                  "field": "qa-multi-user-rule",
-                  "field_class": "BUCKET",
-                  "opt": "LT",
-                  "value": 5000
-                }
-              ],
-              "decision_rule_id": "qa-multi-user-rule",
-              "id": "qa-multi-user-rule#multiB",
-              "name": "gate:.1.all users split into variants.multiB",
-              "override": "multiB",
-              "rollout": 100,
-              "salt": "qa-multi-user-rule"
-            },
-            {
-              "conditions": [
-                {
-                  "field": "public",
-                  "field_class": "COMMON",
-                  "opt": "IS_TRUE",
-                  "value": null
+                  "variant_id": "multiB",
+                  "rollout": 50
                 },
                 {
-                  "field": "qa-multi-user-rule",
-                  "field_class": "BUCKET",
-                  "opt": "LT",
-                  "value": 10000
+                  "variant_id": "multiC",
+                  "rollout": 100
                 }
-              ],
-              "decision_rule_id": "qa-multi-user-rule",
-              "id": "qa-multi-user-rule#multiC",
-              "name": "gate:.1.all users split into variants.multiC",
-              "override": "multiC",
-              "rollout": 100,
-              "salt": "qa-multi-user-rule"
+              ]
             }
           ]
         },

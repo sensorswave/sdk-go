@@ -1,115 +1,109 @@
 {
-    "code": 0,
-    "msg": "success",
-    "data": {
-        "update": true,
-        "updated_at": 1764658761824,
-        "ab_specs": [
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "update": true,
+    "updated_at": 1764658761824,
+    "ab_specs": [
+      {
+        "id": 31,
+        "key": "config_first_match",
+        "name": "Config First Match Wins",
+        "typ": 2,
+        "traffic": "",
+        "subject_id": "LOGIN_ID",
+        "enabled": true,
+        "sticky": false,
+        "salt": "first-match-config-salt",
+        "version": 1,
+        "rules": {
+          "GATE": [
             {
-                "id": 31,
-                "key": "config_first_match",
-                "name": "Config First Match Wins",
-                "typ": 2,
-                "traffic": "",
-                "subject_id": "LOGIN_ID",
-                "enabled": true,
-                "sticky": false,
-                "salt": "first-match-config-salt",
-                "version": 1,
-                "rules": {
-                    "GATE": [
-                        {
-                            "id": "gate-vip#v1",
-                            "name": "gate:vip.v1",
-                            "salt": "gate-vip-salt",
-                            "rollout": 100,
-                            "conditions": [
-                                {
-                                    "field_class": "FFUSER",
-                                    "field_typ": "STRING",
-                                    "field": "login_id",
-                                    "opt": "ANY_OF_CASE_INSENSITIVE",
-                                    "value": [
-                                        "vip-user-1",
-                                        "vip-user-2"
-                                    ]
-                                },
-                                {
-                                    "field_class": "BUCKET",
-                                    "field_typ": "NUMBER",
-                                    "field": "gate-vip-salt",
-                                    "opt": "LT",
-                                    "value": 10000
-                                }
-                            ],
-                            "decision_rule_id": "gate-vip",
-                            "override": "v1"
-                        },
-                        {
-                            "id": "gate-member#v2",
-                            "name": "gate:member.v2",
-                            "salt": "gate-member-salt",
-                            "rollout": 100,
-                            "conditions": [
-                                {
-                                    "field_class": "PROPS",
-                                    "field_typ": "BOOLEAN",
-                                    "field": "is_member",
-                                    "opt": "IS_TRUE",
-                                    "value": null
-                                },
-                                {
-                                    "field_class": "BUCKET",
-                                    "field_typ": "NUMBER",
-                                    "field": "gate-member-salt",
-                                    "opt": "LT",
-                                    "value": 10000
-                                }
-                            ],
-                            "decision_rule_id": "gate-member",
-                            "override": "v2"
-                        },
-                        {
-                            "id": "gate-public#v3",
-                            "name": "gate:public.v3",
-                            "salt": "gate-public-salt",
-                            "rollout": 100,
-                            "conditions": [
-                                {
-                                    "field_class": "COMMON",
-                                    "field_typ": "BOOLEAN",
-                                    "field": "public",
-                                    "opt": "IS_TRUE",
-                                    "value": null
-                                },
-                                {
-                                    "field_class": "BUCKET",
-                                    "field_typ": "NUMBER",
-                                    "field": "gate-public-salt",
-                                    "opt": "LT",
-                                    "value": 10000
-                                }
-                            ],
-                            "decision_rule_id": "gate-public",
-                            "override": "v3"
-                        }
-                    ],
-                    "OVERRIDE": [],
-                    "TRAFFIC": []
-                },
-                "variant_payloads": {
-                    "v1": {
-                        "tier": "vip"
-                    },
-                    "v2": {
-                        "tier": "member"
-                    },
-                    "v3": {
-                        "tier": "public"
-                    }
+              "id": "gate-vip",
+              "name": "gate:vip",
+              "salt": "gate-vip-salt",
+              "rollout": 100,
+              "conditions": [
+                {
+                  "field_class": "FFUSER",
+                  "field_typ": "STRING",
+                  "field": "login_id",
+                  "opt": "ANY_OF_CASE_INSENSITIVE",
+                  "value": [
+                    "vip-user-1",
+                    "vip-user-2"
+                  ]
                 }
+              ],
+              "decision_rule_id": "gate-vip",
+              "variant_group": [
+                {
+                  "variant_id": "v1",
+                  "rollout": 100
+                }
+              ]
+            },
+            {
+              "id": "gate-member",
+              "name": "gate:member",
+              "salt": "gate-member-salt",
+              "rollout": 100,
+              "conditions": [
+                {
+                  "field_class": "PROPS",
+                  "field_typ": "BOOLEAN",
+                  "field": "is_member",
+                  "opt": "IS_TRUE",
+                  "value": null
+                }
+              ],
+              "decision_rule_id": "gate-member",
+              "variant_group": [
+                {
+                  "variant_id": "v2",
+                  "rollout": 100
+                }
+              ]
+            },
+            {
+              "id": "gate-public",
+              "name": "gate:public",
+              "salt": "gate-public-salt",
+              "rollout": 100,
+              "conditions": [
+                {
+                  "field_class": "COMMON",
+                  "field_typ": "BOOLEAN",
+                  "field": "public",
+                  "opt": "IS_TRUE",
+                  "value": null
+                }
+              ],
+              "decision_rule_id": "gate-public",
+              "variant_group": [
+                {
+                  "variant_id": "v3",
+                  "rollout": 100
+                }
+              ]
             }
-        ]
-    },
-    "trace": "0:1025:3763272381"
+          ],
+          "OVERRIDE": [],
+          "TRAFFIC": []
+        },
+        "variant_payloads": {
+          "v1": {
+            "tier": "vip"
+          },
+          "v2": {
+            "tier": "member"
+          },
+          "v3": {
+            "tier": "public"
+          }
+        }
+      }
+    ]
+  },
+  "trace": "0:1025:3763272381"
 }

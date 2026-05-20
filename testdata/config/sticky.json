@@ -1,58 +1,56 @@
 {
-    "code": 0,
-    "msg": "success",
-    "data": {
-        "update": true,
-        "updated_at": 1764658761824,
-        "ab_specs": [
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "update": true,
+    "updated_at": 1764658761824,
+    "ab_specs": [
+      {
+        "id": 27,
+        "key": "Sticky_Config",
+        "name": "Sticky Config",
+        "typ": 2,
+        "traffic": "",
+        "subject_id": "LOGIN_ID",
+        "enabled": true,
+        "sticky": true,
+        "salt": "sticky_config_salt",
+        "version": 1,
+        "rules": {
+          "GATE": [
             {
-                "id": 27,
-                "key": "Sticky_Config",
-                "name": "Sticky Config",
-                "typ": 2,
-                "traffic": "",
-                "subject_id": "LOGIN_ID",
-                "enabled": true,
-                "sticky": true,
-                "salt": "sticky_config_salt",
-                "version": 1,
-                "rules": {
-                    "GATE": [
-                        {
-                            "id": "sticky_config_gate_1#v1",
-                            "name": "gate:sticky-config-1.v1",
-                            "salt": "sticky_config_gate_1",
-                            "rollout": 100,
-                            "conditions": [
-                                {
-                                    "field_class": "PROPS",
-                                    "field_typ": "BOOLEAN",
-                                    "field": "is_member",
-                                    "opt": "IS_TRUE",
-                                    "value": null
-                                },
-                                {
-                                    "field_class": "BUCKET",
-                                    "field_typ": "NUMBER",
-                                    "field": "sticky_config_gate_1",
-                                    "opt": "LT",
-                                    "value": 10000
-                                }
-                            ],
-                            "decision_rule_id": "sticky_config_gate_1",
-                            "override": "v1"
-                        }
-                    ],
-                    "OVERRIDE": [],
-                    "TRAFFIC": []
-                },
-                "variant_payloads": {
-                    "v1": {
-                        "color": "blue"
-                    }
+              "id": "sticky_config_gate_1",
+              "name": "gate:sticky-config-1",
+              "salt": "sticky_config_gate_1",
+              "rollout": 100,
+              "conditions": [
+                {
+                  "field_class": "PROPS",
+                  "field_typ": "BOOLEAN",
+                  "field": "is_member",
+                  "opt": "IS_TRUE",
+                  "value": null
                 }
+              ],
+              "decision_rule_id": "sticky_config_gate_1",
+              "variant_group": [
+                {
+                  "variant_id": "v1",
+                  "rollout": 100
+                }
+              ]
             }
-        ]
-    },
-    "trace": "0:1025:3763272381"
+          ],
+          "OVERRIDE": [],
+          "TRAFFIC": []
+        },
+        "variant_payloads": {
+          "v1": {
+            "color": "blue"
+          }
+        }
+      }
+    ]
+  },
+  "trace": "0:1025:3763272381"
 }

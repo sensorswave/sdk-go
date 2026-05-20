@@ -27,84 +27,27 @@
                   "field_class": "PROPS",
                   "opt": "VERSION_GTE",
                   "value": "2.3.0"
-                },
-                {
-                  "field": "qa-rule-complex",
-                  "field_class": "BUCKET",
-                  "opt": "LT",
-                  "value": 2000
                 }
               ],
               "decision_rule_id": "qa-rule-complex",
-              "id": "qa-rule-complex#alpha",
-              "name": "gate:.1.complex paid users.alpha",
-              "override": "alpha",
+              "id": "qa-rule-complex",
+              "name": "gate:.1.complex paid users",
               "rollout": 100,
-              "salt": "qa-rule-complex"
-            },
-            {
-              "conditions": [
+              "salt": "qa-rule-complex",
+              "variant_group": [
                 {
-                  "field": "login_id",
-                  "field_class": "FFUSER",
-                  "opt": "ANY_OF_CASE_INSENSITIVE",
-                  "value": [
-                    "qa_fc_20260515_complex_user_a",
-                    "qa_fc_20260515_complex_user_b",
-                    "qa_fc_20260515_dist_user_42"
-                  ]
+                  "variant_id": "alpha",
+                  "rollout": 20
                 },
                 {
-                  "field": "$app_version",
-                  "field_class": "PROPS",
-                  "opt": "VERSION_GTE",
-                  "value": "2.3.0"
+                  "variant_id": "beta",
+                  "rollout": 50
                 },
                 {
-                  "field": "qa-rule-complex",
-                  "field_class": "BUCKET",
-                  "opt": "LT",
-                  "value": 5000
+                  "variant_id": "gamma",
+                  "rollout": 100
                 }
-              ],
-              "decision_rule_id": "qa-rule-complex",
-              "id": "qa-rule-complex#beta",
-              "name": "gate:.1.complex paid users.beta",
-              "override": "beta",
-              "rollout": 100,
-              "salt": "qa-rule-complex"
-            },
-            {
-              "conditions": [
-                {
-                  "field": "login_id",
-                  "field_class": "FFUSER",
-                  "opt": "ANY_OF_CASE_INSENSITIVE",
-                  "value": [
-                    "qa_fc_20260515_complex_user_a",
-                    "qa_fc_20260515_complex_user_b",
-                    "qa_fc_20260515_dist_user_42"
-                  ]
-                },
-                {
-                  "field": "$app_version",
-                  "field_class": "PROPS",
-                  "opt": "VERSION_GTE",
-                  "value": "2.3.0"
-                },
-                {
-                  "field": "qa-rule-complex",
-                  "field_class": "BUCKET",
-                  "opt": "LT",
-                  "value": 10000
-                }
-              ],
-              "decision_rule_id": "qa-rule-complex",
-              "id": "qa-rule-complex#gamma",
-              "name": "gate:.1.complex paid users.gamma",
-              "override": "gamma",
-              "rollout": 100,
-              "salt": "qa-rule-complex"
+              ]
             }
           ],
           "OVERRIDE": [

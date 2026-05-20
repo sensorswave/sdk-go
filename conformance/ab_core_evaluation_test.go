@@ -76,9 +76,9 @@ func TestABCoreEvaluationConformance(t *testing.T) {
 
 			require.NoError(t, err, "Evaluate")
 
-			actual := singleResultToMap(&result)
 			expected := map[string]any{}
 			require.NoError(t, json.Unmarshal(expectedByID[c.ID], &expected))
+			actual := singleResultToMap(&result, expected)
 			require.Equal(t, expected, actual, "single eval result should match golden")
 		})
 	}
@@ -200,7 +200,7 @@ func parseEvalTypeForConformance(t *testing.T, s string) ABTypEnum {
 	return 0
 }
 
-func singleResultToMap(r *ABResult) map[string]any {
+func singleResultToMap(r *ABResult, expected map[string]any) map[string]any {
 	out := map[string]any{
 		"check_gate":     r.CheckFeatureGate(),
 		"variant_id":     nil,
@@ -211,6 +211,12 @@ func singleResultToMap(r *ABResult) map[string]any {
 	}
 	if r.VariantParamValue != nil {
 		out["variant_params"] = r.VariantParamValue
+	}
+	if _, ok := expected["decision_rule_id"]; ok {
+		out["decision_rule_id"] = nil
+		if r.DecisionRuleID != nil {
+			out["decision_rule_id"] = *r.DecisionRuleID
+		}
 	}
 	return out
 }

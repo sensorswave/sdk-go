@@ -154,13 +154,20 @@ const (
 
 // Rule is one entry inside an ABSpec rule bucket.
 type Rule struct {
-	Name           string      `json:"name"` // display name
-	ID             string      `json:"id"`   // uniq id
-	DecisionRuleID string      `json:"decision_rule_id,omitempty"`
-	Salt           string      `json:"salt,omitempty"`
-	Rollout        float64     `json:"rollout"` // 0.0-100.0
-	Conditions     []Condition `json:"conditions,omitempty"`
-	Override       *string     `json:"override,omitempty"` // override&return "true/false/variant_id"
+	Name           string         `json:"name"` // display name
+	ID             string         `json:"id"`   // uniq id
+	DecisionRuleID string         `json:"decision_rule_id,omitempty"`
+	Salt           string         `json:"salt,omitempty"`
+	Rollout        float64        `json:"rollout"` // 0.0-100.0
+	Conditions     []Condition    `json:"conditions,omitempty"`
+	Override       *string        `json:"override,omitempty"` // override&return "true/false/variant_id"
+	VariantGroup   []VariantGroup `json:"variant_group,omitempty"`
+}
+
+// VariantGroup is a cumulative Config variant threshold within a matched rule.
+type VariantGroup struct {
+	VariantID string  `json:"variant_id"`
+	Rollout   float64 `json:"rollout"`
 }
 
 // Condition is a predicate inside a Rule.Conditions list.

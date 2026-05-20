@@ -404,6 +404,17 @@ func (abc *ABCore) evalABGates(user User, spec *ABSpec, evalID string, index int
 			}
 			if decision.Matched {
 				setDecisionRuleID(result, rule)
+				if len(rule.VariantGroup) > 0 {
+					if !decision.Pass {
+						return false, nil
+					}
+					if variantID := selectVariantFromGroup(rule, evalID); variantID != nil {
+						result.VariantID = variantID
+						result.VariantParamValue = spec.VariantValues[*variantID]
+						return true, nil
+					}
+					return false, nil
+				}
 				if decision.Pass && rule.Override != nil {
 					result.VariantID = rule.Override
 					result.VariantParamValue = spec.VariantValues[*rule.Override]
@@ -413,6 +424,32 @@ func (abc *ABCore) evalABGates(user User, spec *ABSpec, evalID string, index int
 		}
 	}
 	return false, nil
+}
+
+func selectVariantFromGroup(rule *Rule, evalID string) *string {
+	salt := rule.Salt
+	if salt == "" {
+		salt = rule.ID
+	}
+	bucket := hashUint64(evalID, salt) % 10000
+	for i := range rule.VariantGroup {
+		group := rule.VariantGroup[i]
+		if bucket < rolloutBucketThreshold(group.Rollout) {
+			variantID := group.VariantID
+			return &variantID
+		}
+	}
+	return nil
+}
+
+func rolloutBucketThreshold(rollout float64) uint64 {
+	if rollout <= 0 {
+		return 0
+	}
+	if rollout >= 100 {
+		return 10000
+	}
+	return uint64(rollout * 100)
 }
 
 func setDecisionRuleID(result *ABResult, rule *Rule) {
@@ -490,14 +527,9 @@ func (abc *ABCore) evalABExperiments(user User, spec *ABSpec, evalID string, ind
 // evalRule evaluates all conditions within a rule and applies rollout logic.
 // The zero value means the rule did not match any decision path.
 func (abc *ABCore) evalRule(user *User, rule *Rule, evalID string, index int) (ruleEvalResult, error) {
-	for i := range rule.Conditions {
-		condMatched, err := abc.evalCond(user, &rule.Conditions[i], evalID, index)
-		if err != nil {
-			return ruleEvalResult{}, err
-		}
-		if !condMatched {
-			return ruleEvalResult{}, nil
-		}
+	matched, err := abc.evalRuleConditions(user, rule, evalID, index)
+	if err != nil || !matched {
+		return ruleEvalResult{}, err
 	}
 
 	switch rule.Rollout {
@@ -506,9 +538,23 @@ func (abc *ABCore) evalRule(user *User, rule *Rule, evalID string, index int) (r
 	case 0:
 		return ruleEvalResult{Matched: true, Pass: false}, nil
 	default:
-		pass := hashUint64(evalID, rule.Salt)%10000 < uint64(rule.Rollout*100)
+		pass := hashUint64(evalID, rule.Salt)%10000 < rolloutBucketThreshold(rule.Rollout)
 		return ruleEvalResult{Matched: true, Pass: pass}, nil
 	}
+}
+
+func (abc *ABCore) evalRuleConditions(user *User, rule *Rule, evalID string, index int) (bool, error) {
+	for i := range rule.Conditions {
+		condMatched, err := abc.evalCond(user, &rule.Conditions[i], evalID, index)
+		if err != nil {
+			return false, err
+		}
+		if !condMatched {
+			return false, nil
+		}
+	}
+
+	return true, nil
 }
 
 // evalCond evaluates a single condition.

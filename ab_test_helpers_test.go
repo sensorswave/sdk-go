@@ -37,6 +37,11 @@ func mustLoadABStorageFromJSON(t *testing.T, relPath string) *storage {
 
 	bytes, err := os.ReadFile(filepath.Clean(relPath))
 	require.NoError(t, err)
+	return mustLoadABStorageFromRawJSON(t, bytes)
+}
+
+func mustLoadABStorageFromRawJSON(t *testing.T, bytes []byte) *storage {
+	t.Helper()
 
 	var payload ABSpecPayload
 	require.NoError(t, json.Unmarshal(bytes, &payload))
