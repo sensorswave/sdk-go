@@ -1,0 +1,75 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "update": true,
+    "updated_at": 0,
+    "ab_specs": [
+      {
+        "disable_impress": false,
+        "enabled": true,
+        "id": 48,
+        "key": "qa_vg_multi_20260520_213848wafa",
+        "name": "QA VG multi 213848wafa",
+        "typ": 2,
+        "traffic": "",
+        "subject_id": "LOGIN_ID",
+        "sticky": false,
+        "salt": "gs_81cRuPwc-7vOLmFbnj",
+        "version": 1,
+        "rules": {
+          "GATE": [
+            {
+              "id": "qa-multi-user-rule",
+              "name": "gate:.1.all users split into variants",
+              "decision_rule_id": "qa-multi-user-rule",
+              "salt": "qa-multi-user-rule",
+              "rollout": 100,
+              "conditions": [
+                {
+                  "field_class": "COMMON",
+                  "field_typ": "BOOLEAN",
+                  "field": "public",
+                  "opt": "IS_TRUE",
+                  "value": null
+                }
+              ],
+              "variant_group": [
+                {
+                  "variant_id": "multiA",
+                  "rollout": 20
+                },
+                {
+                  "variant_id": "multiB",
+                  "rollout": 50
+                },
+                {
+                  "variant_id": "multiC",
+                  "rollout": 100
+                }
+              ]
+            }
+          ]
+        },
+        "variant_payloads": {
+          "multiA": {
+            "bucket": "A",
+            "rank": 1
+          },
+          "multiB": {
+            "bucket": "B",
+            "rank": 2
+          },
+          "multiC": {
+            "bucket": "C",
+            "rank": 3
+          },
+          "multiDefault": {
+            "bucket": "default"
+          }
+        }
+      }
+    ]
+  },
+  "trace": "standard-api#/ab/all4eval#qa_vg_multi_20260520_213848wafa captured on 2026-05-20 by yanming"
+}

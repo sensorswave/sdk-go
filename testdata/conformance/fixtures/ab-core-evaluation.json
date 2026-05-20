@@ -187,7 +187,8 @@
         "ab_user_props": {},
         "anon_id": "",
         "login_id": "decimal-first-5"
-      }
+      },
+      "assert_decision_rule_id": true
     },
     {
       "eval_type": "config",
@@ -199,7 +200,8 @@
         "ab_user_props": {},
         "anon_id": "",
         "login_id": "decimal-middle-0"
-      }
+      },
+      "assert_decision_rule_id": true
     },
     {
       "eval_type": "config",
@@ -211,7 +213,60 @@
         "ab_user_props": {},
         "anon_id": "",
         "login_id": "decimal-last-2"
+      },
+      "assert_decision_rule_id": true
+    },
+    {
+      "eval_type": "config",
+      "id": "config-qa-live-20260520-override",
+      "key": "qa_vg_live_20260520_213749q2nf",
+      "spec_file": "config/qa_live_complex_20260520.json",
+      "test_id": "config-017",
+      "assert_decision_rule_id": true,
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "qa_fc_20260515_override_user"
       }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-qa-live-20260520-complex-gamma",
+      "key": "qa_vg_live_20260520_213749q2nf",
+      "spec_file": "config/qa_live_complex_20260520.json",
+      "test_id": "config-018",
+      "assert_decision_rule_id": true,
+      "user": {
+        "ab_user_props": {
+          "$app_version": "2.5.0"
+        },
+        "anon_id": "",
+        "login_id": "qa_fc_20260515_complex_user_a"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-qa-live-20260520-complex-blocked",
+      "key": "qa_vg_live_20260520_213749q2nf",
+      "spec_file": "config/qa_live_complex_20260520.json",
+      "test_id": "config-019",
+      "user": {
+        "ab_user_props": {
+          "$app_version": "1.0.0"
+        },
+        "anon_id": "",
+        "login_id": "qa_fc_20260515_complex_user_a"
+      }
+    },
+    {
+      "eval_mode": "distribution",
+      "eval_type": "config",
+      "id": "dist-config-qa-live-20260520-multi",
+      "key": "qa_vg_multi_20260520_213848wafa",
+      "spec_file": "config/qa_live_multi_20260520.json",
+      "test_id": "config-020",
+      "user_count": 10,
+      "user_prefix": "qa_vg_live_20260520_multi"
     },
     {
       "eval_mode": "distribution",

@@ -1362,6 +1362,91 @@
       "id": "config-variant-group-decimal-last"
     },
     {
+      "expected": {
+        "check_gate": false,
+        "decision_rule_id": "qa-override-gold",
+        "variant_id": "overrideGold",
+        "variant_params": {
+          "discount": 99,
+          "features": [
+            "all"
+          ],
+          "label": "override"
+        }
+      },
+      "id": "config-qa-live-20260520-override"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "decision_rule_id": "qa-rule-complex",
+        "variant_id": "gamma",
+        "variant_params": {
+          "discount": 30,
+          "features": [
+            "new_nav",
+            "search",
+            "ai"
+          ],
+          "label": "gamma"
+        }
+      },
+      "id": "config-qa-live-20260520-complex-gamma"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": null,
+        "variant_params": null
+      },
+      "id": "config-qa-live-20260520-complex-blocked"
+    },
+    {
+      "expected": [
+        {
+          "user_id": "qa_vg_live_20260520_multi-0",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa_vg_live_20260520_multi-1",
+          "variant_id": "multiB"
+        },
+        {
+          "user_id": "qa_vg_live_20260520_multi-2",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa_vg_live_20260520_multi-3",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa_vg_live_20260520_multi-4",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa_vg_live_20260520_multi-5",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa_vg_live_20260520_multi-6",
+          "variant_id": "multiA"
+        },
+        {
+          "user_id": "qa_vg_live_20260520_multi-7",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa_vg_live_20260520_multi-8",
+          "variant_id": "multiC"
+        },
+        {
+          "user_id": "qa_vg_live_20260520_multi-9",
+          "variant_id": "multiB"
+        }
+      ],
+      "id": "dist-config-qa-live-20260520-multi"
+    },
+    {
       "expected": [
         {
           "user_id": "holdout-user-0",
