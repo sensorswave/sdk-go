@@ -298,6 +298,58 @@
       "user_prefix": "qa_vg_live_20260520_multi"
     },
     {
+      "eval_type": "config",
+      "id": "config-qa-live-20260521-multi-gate-vip",
+      "key": "qa_vg_mg_variants_20260521_105950",
+      "spec_file": "config/qa_live_multi_gate_variants_20260521.json",
+      "test_id": "config-021",
+      "assert_decision_rule_id": true,
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "qa_vg_mg_vip_user"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-qa-live-20260521-multi-gate-member",
+      "key": "qa_vg_mg_variants_20260521_105950",
+      "spec_file": "config/qa_live_multi_gate_variants_20260521.json",
+      "test_id": "config-021",
+      "assert_decision_rule_id": true,
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "qa_vg_mg_member_user"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-qa-live-20260521-multi-gate-enterprise",
+      "key": "qa_vg_mg_variants_20260521_105950",
+      "spec_file": "config/qa_live_multi_gate_variants_20260521.json",
+      "test_id": "config-021",
+      "assert_decision_rule_id": true,
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "qa_vg_mg_enterprise_user"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-qa-live-20260521-multi-gate-default",
+      "key": "qa_vg_mg_default_20260521_105950",
+      "spec_file": "config/qa_live_multi_gate_default_20260521.json",
+      "test_id": "config-022",
+      "assert_decision_rule_id": true,
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "qa_vg_default_no_match_user"
+      }
+    },
+    {
       "eval_mode": "distribution",
       "eval_type": "experiment",
       "id": "dist-exp-holdout",

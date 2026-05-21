@@ -1,0 +1,145 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "update": true,
+    "updated_at": 1779332392082,
+    "ab_specs": [
+      {
+        "id": 55,
+        "key": "qa_vg_mg_variants_20260521_105950",
+        "name": "QA VG multi gate variants 20260521_105950",
+        "typ": 2,
+        "traffic": "",
+        "subject_id": "LOGIN_ID",
+        "enabled": true,
+        "sticky": false,
+        "salt": "YJAV4G78GA8Gl8c9FEpt2",
+        "version": 3,
+        "rules": {
+          "GATE": [
+            {
+              "id": "qa-mg-vip",
+              "name": "gate:.1.vip users split alpha beta",
+              "decision_rule_id": "qa-mg-vip",
+              "salt": "qa-mg-vip",
+              "rollout": 100,
+              "conditions": [
+                {
+                  "field_class": "FFUSER",
+                  "field_typ": "STRING",
+                  "field": "login_id",
+                  "opt": "ANY_OF_CASE_INSENSITIVE",
+                  "value": [
+                    "qa_vg_mg_vip_user"
+                  ]
+                }
+              ],
+              "variant_group": [
+                {
+                  "variant_id": "alpha",
+                  "rollout": 30
+                },
+                {
+                  "variant_id": "beta",
+                  "rollout": 100
+                }
+              ]
+            },
+            {
+              "id": "qa-mg-member",
+              "name": "gate:.2.member users split beta gamma",
+              "decision_rule_id": "qa-mg-member",
+              "salt": "qa-mg-member",
+              "rollout": 100,
+              "conditions": [
+                {
+                  "field_class": "FFUSER",
+                  "field_typ": "STRING",
+                  "field": "login_id",
+                  "opt": "ANY_OF_CASE_INSENSITIVE",
+                  "value": [
+                    "qa_vg_mg_member_user"
+                  ]
+                }
+              ],
+              "variant_group": [
+                {
+                  "variant_id": "beta",
+                  "rollout": 50
+                },
+                {
+                  "variant_id": "gamma",
+                  "rollout": 100
+                }
+              ]
+            },
+            {
+              "id": "qa-mg-enterprise",
+              "name": "gate:.3.enterprise users split gamma delta",
+              "decision_rule_id": "qa-mg-enterprise",
+              "salt": "qa-mg-enterprise",
+              "rollout": 100,
+              "conditions": [
+                {
+                  "field_class": "FFUSER",
+                  "field_typ": "STRING",
+                  "field": "login_id",
+                  "opt": "ANY_OF_CASE_INSENSITIVE",
+                  "value": [
+                    "qa_vg_mg_enterprise_user"
+                  ]
+                }
+              ],
+              "variant_group": [
+                {
+                  "variant_id": "gamma",
+                  "rollout": 40
+                },
+                {
+                  "variant_id": "delta",
+                  "rollout": 100
+                }
+              ]
+            },
+            {
+              "id": "",
+              "name": "gate:.default.Default",
+              "salt": "default",
+              "rollout": 100,
+              "variant_group": [
+                {
+                  "variant_id": "Default",
+                  "rollout": 100
+                }
+              ]
+            }
+          ]
+        },
+        "variant_payloads": {
+          "Default": {
+            "slot": "default",
+            "rank": 0
+          },
+          "alpha": {
+            "slot": "alpha",
+            "rank": 1
+          },
+          "beta": {
+            "slot": "beta",
+            "rank": 2
+          },
+          "delta": {
+            "slot": "delta",
+            "rank": 4
+          },
+          "gamma": {
+            "slot": "gamma",
+            "rank": 3
+          }
+        }
+      }
+    ]
+  },
+  "trace": "standard-api#/ab/all4eval#qa_vg_mg_variants_20260521_105950 captured on 2026-05-21 by qa-agent"
+}

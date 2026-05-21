@@ -1470,6 +1470,54 @@
       "id": "dist-config-qa-live-20260520-multi"
     },
     {
+      "expected": {
+        "check_gate": false,
+        "decision_rule_id": "qa-mg-vip",
+        "variant_id": "beta",
+        "variant_params": {
+          "rank": 2,
+          "slot": "beta"
+        }
+      },
+      "id": "config-qa-live-20260521-multi-gate-vip"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "decision_rule_id": "qa-mg-member",
+        "variant_id": "beta",
+        "variant_params": {
+          "rank": 2,
+          "slot": "beta"
+        }
+      },
+      "id": "config-qa-live-20260521-multi-gate-member"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "decision_rule_id": "qa-mg-enterprise",
+        "variant_id": "delta",
+        "variant_params": {
+          "rank": 4,
+          "slot": "delta"
+        }
+      },
+      "id": "config-qa-live-20260521-multi-gate-enterprise"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "decision_rule_id": null,
+        "variant_id": "Default",
+        "variant_params": {
+          "rank": 0,
+          "slot": "default"
+        }
+      },
+      "id": "config-qa-live-20260521-multi-gate-default"
+    },
+    {
       "expected": [
         {
           "user_id": "holdout-user-0",

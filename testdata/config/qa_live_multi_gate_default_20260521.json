@@ -1,0 +1,105 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "update": true,
+    "updated_at": 1779332392082,
+    "ab_specs": [
+      {
+        "id": 56,
+        "key": "qa_vg_mg_default_20260521_105950",
+        "name": "QA VG multi gate default 20260521_105950",
+        "typ": 2,
+        "traffic": "",
+        "subject_id": "LOGIN_ID",
+        "enabled": true,
+        "sticky": false,
+        "salt": "-sJPm6hXWv_eVEtWG4N_v",
+        "version": 3,
+        "rules": {
+          "GATE": [
+            {
+              "id": "qa-default-alpha",
+              "name": "gate:.1.alpha only",
+              "decision_rule_id": "qa-default-alpha",
+              "salt": "qa-default-alpha",
+              "rollout": 100,
+              "conditions": [
+                {
+                  "field_class": "FFUSER",
+                  "field_typ": "STRING",
+                  "field": "login_id",
+                  "opt": "ANY_OF_CASE_INSENSITIVE",
+                  "value": [
+                    "qa_vg_default_alpha_user"
+                  ]
+                }
+              ],
+              "variant_group": [
+                {
+                  "variant_id": "fallbackA",
+                  "rollout": 50
+                },
+                {
+                  "variant_id": "fallbackB",
+                  "rollout": 100
+                }
+              ]
+            },
+            {
+              "id": "qa-default-beta",
+              "name": "gate:.2.beta only",
+              "decision_rule_id": "qa-default-beta",
+              "salt": "qa-default-beta",
+              "rollout": 100,
+              "conditions": [
+                {
+                  "field_class": "FFUSER",
+                  "field_typ": "STRING",
+                  "field": "login_id",
+                  "opt": "ANY_OF_CASE_INSENSITIVE",
+                  "value": [
+                    "qa_vg_default_beta_user"
+                  ]
+                }
+              ],
+              "variant_group": [
+                {
+                  "variant_id": "fallbackB",
+                  "rollout": 100
+                }
+              ]
+            },
+            {
+              "id": "",
+              "name": "gate:.default.Default",
+              "salt": "default",
+              "rollout": 100,
+              "variant_group": [
+                {
+                  "variant_id": "Default",
+                  "rollout": 100
+                }
+              ]
+            }
+          ]
+        },
+        "variant_payloads": {
+          "Default": {
+            "slot": "default",
+            "rank": 0
+          },
+          "fallbackA": {
+            "slot": "fallbackA",
+            "rank": 1
+          },
+          "fallbackB": {
+            "slot": "fallbackB",
+            "rank": 2
+          }
+        }
+      }
+    ]
+  },
+  "trace": "standard-api#/ab/all4eval#qa_vg_mg_default_20260521_105950 captured on 2026-05-21 by qa-agent"
+}
