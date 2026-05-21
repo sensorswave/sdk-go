@@ -382,7 +382,7 @@ func (abc *ABCore) evalABTraffic(user User, spec *ABSpec, evalID string, index i
 				return false, err
 			}
 			if !decision.Pass {
-				//for holdout
+				// for holdout
 				if rule.Override != nil {
 					result.VariantID = rule.Override
 				}
