@@ -104,12 +104,12 @@
             },
             {
               "id": "",
-              "name": "gate:.default.Default",
+              "name": "gate:.default.baseDefault",
               "salt": "default",
               "rollout": 100,
               "variant_group": [
                 {
-                  "variant_id": "Default",
+                  "variant_id": "baseDefault",
                   "rollout": 100
                 }
               ]
@@ -117,7 +117,7 @@
           ]
         },
         "variant_payloads": {
-          "Default": {
+          "baseDefault": {
             "slot": "default",
             "rank": 0
           },

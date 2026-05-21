@@ -1509,7 +1509,7 @@
       "expected": {
         "check_gate": false,
         "decision_rule_id": null,
-        "variant_id": "Default",
+        "variant_id": "baseDefault",
         "variant_params": {
           "rank": 0,
           "slot": "default"
