@@ -105,7 +105,7 @@ func NewWithConfig(endpoint Endpoint, token SourceToken, cfg Config) (Client, er
 		endpoint:    normalizedEndpoint,
 		sourceToken: string(token),
 		cfg:         &cfg,
-		h:           NewHTTPClient(cfg.Transport),
+		h:           NewHTTPClientWithPool(cfg.Transport, cfg.HTTPConcurrency),
 		quit:        make(chan struct{}),
 		msgchan:     make(chan []byte, maxEventChanSize),
 		sem:         make(chan struct{}, cfg.HTTPConcurrency),

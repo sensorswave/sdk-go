@@ -18,6 +18,34 @@ func DefaultHTTPTransport() *http.Transport {
 	}
 }
 
+func defaultHTTPTransportWithPool(maxConns int) *http.Transport {
+	normalizedMaxConns := normalizeHTTPPoolSize(maxConns)
+	transport := DefaultHTTPTransport()
+	transport.MaxIdleConns = normalizedMaxConns
+	transport.MaxIdleConnsPerHost = normalizedMaxConns
+	transport.MaxConnsPerHost = normalizedMaxConns
+	return transport
+}
+
+func limitHTTPTransportPool(transport *http.Transport, maxConns int) *http.Transport {
+	normalizedMaxConns := normalizeHTTPPoolSize(maxConns)
+	if transport == nil {
+		return defaultHTTPTransportWithPool(normalizedMaxConns)
+	}
+	limited := transport.Clone()
+	limited.MaxIdleConns = normalizedMaxConns
+	limited.MaxIdleConnsPerHost = normalizedMaxConns
+	limited.MaxConnsPerHost = normalizedMaxConns
+	return limited
+}
+
+func normalizeHTTPPoolSize(maxConns int) int {
+	if maxConns <= 0 {
+		return 1
+	}
+	return maxConns
+}
+
 // httpClient is a wrapper around http.Client.
 type httpClient struct {
 	client *http.Client
@@ -98,6 +126,12 @@ func NewHTTPClient(transport *http.Transport) *httpClient {
 	}
 	return &httpClient{
 		client: &http.Client{Transport: transport},
+	}
+}
+
+func NewHTTPClientWithPool(transport *http.Transport, maxConns int) *httpClient {
+	return &httpClient{
+		client: &http.Client{Transport: limitHTTPTransportPool(transport, maxConns)},
 	}
 }
 

@@ -1,7 +1,12 @@
 package sensorswave
 
 import (
+	"bytes"
+	"compress/gzip"
 	"encoding/json"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"sync"
 	"testing"
 	"time"
@@ -96,6 +101,71 @@ func TestTrackAndCloseConcurrentDoesNotPanic(t *testing.T) {
 	case r := <-panicCh:
 		t.Fatalf("Track/Close concurrency must not panic: %v", r)
 	default:
+	}
+}
+
+func TestSendCompressesBatchAboveGzipThreshold(t *testing.T) {
+	var gotEncoding string
+	var gotBody []byte
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotEncoding = r.Header.Get("Content-Encoding")
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			t.Errorf("read body error: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		if gotEncoding == "gzip" {
+			reader, err := gzip.NewReader(bytes.NewReader(body))
+			if err != nil {
+				t.Errorf("gzip reader error: %v", err)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			defer reader.Close()
+			body, err = io.ReadAll(reader)
+			if err != nil {
+				t.Errorf("gzip read error: %v", err)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+		}
+		gotBody = body
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	c, err := NewWithConfig(
+		Endpoint(server.URL),
+		SourceToken("token"),
+		Config{
+			Logger:             &noopLogger{},
+			FlushInterval:      time.Hour,
+			HTTPConcurrency:    1,
+			HTTPTimeout:        time.Second,
+			GzipThresholdBytes: 1,
+		},
+	)
+	if err != nil {
+		t.Fatalf("NewWithConfig error: %v", err)
+	}
+
+	if err := c.Track(NewEvent("", "user-1", "CompressedEvent")); err != nil {
+		t.Fatalf("Track error: %v", err)
+	}
+	if err := c.Close(); err != nil {
+		t.Fatalf("Close error: %v", err)
+	}
+
+	if gotEncoding != "gzip" {
+		t.Fatalf("expected gzip content encoding, got %q", gotEncoding)
+	}
+	var events []Event
+	if err := json.Unmarshal(gotBody, &events); err != nil {
+		t.Fatalf("decode request body error: %v body=%s", err, string(gotBody))
+	}
+	if len(events) != 1 || events[0].Event != "CompressedEvent" {
+		t.Fatalf("unexpected events: %+v", events)
 	}
 }
 

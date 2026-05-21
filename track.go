@@ -2,6 +2,7 @@ package sensorswave
 
 import (
 	"bytes"
+	"compress/gzip"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -97,10 +98,9 @@ func (c *client) send(jsonBody []byte) {
 	if len(jsonBody) <= 2 {
 		return
 	}
-	// Control concurrency
-	<-c.sem
 	c.wg.Add(1)
 	go func(jsonBody []byte) {
+		<-c.sem
 		defer func() {
 			c.sem <- struct{}{}
 			c.wg.Done()
@@ -111,13 +111,24 @@ func (c *client) send(jsonBody []byte) {
 			"User-Agent":      "", // Disable default Go User-Agent; SDK info is sent via other headers
 			HeaderSourceToken: c.sourceToken,
 		}
+		requestBody := jsonBody
+		if c.cfg.GzipThresholdBytes > 0 && len(jsonBody) > c.cfg.GzipThresholdBytes {
+			c.cfg.Logger.Warnf("start gzip")
+			gzipBody, err := gzipBytes(jsonBody)
+			if err != nil {
+				c.cfg.Logger.Errorf("gzip event body error: %v", err)
+			} else {
+				requestBody = gzipBody
+				headers["Content-Encoding"] = "gzip"
+			}
+		}
 
 		trackURL := strings.TrimRight(c.endpoint, "/") + c.cfg.TrackURIPath
 		opts := newRequestOpts().
 			WithMethod("POST").
 			WithURL(trackURL).
 			WithHeaders(headers).
-			WithBody(jsonBody).
+			WithBody(requestBody).
 			WithTimeout(c.cfg.HTTPTimeout).
 			WithRetry(c.cfg.HTTPRetry)
 		_, httpcode, err := c.h.Do(context.Background(), opts)
@@ -139,4 +150,17 @@ func (c *client) send(jsonBody []byte) {
 			c.cfg.Logger.Debugf("http send body length: %d ", len(jsonBody))
 		}
 	}(jsonBody)
+}
+
+func gzipBytes(body []byte) ([]byte, error) {
+	var buf bytes.Buffer
+	writer := gzip.NewWriter(&buf)
+	if _, err := writer.Write(body); err != nil {
+		_ = writer.Close()
+		return nil, err
+	}
+	if err := writer.Close(); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }

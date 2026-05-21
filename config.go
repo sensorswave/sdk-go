@@ -31,6 +31,9 @@ type Config struct {
 	// HTTPRetry is the number of retry attempts for failed HTTP requests. Default: 2
 	HTTPRetry int
 
+	// GzipThresholdBytes is the request body size threshold for gzip compression. Default: 1MiB
+	GzipThresholdBytes int
+
 	// OnTrackFailHandler is called when event tracking fails.
 	OnTrackFailHandler OnTrackFailHandler
 
@@ -181,6 +184,9 @@ func normalizeConfig(config *Config) {
 	}
 	if config.HTTPRetry == 0 {
 		config.HTTPRetry = 2
+	}
+	if config.GzipThresholdBytes == 0 {
+		config.GzipThresholdBytes = 1 * 1024 * 1024
 	}
 
 	// Normalize AB config
