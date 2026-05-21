@@ -5,12 +5,41 @@
       "eval_type": "config",
       "id": "config-first-match-wins-vip",
       "key": "config_first_match",
+      "assert_decision_rule_id": true,
       "spec_file": "config/first_match_wins.json",
       "test_id": "config-006",
       "user": {
         "ab_user_props": {},
         "anon_id": "",
         "login_id": "vip-user-1"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-first-match-wins-member",
+      "key": "config_first_match",
+      "assert_decision_rule_id": true,
+      "spec_file": "config/first_match_wins.json",
+      "test_id": "config-006",
+      "user": {
+        "ab_user_props": {
+          "is_member": true
+        },
+        "anon_id": "",
+        "login_id": "member-user-1"
+      }
+    },
+    {
+      "eval_type": "config",
+      "id": "config-first-match-wins-public",
+      "key": "config_first_match",
+      "assert_decision_rule_id": true,
+      "spec_file": "config/first_match_wins.json",
+      "test_id": "config-006",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "public-user-1"
       }
     },
     {

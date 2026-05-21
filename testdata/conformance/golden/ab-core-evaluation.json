@@ -4,12 +4,35 @@
     {
       "expected": {
         "check_gate": false,
+        "decision_rule_id": "gate-vip",
         "variant_id": "v1",
         "variant_params": {
           "tier": "vip"
         }
       },
       "id": "config-first-match-wins-vip"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "decision_rule_id": "gate-member",
+        "variant_id": "v2",
+        "variant_params": {
+          "tier": "member"
+        }
+      },
+      "id": "config-first-match-wins-member"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "decision_rule_id": "gate-public",
+        "variant_id": "v3",
+        "variant_params": {
+          "tier": "public"
+        }
+      },
+      "id": "config-first-match-wins-public"
     },
     {
       "expected": {
