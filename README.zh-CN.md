@@ -532,8 +532,8 @@ SDK 接受 `Object`（map）和 `Object Array`（map 列表）作为事件属性
 | `TrackURIPath` | 事件埋点端点路径 | `/in/track` |
 | `Transport` | 自定义 HTTP 传输 | 默认 transport |
 | `Logger` | 自定义日志器实现 | 控制台日志器 |
-| `FlushInterval` | 事件刷新间隔 | 10 秒 |
-| `HTTPConcurrency` | 最大 HTTP 并发数 | 1 |
+| `FlushInterval` | 后台半满 batch 定时 sealed 间隔 | 10 秒 |
+| `HTTPConcurrency` | sender worker 最大 HTTP 并发数 | 1 |
 | `HTTPTimeout` | HTTP 请求超时 | 3 秒 |
 | `HTTPRetry` | HTTP 重试次数 | 2 |
 | `GzipThresholdBytes` | 请求体超过此阈值时启用 Gzip 压缩 | 1MiB |

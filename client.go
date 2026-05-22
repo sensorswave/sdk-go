@@ -6,12 +6,13 @@ import (
 	"sync"
 )
 
-// Internal sizing for the in-process event pipeline (channel buffer + per-batch caps).
+// Internal sizing for the in-process event pipeline.
 // Tuning notes: maxBatchSize bounds POST body event count; maxHTTPBodySize bounds bytes.
 const (
-	maxEventChanSize = 50 * 10         // 500 events buffered in the dispatch channel
-	maxBatchSize     = 50              // up to 50 events flushed in one HTTP request
-	maxHTTPBodySize  = 5 * 1024 * 1024 // up to 5 MB request body
+	defaultEventChanSize        = 5000
+	defaultPendingBatchCapacity = 100
+	maxBatchSize                = 50              // up to 50 events flushed in one HTTP request
+	maxHTTPBodySize             = 5 * 1024 * 1024 // up to 5 MB request body
 )
 
 // Client is the main interface for interacting with the SDK.
@@ -102,16 +103,13 @@ func NewWithConfig(endpoint Endpoint, token SourceToken, cfg Config) (Client, er
 	}
 
 	c := &client{
-		endpoint:    normalizedEndpoint,
-		sourceToken: string(token),
-		cfg:         &cfg,
-		h:           NewHTTPClientWithPool(cfg.Transport, cfg.HTTPConcurrency),
-		quit:        make(chan struct{}),
-		msgchan:     make(chan []byte, maxEventChanSize),
-		sem:         make(chan struct{}, cfg.HTTPConcurrency),
-	}
-	for i := 0; i < cfg.HTTPConcurrency; i++ {
-		c.sem <- struct{}{}
+		endpoint:         normalizedEndpoint,
+		sourceToken:      string(token),
+		cfg:              &cfg,
+		h:                NewHTTPClientWithPool(cfg.Transport, cfg.HTTPConcurrency),
+		quit:             make(chan struct{}),
+		msgchan:          make(chan []byte, defaultEventChanSize),
+		pendingBatchChan: make(chan []byte, defaultPendingBatchCapacity),
 	}
 
 	// Initialize A/B Core if configured
@@ -131,23 +129,27 @@ func NewWithConfig(endpoint Endpoint, token SourceToken, cfg Config) (Client, er
 	// Start background loops only after all components are successfully initialized
 	c.wg.Add(1)
 	go c.loop()
+	for i := 0; i < cfg.HTTPConcurrency; i++ {
+		c.wg.Add(1)
+		go c.sendWorker()
+	}
 
 	return c, nil
 }
 
 type client struct {
-	endpoint    string
-	sourceToken string
-	cfg         *Config
-	h           *httpClient
-	quit        chan struct{}
-	msgchan     chan []byte
-	wg          sync.WaitGroup
-	abCore      *ABCore
-	sem         chan struct{}
-	closeOnce   sync.Once
-	stateMu     sync.RWMutex
-	closed      bool
+	endpoint         string
+	sourceToken      string
+	cfg              *Config
+	h                *httpClient
+	quit             chan struct{}
+	msgchan          chan []byte
+	pendingBatchChan chan []byte
+	wg               sync.WaitGroup
+	abCore           *ABCore
+	closeOnce        sync.Once
+	stateMu          sync.RWMutex
+	closed           bool
 }
 
 func (c *client) Close() error {

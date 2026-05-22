@@ -534,8 +534,8 @@ treat them as `OBJECT_ARRAY`, conflicting with list semantics.
 | `TrackURIPath` | Event tracking endpoint path | `/in/track` |
 | `Transport` | Custom HTTP transport | Default transport |
 | `Logger` | Custom logger implementation | Console logger |
-| `FlushInterval` | Event flush interval | 10 seconds |
-| `HTTPConcurrency` | Max concurrent HTTP requests | 1 |
+| `FlushInterval` | Background half-batch seal interval | 10 seconds |
+| `HTTPConcurrency` | Max sender worker HTTP requests | 1 |
 | `HTTPTimeout` | HTTP request timeout | 3 seconds |
 | `HTTPRetry` | HTTP retry count | 2 |
 | `GzipThresholdBytes` | Gzip tracking request bodies larger than this threshold | 1MiB |

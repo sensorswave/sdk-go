@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"sync"
 	"testing"
 	"time"
@@ -61,6 +62,48 @@ func TestTrackDropsWhenMessageChannelIsFull(t *testing.T) {
 		}
 	case <-time.After(100 * time.Millisecond):
 		t.Fatal("Track blocked waiting for message channel capacity")
+	}
+}
+
+func TestEventPipelineSizingDefaultsAndInternalCapacity(t *testing.T) {
+	c, err := NewWithConfig(
+		Endpoint("https://collector.example.com"),
+		SourceToken("token"),
+		Config{Logger: &noopLogger{}, FlushInterval: time.Hour},
+	)
+	if err != nil {
+		t.Fatalf("NewWithConfig error: %v", err)
+	}
+	defer c.Close()
+	typed := c.(*client)
+	if cap(typed.msgchan) != 5000 {
+		t.Fatalf("default event channel capacity = %d, want 5000", cap(typed.msgchan))
+	}
+	if cap(typed.pendingBatchChan) != 100 {
+		t.Fatalf("default pending batch capacity = %d, want 100", cap(typed.pendingBatchChan))
+	}
+	if _, ok := reflect.TypeOf(Config{}).FieldByName("EventQueueSize"); ok {
+		t.Fatal("Config must not expose EventQueueSize")
+	}
+	if _, ok := reflect.TypeOf(Config{}).FieldByName("MaxPendingBatches"); ok {
+		t.Fatal("Config must not expose MaxPendingBatches")
+	}
+
+	second, err := NewWithConfig(
+		Endpoint("https://collector.example.com"),
+		SourceToken("token"),
+		Config{Logger: &noopLogger{}, FlushInterval: time.Hour},
+	)
+	if err != nil {
+		t.Fatalf("NewWithConfig second error: %v", err)
+	}
+	defer second.Close()
+	secondTyped := second.(*client)
+	if cap(secondTyped.msgchan) != 5000 {
+		t.Fatalf("second event channel capacity = %d, want internal default 5000", cap(secondTyped.msgchan))
+	}
+	if cap(secondTyped.pendingBatchChan) != 100 {
+		t.Fatalf("second pending batch capacity = %d, want internal default 100", cap(secondTyped.pendingBatchChan))
 	}
 }
 

@@ -54,6 +54,7 @@ func (q *messageQueue) flush() (jsonBody []byte) {
 
 func (c *client) loop() {
 	defer c.wg.Done()
+	defer close(c.pendingBatchChan)
 
 	tick := time.NewTicker(c.cfg.FlushInterval)
 	defer tick.Stop()
@@ -98,14 +99,12 @@ func (c *client) send(jsonBody []byte) {
 	if len(jsonBody) <= 2 {
 		return
 	}
-	c.wg.Add(1)
-	go func(jsonBody []byte) {
-		<-c.sem
-		defer func() {
-			c.sem <- struct{}{}
-			c.wg.Done()
-		}()
+	c.pendingBatchChan <- jsonBody
+}
 
+func (c *client) sendWorker() {
+	defer c.wg.Done()
+	for jsonBody := range c.pendingBatchChan {
 		headers := map[string]string{
 			"Content-Type":    "application/json",
 			"User-Agent":      "", // Disable default Go User-Agent; SDK info is sent via other headers
@@ -149,7 +148,7 @@ func (c *client) send(jsonBody []byte) {
 		} else {
 			c.cfg.Logger.Debugf("http send body length: %d ", len(jsonBody))
 		}
-	}(jsonBody)
+	}
 }
 
 func gzipBytes(body []byte) ([]byte, error) {
