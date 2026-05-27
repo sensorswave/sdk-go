@@ -1465,6 +1465,32 @@
       }
     },
     {
+      "assert_decision_rule_id": true,
+      "eval_type": "gate",
+      "id": "gate-release-empty-user-id",
+      "key": "ReleaseGate",
+      "spec_file": "gate/release.json",
+      "test_id": "gate-024",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": ""
+      }
+    },
+    {
+      "assert_decision_rule_id": true,
+      "eval_type": "gate",
+      "id": "gate-release-null-user-id",
+      "key": "ReleaseGate",
+      "spec_file": "gate/release.json",
+      "test_id": "gate-024",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": null,
+        "login_id": null
+      }
+    },
+    {
       "eval_type": "gate",
       "id": "gate-release-pass",
       "key": "ReleaseGate",

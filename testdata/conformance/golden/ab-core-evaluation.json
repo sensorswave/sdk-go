@@ -3023,6 +3023,24 @@
     },
     {
       "expected": {
+        "check_gate": false,
+        "decision_rule_id": null,
+        "variant_id": null,
+        "variant_params": null
+      },
+      "id": "gate-release-empty-user-id"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "decision_rule_id": null,
+        "variant_id": null,
+        "variant_params": null
+      },
+      "id": "gate-release-null-user-id"
+    },
+    {
+      "expected": {
         "check_gate": true,
         "variant_id": "pass",
         "variant_params": null
