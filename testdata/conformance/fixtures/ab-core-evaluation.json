@@ -371,6 +371,18 @@
     },
     {
       "eval_type": "experiment",
+      "id": "exp-group-without-gate",
+      "key": "example_experiment_key",
+      "spec_file": "exp/group_without_gate.json",
+      "test_id": "exp-017",
+      "user": {
+        "ab_user_props": {},
+        "anon_id": "",
+        "login_id": "user-without-gate"
+      }
+    },
+    {
+      "eval_type": "experiment",
       "id": "exp-gate-dep-version-fail",
       "key": "ArlrvEnebz",
       "spec_file": "exp/gate_target_pass.json",

@@ -2333,6 +2333,14 @@
         "variant_id": null,
         "variant_params": null
       },
+      "id": "exp-group-without-gate"
+    },
+    {
+      "expected": {
+        "check_gate": false,
+        "variant_id": null,
+        "variant_params": null
+      },
       "id": "exp-gate-dep-version-fail"
     },
     {

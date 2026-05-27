@@ -1,0 +1,49 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "update": true,
+    "updated_at": 1763714718263,
+    "ab_specs": [
+      {
+        "id": 19,
+        "key": "example_experiment_key",
+        "name": "example_experiment_key",
+        "typ": 3,
+        "traffic": "",
+        "subject_id": "LOGIN_ID",
+        "enabled": true,
+        "sticky": false,
+        "disable_impress": true,
+        "rules": {
+          "GROUP": [
+            {
+              "name": "variant:1",
+              "id": "1",
+              "salt": "example_experiment_key",
+              "rollout": 0.2,
+              "override": "CC"
+            },
+            {
+              "name": "variant:2",
+              "id": "2",
+              "salt": "example_experiment_key",
+              "rollout": 100,
+              "override": "TT"
+            }
+          ]
+        },
+        "variant_payloads": {
+          "CC": {
+            "enabled": false,
+            "label": "control"
+          },
+          "TT": {
+            "enabled": true,
+            "label": "test"
+          }
+        }
+      }
+    ]
+  }
+}
