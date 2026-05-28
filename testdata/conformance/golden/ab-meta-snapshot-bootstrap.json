@@ -259,6 +259,22 @@
         "ready": true
       },
       "id": "init-loads-meta-sync-once"
+    },
+    {
+      "expected": {
+        "authorization_signed_headers_include_sdk_version": true,
+        "has_authorization": true,
+        "has_only_allowed_headers": true,
+        "has_sdk": true,
+        "has_sdk_version": true,
+        "method": "GET",
+        "ok": true,
+        "path": "/ab/all4eval",
+        "sdk_version_has_v_prefix": false,
+        "sdk_version_non_empty": true,
+        "source_token": "test-token"
+      },
+      "id": "meta-request-includes-sdk-version-header"
     }
   ]
 }

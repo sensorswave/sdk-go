@@ -33,6 +33,25 @@
         "key": "TestSpec"
       },
       "languages": ["go", "python", "java"]
+    },
+    {
+      "id": "meta-request-includes-sdk-version-header",
+      "operation": "meta_request_headers",
+      "spec_file": "gate/public.json",
+      "allowed_headers": [
+        "Authorization",
+        "Content-Type",
+        "SourceToken",
+        "X-SDK",
+        "X-SDK-Version",
+        "x-auth-nonce",
+        "x-auth-timestamp",
+        "x-content-sha256"
+      ],
+      "ignored_transport_headers": [
+        "Accept-Encoding",
+        "User-Agent"
+      ]
     }
   ]
 }
