@@ -82,16 +82,16 @@ func buildComplexPropertyEvent(t *testing.T, input struct {
 		return evt.WithProperties(props)
 
 	case "profile_set":
-		return profileFromMap(input.AnonID, input.LoginID, input.Properties, UserSetTypeSet, false)
+		return profileFromMap(input.AnonID, input.LoginID, input.Properties, false)
 
 	case "profile_set_once":
-		return profileFromMap(input.AnonID, input.LoginID, input.Properties, UserSetTypeSetOnce, true)
+		return profileFromMap(input.AnonID, input.LoginID, input.Properties, true)
 
 	case "profile_append":
-		return profileFromListMap(input.AnonID, input.LoginID, input.ListProperties, UserSetTypeAppend, false)
+		return profileFromListMap(input.AnonID, input.LoginID, input.ListProperties, false)
 
 	case "profile_union":
-		return profileFromListMap(input.AnonID, input.LoginID, input.ListProperties, UserSetTypeUnion, true)
+		return profileFromListMap(input.AnonID, input.LoginID, input.ListProperties, true)
 
 	default:
 		t.Fatalf("unknown operation: %s", input.Operation)
@@ -99,7 +99,7 @@ func buildComplexPropertyEvent(t *testing.T, input struct {
 	}
 }
 
-func profileFromMap(anonID, loginID string, props map[string]any, setType string, once bool) Event {
+func profileFromMap(anonID, loginID string, props map[string]any, once bool) Event {
 	evt := NewEvent(anonID, loginID, PseUserSet)
 	up := NewUserPropertyOpts()
 	for k, v := range props {
@@ -109,15 +109,10 @@ func profileFromMap(anonID, loginID string, props map[string]any, setType string
 			up = up.Set(k, v)
 		}
 	}
-	evt = evt.WithUserPropertyOpts(up)
-	if evt.Properties == nil {
-		evt.Properties = NewProperties()
-	}
-	evt.Properties.Set(PspUserSetType, setType)
-	return evt
+	return evt.WithUserPropertyOpts(up)
 }
 
-func profileFromListMap(anonID, loginID string, listProps map[string][]any, setType string, union bool) Event {
+func profileFromListMap(anonID, loginID string, listProps map[string][]any, union bool) Event {
 	evt := NewEvent(anonID, loginID, PseUserSet)
 	up := NewUserPropertyOpts()
 	for k, vals := range listProps {
@@ -127,10 +122,5 @@ func profileFromListMap(anonID, loginID string, listProps map[string][]any, setT
 			up = up.Append(k, vals)
 		}
 	}
-	evt = evt.WithUserPropertyOpts(up)
-	if evt.Properties == nil {
-		evt.Properties = NewProperties()
-	}
-	evt.Properties.Set(PspUserSetType, setType)
-	return evt
+	return evt.WithUserPropertyOpts(up)
 }

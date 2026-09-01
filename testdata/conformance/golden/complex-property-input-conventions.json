@@ -8,7 +8,7 @@
         "login_id": "user-cpic-001",
         "properties": {
           "$lib": "go",
-          "$lib_version": "0.1.7",
+          "$lib_version": "0.1.9",
           "scalar_prop": "hello",
           "user_profile": {
             "age": 30,
@@ -28,7 +28,7 @@
         "login_id": "user-cpic-002",
         "properties": {
           "$lib": "go",
-          "$lib_version": "0.1.7",
+          "$lib_version": "0.1.9",
           "orders": [
             {
               "amount": 99.5,
@@ -51,8 +51,7 @@
         "login_id": "user-cpic-003",
         "properties": {
           "$lib": "go",
-          "$lib_version": "0.1.7",
-          "$user_set_type": "user_set"
+          "$lib_version": "0.1.9"
         },
         "time": 1736668800000,
         "trace_id": "fixed-trace-cpic-003",
@@ -79,8 +78,7 @@
         "login_id": "user-cpic-004",
         "properties": {
           "$lib": "go",
-          "$lib_version": "0.1.7",
-          "$user_set_type": "user_set_once"
+          "$lib_version": "0.1.9"
         },
         "time": 1736668800000,
         "trace_id": "fixed-trace-cpic-004",
@@ -101,8 +99,7 @@
         "login_id": "user-cpic-005",
         "properties": {
           "$lib": "go",
-          "$lib_version": "0.1.7",
-          "$user_set_type": "user_append"
+          "$lib_version": "0.1.9"
         },
         "time": 1736668800000,
         "trace_id": "fixed-trace-cpic-005",
@@ -123,8 +120,7 @@
         "login_id": "user-cpic-006",
         "properties": {
           "$lib": "go",
-          "$lib_version": "0.1.7",
-          "$user_set_type": "user_append"
+          "$lib_version": "0.1.9"
         },
         "time": 1736668800000,
         "trace_id": "fixed-trace-cpic-006",
@@ -148,7 +144,7 @@
         "login_id": "user-cpic-007",
         "properties": {
           "$lib": "go",
-          "$lib_version": "0.1.7",
+          "$lib_version": "0.1.9",
           "empty_list": []
         },
         "time": 1736668800000,

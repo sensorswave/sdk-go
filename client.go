@@ -258,8 +258,7 @@ func (c *client) ProfileSet(user User, properties Properties) error {
 	}
 
 	event := NewEvent(user.AnonID, user.LoginID, PseUserSet).
-		WithUserPropertyOpts(userPropertyOpts).
-		WithProperties(NewProperties().Set(PspUserSetType, UserSetTypeSet))
+		WithUserPropertyOpts(userPropertyOpts)
 
 	return c.Track(event)
 }
@@ -284,8 +283,7 @@ func (c *client) ProfileSetOnce(user User, properties Properties) error {
 	}
 
 	event := NewEvent(user.AnonID, user.LoginID, PseUserSet).
-		WithUserPropertyOpts(userPropertyOpts).
-		WithProperties(NewProperties().Set(PspUserSetType, UserSetTypeSetOnce))
+		WithUserPropertyOpts(userPropertyOpts)
 
 	return c.Track(event)
 }
@@ -300,8 +298,7 @@ func (c *client) ProfileIncrement(user User, properties Properties) error {
 	}
 
 	event := NewEvent(user.AnonID, user.LoginID, PseUserSet).
-		WithUserPropertyOpts(userPropertyOpts).
-		WithProperties(NewProperties().Set(PspUserSetType, UserSetTypeIncrement))
+		WithUserPropertyOpts(userPropertyOpts)
 
 	return c.Track(event)
 }
@@ -328,8 +325,7 @@ func (c *client) ProfileAppend(user User, properties ListProperties) error {
 	}
 
 	event := NewEvent(user.AnonID, user.LoginID, PseUserSet).
-		WithUserPropertyOpts(userPropertyOpts).
-		WithProperties(NewProperties().Set(PspUserSetType, UserSetTypeAppend))
+		WithUserPropertyOpts(userPropertyOpts)
 
 	return c.Track(event)
 }
@@ -356,8 +352,7 @@ func (c *client) ProfileUnion(user User, properties ListProperties) error {
 	}
 
 	event := NewEvent(user.AnonID, user.LoginID, PseUserSet).
-		WithUserPropertyOpts(userPropertyOpts).
-		WithProperties(NewProperties().Set(PspUserSetType, UserSetTypeUnion))
+		WithUserPropertyOpts(userPropertyOpts)
 
 	return c.Track(event)
 }
@@ -372,8 +367,7 @@ func (c *client) ProfileUnset(user User, propertyKeys ...string) error {
 	}
 
 	event := NewEvent(user.AnonID, user.LoginID, PseUserSet).
-		WithUserPropertyOpts(userPropertyOpts).
-		WithProperties(NewProperties().Set(PspUserSetType, UserSetTypeUnset))
+		WithUserPropertyOpts(userPropertyOpts)
 
 	return c.Track(event)
 }
@@ -384,8 +378,7 @@ func (c *client) ProfileDelete(user User) error {
 	}
 	userPropertyOpts := NewUserPropertyOpts().Delete()
 	event := NewEvent(user.AnonID, user.LoginID, PseUserSet).
-		WithUserPropertyOpts(userPropertyOpts).
-		WithProperties(NewProperties().Set(PspUserSetType, UserSetTypeDelete))
+		WithUserPropertyOpts(userPropertyOpts)
 
 	return c.Track(event)
 }

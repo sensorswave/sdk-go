@@ -84,10 +84,10 @@ func buildEventFromCase(t *testing.T, input struct {
 		return NewEvent(input.AnonID, input.LoginID, "$Identify")
 
 	case "profile_set":
-		return profileEvent(input.AnonID, input.LoginID, input.Properties, UserSetTypeSet, false)
+		return profileEvent(input.AnonID, input.LoginID, input.Properties, false)
 
 	case "profile_set_once":
-		return profileEvent(input.AnonID, input.LoginID, input.Properties, UserSetTypeSetOnce, true)
+		return profileEvent(input.AnonID, input.LoginID, input.Properties, true)
 
 	default:
 		t.Fatalf("unknown operation: %s", input.Operation)
@@ -95,7 +95,7 @@ func buildEventFromCase(t *testing.T, input struct {
 	}
 }
 
-func profileEvent(anonID, loginID string, props map[string]any, setType string, once bool) Event {
+func profileEvent(anonID, loginID string, props map[string]any, once bool) Event {
 	evt := NewEvent(anonID, loginID, "$UserSet")
 	up := NewUserPropertyOpts()
 	for k, v := range props {
@@ -105,10 +105,5 @@ func profileEvent(anonID, loginID string, props map[string]any, setType string, 
 			up = up.Set(k, v)
 		}
 	}
-	evt = evt.WithUserPropertyOpts(up)
-	if evt.Properties == nil {
-		evt.Properties = NewProperties()
-	}
-	evt.Properties.Set(PspUserSetType, setType)
-	return evt
+	return evt.WithUserPropertyOpts(up)
 }

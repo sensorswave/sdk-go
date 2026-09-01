@@ -8,7 +8,7 @@
         "login_id": "user-456",
         "properties": {
           "$lib": "go",
-          "$lib_version": "0.1.6",
+          "$lib_version": "0.1.9",
           "note": "track-native-time",
           "occurred_at": "2026-04-23T08:15:30.123Z",
           "occurred_at_literal": "2026-04-23 08:15:30.123"
@@ -24,8 +24,7 @@
         "login_id": "user-456",
         "properties": {
           "$lib": "go",
-          "$lib_version": "0.1.6",
-          "$user_set_type": "user_set"
+          "$lib_version": "0.1.9"
         },
         "time": 1736668800000,
         "trace_id": "fixed-trace-dt-002",
@@ -44,8 +43,7 @@
         "login_id": "user-456",
         "properties": {
           "$lib": "go",
-          "$lib_version": "0.1.6",
-          "$user_set_type": "user_set_once"
+          "$lib_version": "0.1.9"
         },
         "time": 1736668800000,
         "trace_id": "fixed-trace-dt-003",
@@ -63,8 +61,7 @@
         "login_id": "user-456",
         "properties": {
           "$lib": "go",
-          "$lib_version": "0.1.6",
-          "$user_set_type": "user_append"
+          "$lib_version": "0.1.9"
         },
         "time": 1736668800000,
         "trace_id": "fixed-trace-dt-004",
@@ -85,8 +82,7 @@
         "login_id": "user-456",
         "properties": {
           "$lib": "go",
-          "$lib_version": "0.1.6",
-          "$user_set_type": "user_union"
+          "$lib_version": "0.1.9"
         },
         "time": 1736668800000,
         "trace_id": "fixed-trace-dt-005",

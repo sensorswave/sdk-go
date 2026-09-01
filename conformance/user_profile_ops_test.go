@@ -74,45 +74,34 @@ func buildProfileOpsEvent(t *testing.T, input struct {
 	t.Helper()
 	evt := NewEvent(input.AnonID, input.LoginID, PseUserSet)
 	up := NewUserPropertyOpts()
-	var setType string
 
 	switch input.Operation {
 	case "profile_append":
 		for k, vals := range input.ListProperties {
 			up = up.Append(k, vals)
 		}
-		setType = UserSetTypeAppend
 
 	case "profile_union":
 		for k, vals := range input.ListProperties {
 			up = up.Union(k, vals)
 		}
-		setType = UserSetTypeUnion
 
 	case "profile_increment":
 		for k, v := range input.Properties {
 			up = up.Increment(k, v)
 		}
-		setType = UserSetTypeIncrement
 
 	case "profile_unset":
 		for _, k := range input.PropertyKeys {
 			up = up.Unset(k)
 		}
-		setType = UserSetTypeUnset
 
 	case "profile_delete":
 		up = up.Delete()
-		setType = UserSetTypeDelete
 
 	default:
 		t.Fatalf("unknown operation: %s", input.Operation)
 	}
 
-	evt = evt.WithUserPropertyOpts(up)
-	if evt.Properties == nil {
-		evt.Properties = NewProperties()
-	}
-	evt.Properties.Set(PspUserSetType, setType)
-	return evt
+	return evt.WithUserPropertyOpts(up)
 }

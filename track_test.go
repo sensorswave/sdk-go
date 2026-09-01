@@ -278,8 +278,7 @@ func TestPropertySettersPreserveNativeTypesUntilNormalize(t *testing.T) {
 	// After Normalize, values are strings and $union is deduped.
 	event := NewEvent("", "user-456", PseUserSet).
 		WithTime(1776932130123).
-		WithUserPropertyOpts(up).
-		WithProperties(NewProperties().Set(PspUserSetType, UserSetTypeUnion))
+		WithUserPropertyOpts(up)
 	if err := event.Normalize(); err != nil {
 		t.Fatalf("normalize error: %v", err)
 	}
